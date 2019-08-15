@@ -40,6 +40,8 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
     implementation("org.telegram:telegrambots-spring-boot-starter:4.4.0.1")
+
+    implementation("io.sentry:sentry-log4j2:1.7.26")
 }
 
 tasks.withType<KotlinCompile> {
