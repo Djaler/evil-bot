@@ -15,15 +15,16 @@ class UpdatesManager(handlers: List<UpdateHandler>) {
 
     fun processUpdate(update: Update) {
         for (handler in handlers) {
-            if (handler.checkUpdate(update)) {
-                try {
+            try {
+                if (handler.checkUpdate(update)) {
                     val answered = handler.handleUpdate(update)
                     if (answered) {
                         break
                     }
-                } catch (e: Exception) {
-                    log.error("Handler: ${handler::class.simpleName}, update: ${update}", e)
+
                 }
+            } catch (e: Exception) {
+                log.error("Handler: ${handler::class.simpleName}, update: $update", e)
             }
         }
     }
