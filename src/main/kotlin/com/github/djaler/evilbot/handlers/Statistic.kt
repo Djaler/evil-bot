@@ -1,13 +1,11 @@
 package com.github.djaler.evilbot.handlers
 
 import com.github.djaler.evilbot.components.TelegramClient
-import com.github.djaler.evilbot.components.TelegramLinksHelper
 import com.github.djaler.evilbot.filters.Filters
 import com.github.djaler.evilbot.filters.not
 import com.github.djaler.evilbot.service.ChatService
 import com.github.djaler.evilbot.service.UserService
 import com.github.djaler.evilbot.utils.getForm
-import org.apache.logging.log4j.LogManager
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import org.telegram.telegrambots.meta.api.objects.Message
@@ -70,17 +68,12 @@ class DisplayTop10Handler(
     botUsername: String,
     private val chatService: ChatService,
     private val userService: UserService,
-    private val telegramClient: TelegramClient,
-    private val telegramLinksHelper: TelegramLinksHelper
+    private val telegramClient: TelegramClient
 ) : CommandHandler(
     botUsername,
     command = arrayOf("top10"),
     filter = Filters.PrivateChat.not()
 ) {
-    companion object {
-        private val log = LogManager.getLogger()
-    }
-
     override fun handleCommand(message: Message, args: List<String>) {
         val (chat, _) = chatService.getOrCreateChatFrom(message.chat)
 
@@ -95,7 +88,5 @@ class DisplayTop10Handler(
             .joinToString("\n")
 
         telegramClient.replyTextTo(message, text, disableNotification = true)
-
-        return
     }
 }

@@ -21,10 +21,6 @@ object Filters {
         override fun filter(message: Message) = message.isReply && message.replyToMessage.hasSticker()
     }
 
-    object SuperGroup : Filter {
-        override fun filter(message: Message): Boolean = message.chat.isSuperGroupChat
-    }
-
     object PrivateChat : Filter {
         override fun filter(message: Message): Boolean = message.chat.isUserChat
     }
