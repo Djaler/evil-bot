@@ -5,11 +5,14 @@ import com.github.djaler.evilbot.filters.Filters
 import com.github.djaler.evilbot.filters.and
 import com.github.djaler.evilbot.filters.not
 import com.github.djaler.evilbot.utils.createCallbackDataForHandler
+import com.github.djaler.evilbot.utils.decodeChatPermission
+import com.github.djaler.evilbot.utils.encode
 import com.github.djaler.evilbot.utils.usernameOrName
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery
+import org.telegram.telegrambots.meta.api.objects.ChatPermissions
 import org.telegram.telegrambots.meta.api.objects.Message
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton
@@ -31,12 +34,14 @@ class SendCaptchaHandler(
                 continue
             }
 
+            val permissions = telegramClient.getChatMemberPermissions(message.chatId, member.id)
+
             telegramClient.restrictChatMember(message.chatId, member.id)
 
             val keyboard = InlineKeyboardMarkup().apply {
                 keyboard = listOf(listOf(InlineKeyboardButton(CAPTCHA_MESSAGES.random()).apply {
                     callbackData = createCallbackDataForHandler(
-                        member.id.toString(),
+                        encodeCallbackData(member.id, permissions),
                         CaptchaCallbackHandler::class.java
                     )
                 }))
@@ -65,15 +70,27 @@ class CaptchaCallbackHandler(
     override fun handleCallback(query: CallbackQuery, data: String) {
         val user = query.from
 
-        val suspectId = data.toInt()
+        val (suspectId, permissions) = parseCallbackData(data)
 
         if (user.id != suspectId) {
             telegramClient.answerCallbackQuery(query, ACCESS_RESTRICTED_MESSAGES.random())
             return
         }
 
-        telegramClient.derestrictChatMember(query.message.chatId, suspectId)
+        telegramClient.restoreChatMemberPermissions(query.message.chatId, suspectId, permissions)
 
         telegramClient.deleteMessage(query.message)
     }
+}
+
+data class CallbackData(val memberId: Int, val permissions: ChatPermissions)
+
+private fun encodeCallbackData(memberId: Int, permissions: ChatPermissions): String {
+    return "$memberId/${permissions.encode()}"
+}
+
+private fun parseCallbackData(callbackData: String): CallbackData {
+    val (memberId, permissions) = callbackData.split('/', limit = 2).map { it.toInt() }
+
+    return CallbackData(memberId, decodeChatPermission(permissions))
 }

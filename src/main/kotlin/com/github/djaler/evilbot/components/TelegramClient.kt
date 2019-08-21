@@ -1,9 +1,11 @@
 package com.github.djaler.evilbot.components
 
+import com.github.djaler.evilbot.utils.createChatPermissions
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery
 import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChat
 import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatAdministrators
+import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatMember
 import org.telegram.telegrambots.meta.api.methods.groupadministration.RestrictChatMember
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.methods.send.SendSticker
@@ -104,39 +106,30 @@ class TelegramClient(
         sender.execute(DeleteMessage(message.chatId, message.messageId))
     }
 
+    fun getChatMemberPermissions(chatId: Long, memberId: Int): ChatPermissions {
+        val member = sender.execute(GetChatMember().apply {
+            setChatId(chatId)
+            userId = memberId
+        })
+
+        return createChatPermissions(
+            canSendMessages = member.canSendMessages,
+            canSendMediaMessages = member.canSendMediaMessages,
+            canSendPolls = member.canSendPolls,
+            canSendOtherMessages = member.canSendOtherMessages,
+            canAddWebPagePreviews = member.canAddWebPagePreviews
+        )
+    }
+
     fun restrictChatMember(chatId: Long, memberId: Int) {
         sender.execute(RestrictChatMember(chatId, memberId).apply {
             permissions = ChatPermissions()
         })
     }
 
-    fun derestrictChatMember(chatId: Long, memberId: Int) {
+    fun restoreChatMemberPermissions(chatId: Long, memberId: Int, permissions: ChatPermissions) {
         sender.execute(RestrictChatMember(chatId, memberId).apply {
-            permissions = ChatPermissions()
-
-            // ugly workaround of https://github.com/rubenlagus/TelegramBots/issues/646
-            with(ChatPermissions::class.java) {
-                getDeclaredField("canSendMessages").also {
-                    it.isAccessible = true
-                    it.set(permissions, true)
-                }
-                getDeclaredField("getCanSendMediaMessages").also {
-                    it.isAccessible = true
-                    it.set(permissions, true)
-                }
-                getDeclaredField("canSendPolls").also {
-                    it.isAccessible = true
-                    it.set(permissions, true)
-                }
-                getDeclaredField("canSendOtherMessages").also {
-                    it.isAccessible = true
-                    it.set(permissions, true)
-                }
-                getDeclaredField("canAddWebPagePreviews").also {
-                    it.isAccessible = true
-                    it.set(permissions, true)
-                }
-            }
+            setPermissions(permissions)
         })
     }
 
