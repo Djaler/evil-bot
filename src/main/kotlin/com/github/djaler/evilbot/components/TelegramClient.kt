@@ -113,11 +113,11 @@ class TelegramClient(
         })
 
         return createChatPermissions(
-            canSendMessages = member.canSendMessages,
-            canSendMediaMessages = member.canSendMediaMessages,
-            canSendPolls = member.canSendPolls,
-            canSendOtherMessages = member.canSendOtherMessages,
-            canAddWebPagePreviews = member.canAddWebPagePreviews
+            canSendMessages = member.canSendMessages ?: true,
+            canSendMediaMessages = member.canSendMediaMessages ?: true,
+            canSendPolls = member.canSendPolls ?: true,
+            canSendOtherMessages = member.canSendOtherMessages ?: true,
+            canAddWebPagePreviews = member.canAddWebPagePreviews ?: true
         )
     }
 
