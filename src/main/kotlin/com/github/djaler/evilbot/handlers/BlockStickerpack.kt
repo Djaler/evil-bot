@@ -30,8 +30,15 @@ class BlockStickerpackHandler(
 ) {
     override fun handleCommand(message: Message, args: List<String>) {
         val (chat, _) = chatService.getOrCreateChatFrom(message.chat)
+
+        val sticker = message.replyToMessage.sticker
+        if (sticker.setName == null) {
+            telegramClient.sendTextTo(message.chatId, "Стикерпак недоступен")
+            return
+        }
+
         val (stickerpack, created) = blockedStickerpackService.getOrCreate(
-            message.replyToMessage.sticker.setName,
+            sticker.setName,
             chat.id
         )
 
@@ -133,6 +140,11 @@ class StickersWatchDog(
 
     override fun handleMessage(message: Message): Boolean {
         val (chat, _) = chatService.getOrCreateChatFrom(message.chat)
+
+        val sticker = message.sticker
+        if (sticker.setName == null) {
+            return true
+        }
 
         if (blockedStickerpackService.isBlocked(message.sticker.setName, chat)) {
             telegramClient.deleteMessage(message)
