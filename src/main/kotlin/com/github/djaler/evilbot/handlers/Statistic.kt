@@ -9,6 +9,7 @@ import com.github.djaler.evilbot.utils.getForm
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import org.telegram.telegrambots.meta.api.objects.Message
+import org.telegram.telegrambots.meta.api.objects.User
 
 @Component
 class UpdateStatisticHandler(
@@ -30,12 +31,12 @@ class UpdateStatisticHandler(
 
 @Component
 class DisplayStatisticHandler(
-    botUsername: String,
+    botInfo: User,
     private val chatService: ChatService,
     private val userService: UserService,
     private val telegramClient: TelegramClient
 ) : CommandHandler(
-    botUsername,
+    botInfo.userName,
     command = arrayOf("statistic"),
     filter = Filters.PrivateChat.not()
 ) {
@@ -65,12 +66,12 @@ class DisplayStatisticHandler(
 
 @Component
 class DisplayTop10Handler(
-    botUsername: String,
+    botInfo: User,
     private val chatService: ChatService,
     private val userService: UserService,
     private val telegramClient: TelegramClient
 ) : CommandHandler(
-    botUsername,
+    botInfo.userName,
     command = arrayOf("top10"),
     filter = Filters.PrivateChat.not()
 ) {

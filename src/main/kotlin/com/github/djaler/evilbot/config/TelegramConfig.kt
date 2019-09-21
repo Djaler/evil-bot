@@ -11,6 +11,7 @@ import org.telegram.telegrambots.meta.ApiContext
 import org.telegram.telegrambots.meta.TelegramBotsApi
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod
 import org.telegram.telegrambots.meta.api.objects.Update
+import org.telegram.telegrambots.meta.api.objects.User
 import org.telegram.telegrambots.meta.generics.LongPollingBot
 import org.telegram.telegrambots.meta.generics.WebhookBot
 import org.telegram.telegrambots.util.WebhookUtils
@@ -36,8 +37,8 @@ class TelegramConfig(
     }
 
     @Bean
-    fun botUsername(sender: DefaultAbsSender): String {
-        return sender.me.userName
+    fun botInfo(sender: DefaultAbsSender): User {
+        return sender.me
     }
 
     @Bean
@@ -56,7 +57,7 @@ class TelegramConfig(
         sender: DefaultAbsSender,
         updatesManager: UpdatesManager,
         botOptions: DefaultBotOptions,
-        botUsername: String
+        botInfo: User
     ): Any {
         val webhook = telegramProperties.webhook
 
@@ -66,7 +67,7 @@ class TelegramConfig(
 
                 override fun getBotPath() = telegramProperties.token.getMD5()
 
-                override fun getBotUsername() = botUsername
+                override fun getBotUsername() = botInfo.userName
 
                 override fun setWebhook(url: String, publicCertificatePath: String?) {
                     WebhookUtils.setWebhook(sender, url, publicCertificatePath)
@@ -86,7 +87,7 @@ class TelegramConfig(
                     updatesManager.processUpdate(update)
                 }
 
-                override fun getBotUsername() = botUsername
+                override fun getBotUsername() = botInfo.userName
 
                 override fun getOptions() = botOptions
 

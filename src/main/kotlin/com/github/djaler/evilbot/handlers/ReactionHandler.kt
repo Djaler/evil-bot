@@ -9,6 +9,7 @@ import com.github.djaler.evilbot.model.Reaction
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.objects.Message
+import org.telegram.telegrambots.meta.api.objects.User
 import javax.annotation.PostConstruct
 import javax.validation.ConstraintViolationException
 import javax.validation.Validator
@@ -18,7 +19,7 @@ import kotlin.random.Random
 class ReactionHandler(
     private val objectMapper: ObjectMapper,
     private val validator: Validator,
-    private val botUsername: String,
+    private val botInfo: User,
     private val telegramClient: TelegramClient
 ) : MessageHandler(filter = Filters.Text or Filters.Command) {
     private lateinit var reactions: List<Reaction>
@@ -45,7 +46,7 @@ class ReactionHandler(
     }
 
     override fun handleMessage(message: Message): Boolean {
-        val messageReplyToBot = message.isReply && message.replyToMessage.from.userName == botUsername
+        val messageReplyToBot = message.isReply && message.replyToMessage.from.userName == botInfo.userName
 
         for (reaction in reactions) {
             val chance = reaction.chance

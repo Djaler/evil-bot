@@ -7,16 +7,17 @@ import com.github.djaler.evilbot.service.ChatService
 import com.github.djaler.evilbot.service.UserService
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.objects.Message
+import org.telegram.telegrambots.meta.api.objects.User
 import kotlin.random.Random
 
 @Component
 class KtoZloyHandler(
-    botUsername: String,
+    botInfo: User,
     private val chatService: ChatService,
     private val userService: UserService,
     private val telegramClient: TelegramClient
 ) : CommandHandler(
-    botUsername,
+    botInfo.userName,
     command = arrayOf("ktozloy"),
     filter = Filters.PrivateChat.not()
 ) {

@@ -12,19 +12,20 @@ import com.github.djaler.evilbot.utils.createCallbackDataForHandler
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery
 import org.telegram.telegrambots.meta.api.objects.Message
+import org.telegram.telegrambots.meta.api.objects.User
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton
 
 @Component
 class BlockStickerpackHandler(
-    botUsername: String,
+    botInfo: User,
     private val telegramClient: TelegramClient,
     private val telegramLinksHelper: TelegramLinksHelper,
     private val chatService: ChatService,
     private val blockedStickerpackService: BlockedStickerpackService,
     chatAdministratorFilter: ChatAdministratorFilter
 ) : CommandHandler(
-    botUsername,
+    botInfo.userName,
     command = arrayOf("block_stickerpack"),
     filter = Filters.PrivateChat.not() and Filters.ReplyToSticker and chatAdministratorFilter
 ) {
@@ -52,14 +53,14 @@ class BlockStickerpackHandler(
 
 @Component
 class UnblockStickerpackHandler(
-    botUsername: String,
+    botInfo: User,
     private val telegramClient: TelegramClient,
     private val telegramLinksHelper: TelegramLinksHelper,
     private val chatService: ChatService,
     private val blockedStickerpackService: BlockedStickerpackService,
     chatAdministratorFilter: ChatAdministratorFilter
 ) : CommandHandler(
-    botUsername,
+    botInfo.userName,
     command = arrayOf("unblock_stickerpack"),
     filter = Filters.PrivateChat.not() and chatAdministratorFilter
 ) {

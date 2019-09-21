@@ -5,12 +5,13 @@ import com.github.djaler.evilbot.filters.Filters
 import com.github.djaler.evilbot.filters.not
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.objects.Message
+import org.telegram.telegrambots.meta.api.objects.User
 
 @Component
 class ReplyToPinHandler(
     private val telegramClient: TelegramClient,
-    botUsername: String
-) : CommandHandler(botUsername, command = arrayOf("pinned"), filter = Filters.PrivateChat.not()) {
+    botInfo: User
+) : CommandHandler(botInfo.userName, command = arrayOf("pinned"), filter = Filters.PrivateChat.not()) {
     override fun handleCommand(message: Message, args: List<String>) {
         val pinnedMessage: Message? = telegramClient.getChat(message.chatId).pinnedMessage
 
