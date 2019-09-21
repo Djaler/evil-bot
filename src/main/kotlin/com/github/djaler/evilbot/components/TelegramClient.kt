@@ -106,11 +106,15 @@ class TelegramClient(
         sender.execute(DeleteMessage(message.chatId, message.messageId))
     }
 
-    fun getChatMemberPermissions(chatId: Long, memberId: Int): ChatPermissions {
-        val member = sender.execute(GetChatMember().apply {
+    fun getChatMember(chatId: Long, memberId: Int): ChatMember {
+        return sender.execute(GetChatMember().apply {
             setChatId(chatId)
             userId = memberId
         })
+    }
+
+    fun getChatMemberPermissions(chatId: Long, memberId: Int): ChatPermissions {
+        val member = getChatMember(chatId, memberId)
 
         return createChatPermissions(
             canSendMessages = member.canSendMessages ?: true,

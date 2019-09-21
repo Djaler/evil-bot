@@ -1,6 +1,7 @@
 package com.github.djaler.evilbot.handlers
 
 import com.github.djaler.evilbot.components.TelegramClient
+import com.github.djaler.evilbot.filters.CanRestrictMemberFilter
 import com.github.djaler.evilbot.filters.Filters
 import com.github.djaler.evilbot.filters.and
 import com.github.djaler.evilbot.filters.not
@@ -20,8 +21,9 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 @Component
 @ConditionalOnProperty("evil.bot.captcha-enabled", havingValue = "true", matchIfMissing = false)
 class SendCaptchaHandler(
-    private val telegramClient: TelegramClient
-) : MessageHandler(filter = Filters.PrivateChat.not() and Filters.NewChatMember) {
+    private val telegramClient: TelegramClient,
+    canRestrictMemberFilter: CanRestrictMemberFilter
+) : MessageHandler(filter = Filters.PrivateChat.not() and Filters.NewChatMember and canRestrictMemberFilter) {
     companion object {
         private val CAPTCHA_MESSAGES = arrayOf("Аниме - моя жизнь", "Я отдаю свою жизнь и честь Ночному Дозору")
     }
