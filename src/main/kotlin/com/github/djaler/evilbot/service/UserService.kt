@@ -8,6 +8,7 @@ import com.github.djaler.evilbot.repository.UserRepository
 import com.github.djaler.evilbot.repository.UserStatisticRepository
 import com.github.djaler.evilbot.utils.usernameOrName
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
 @Service
@@ -15,6 +16,7 @@ class UserService(
     private val userRepository: UserRepository,
     private val userStatisticRepository: UserStatisticRepository
 ) {
+    @Transactional
     fun getOrCreateUserFrom(telegramUser: org.telegram.telegrambots.meta.api.objects.User): GetOrCreateResult<User> {
         val user = userRepository.findByTelegramId(telegramUser.id)
 
@@ -33,6 +35,7 @@ class UserService(
         userRepository.save(user.copy(username = actualUsername))
     }
 
+    @Transactional
     fun registerMessageInStatistic(user: User, chat: Chat) {
         val statistic = userStatisticRepository.findByChatAndUser(chat.id, user.id)
 

@@ -6,11 +6,13 @@ import com.github.djaler.evilbot.model.GetOrCreateResult
 import com.github.djaler.evilbot.repository.BlockedStickerpackRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class BlockedStickerpackService(
     private val blockedStickerpackRepository: BlockedStickerpackRepository
 ) {
+    @Transactional
     fun getOrCreate(stickerpackName: String, chatId: Short): GetOrCreateResult<BlockedStickerpack> {
         val stickerpack = blockedStickerpackRepository.findByNameAndChatId(stickerpackName, chatId)
 
