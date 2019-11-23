@@ -39,7 +39,7 @@ dependencies {
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-    implementation("org.telegram:telegrambots-spring-boot-starter:4.4.0.1")
+    implementation("org.telegram:telegrambots-spring-boot-starter:4.4.0.2")
 
     implementation("io.sentry:sentry:1.7.28")
 }
