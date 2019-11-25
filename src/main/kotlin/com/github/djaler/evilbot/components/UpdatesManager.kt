@@ -18,9 +18,8 @@ class UpdatesManager(
     private val handlers = handlers.sortedBy { it.order }
 
     fun processUpdate(update: Update) {
+        sentryClient.clearContext()
         for (handler in handlers) {
-            sentryClient.clearContext()
-
             try {
                 if (handler.checkUpdate(update)) {
                     val answered = handler.handleUpdate(update)
