@@ -13,6 +13,6 @@ class CanRestrictMemberFilter(
     override fun filter(message: Message): Boolean {
         val botChatInfo = telegramClient.getChatMember(message.chatId, botInfo.id)
 
-        return botChatInfo.canRestrictUsers ?: false
+        return botChatInfo.canRestrictMembers ?: false
     }
 }
