@@ -41,7 +41,7 @@ dependencies {
 
     implementation("org.telegram:telegrambots-spring-boot-starter:4.4.0.2")
 
-    implementation("io.sentry:sentry:1.7.28")
+    implementation("io.sentry:sentry:1.7.29")
 }
 
 tasks.withType<KotlinCompile> {
