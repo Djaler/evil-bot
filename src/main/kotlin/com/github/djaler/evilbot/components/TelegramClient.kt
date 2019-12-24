@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery
 import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChat
 import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatAdministrators
+import org.telegram.telegrambots.meta.api.methods.groupadministration.KickChatMember
 import org.telegram.telegrambots.meta.api.methods.groupadministration.RestrictChatMember
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.methods.send.SendSticker
@@ -136,6 +137,10 @@ class TelegramClient(
         sender.execute(RestrictChatMember(chatId, memberId).apply {
             setPermissions(permissions)
         })
+    }
+
+    fun kickChatMember(chatId: Long, memberId: Int) {
+        sender.execute(KickChatMember(chatId, memberId))
     }
 
     fun answerCallbackQuery(query: CallbackQuery, text: String) {
