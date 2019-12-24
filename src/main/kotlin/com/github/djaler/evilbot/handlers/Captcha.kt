@@ -31,6 +31,8 @@ class SendCaptchaHandler(
     override fun handleMessage(message: Message): Boolean {
         val newMembers = message.newChatMembers
 
+        var anyUser = false;
+
         for (member in newMembers) {
             if (member.bot) {
                 continue
@@ -54,9 +56,11 @@ class SendCaptchaHandler(
                 "Эй, ${member.usernameOrName}! Мы отобрали твою свободу слова, пока ты не тыкнешь сюда \uD83D\uDC47",
                 keyboard = keyboard
             )
+
+            anyUser = true
         }
 
-        return true
+        return anyUser
     }
 }
 
