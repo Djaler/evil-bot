@@ -2,6 +2,17 @@ package com.github.djaler.evilbot.utils
 
 import org.telegram.telegrambots.meta.api.objects.ChatPermissions
 
+val fullChatPermissions = createChatPermissions(
+    canSendMessages = true,
+    canSendMediaMessages = true,
+    canSendPolls = true,
+    canSendOtherMessages = true,
+    canAddWebPagePreviews = true,
+    canChangeInfo = true,
+    canInviteUsers = true,
+    canPinMessages = true
+)
+
 fun createChatPermissions(
     canSendMessages: Boolean,
     canSendMediaMessages: Boolean,
@@ -84,3 +95,17 @@ fun decodeChatPermission(value: String): ChatPermissions {
 private fun Boolean?.asSymbol() = if (this == true) '+' else '-'
 
 private fun getBooleanFromSymbol(symbol: Char) = symbol == '+'
+
+fun ChatPermissions.lessThan(other: ChatPermissions): Boolean {
+    return (canSendMessages.isNullOrFalse() && other.canSendMessages.isTrue())
+            || (getCanSendMediaMessages.isNullOrFalse() && other.getCanSendMediaMessages.isTrue())
+            || (canSendPolls.isNullOrFalse() && other.canSendPolls.isTrue())
+            || (canSendOtherMessages.isNullOrFalse() && other.canSendOtherMessages.isTrue())
+            || (canAddWebPagePreviews.isNullOrFalse() && other.canAddWebPagePreviews.isTrue())
+            || (canChangeInfo.isNullOrFalse() && other.canChangeInfo.isTrue())
+            || (canInviteUsers.isNullOrFalse() && other.canInviteUsers.isTrue())
+            || (canPinMessages.isNullOrFalse() && other.canPinMessages.isTrue())
+}
+
+private fun Boolean?.isNullOrFalse() = this === null || this == false
+private fun Boolean?.isTrue() = this == true

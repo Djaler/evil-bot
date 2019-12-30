@@ -2,6 +2,7 @@ package com.github.djaler.evilbot.components
 
 import com.github.djaler.evilbot.api.GetChatMember
 import com.github.djaler.evilbot.utils.createChatPermissions
+import com.github.djaler.evilbot.utils.fullChatPermissions
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery
 import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChat
@@ -136,7 +137,7 @@ class TelegramClient(
         })
     }
 
-    fun restoreChatMemberPermissions(chatId: Long, memberId: Int, permissions: ChatPermissions) {
+    fun restoreChatMemberPermissions(chatId: Long, memberId: Int, permissions: ChatPermissions = fullChatPermissions) {
         sender.execute(RestrictChatMember(chatId, memberId).apply {
             setPermissions(permissions)
         })
