@@ -5,15 +5,15 @@ import org.telegram.telegrambots.meta.api.objects.Message
 import org.telegram.telegrambots.meta.api.objects.Update
 
 abstract class MessageHandler(private val filter: Filter? = null) : UpdateHandler {
-    override fun checkUpdate(update: Update): Boolean {
+    override fun handleUpdate(update: Update): Boolean {
         if (!update.hasMessage()) {
             return false
         }
 
-        return filter?.filter(update.message) ?: true
-    }
+        if (filter?.filter(update.message) == false) {
+            return false
+        }
 
-    override fun handleUpdate(update: Update): Boolean {
         return handleMessage(update.message)
     }
 

@@ -6,15 +6,15 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery
 import org.telegram.telegrambots.meta.api.objects.Update
 
 abstract class CallbackQueryHandler : UpdateHandler {
-    override fun checkUpdate(update: Update): Boolean {
+    override fun handleUpdate(update: Update): Boolean {
         if (!update.hasCallbackQuery()) {
             return false
         }
 
-        return isCallbackForHandler(update.callbackQuery.data, javaClass)
-    }
+        if (!isCallbackForHandler(update.callbackQuery.data, javaClass)) {
+            return false
+        }
 
-    override fun handleUpdate(update: Update): Boolean {
         val data = decodeCallbackData(update.callbackQuery.data, javaClass)
 
         handleCallback(update.callbackQuery, data)

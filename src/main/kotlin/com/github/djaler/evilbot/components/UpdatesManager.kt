@@ -23,14 +23,10 @@ class UpdatesManager(
         sentryClient.clearContext()
         for (handler in handlers) {
             try {
-                sentryClient.context.recordBreadcrumb(createHandlerBreadcrumb(handler, BreadcrumbCategory.CHECK))
-                if (handler.checkUpdate(update)) {
-                    sentryClient.context.recordBreadcrumb(createHandlerBreadcrumb(handler, BreadcrumbCategory.HANDLE))
-                    val answered = handler.handleUpdate(update)
-                    if (answered) {
-                        break
-                    }
-
+                sentryClient.context.recordBreadcrumb(createHandlerBreadcrumb(handler))
+                val answered = handler.handleUpdate(update)
+                if (answered) {
+                    break
                 }
             } catch (e: Exception) {
                 log.error("Handler: ${handler::class.simpleName}, update: $update", e)
@@ -42,14 +38,8 @@ class UpdatesManager(
     }
 }
 
-private enum class BreadcrumbCategory {
-    CHECK,
-    HANDLE
-}
-
-private fun createHandlerBreadcrumb(handler: UpdateHandler, category: BreadcrumbCategory): Breadcrumb {
+private fun createHandlerBreadcrumb(handler: UpdateHandler): Breadcrumb {
     return BreadcrumbBuilder().apply {
         setMessage(handler::class.java.simpleName)
-        setCategory(category.name)
     }.build()
 }

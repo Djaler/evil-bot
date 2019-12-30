@@ -9,7 +9,7 @@ abstract class CommandHandler(
     private val command: Array<String>,
     private val filter: Filter? = null
 ) : UpdateHandler {
-    override fun checkUpdate(update: Update): Boolean {
+    override fun handleUpdate(update: Update): Boolean {
         if (!update.hasMessage()) {
             return false
         }
@@ -28,13 +28,13 @@ abstract class CommandHandler(
             return false
         }
 
-        return filter?.filter(message) ?: true
-    }
+        if (filter?.filter(update.message) == false) {
+            return false
+        }
 
-    override fun handleUpdate(update: Update): Boolean {
-        val args = update.message.text.split(" ").drop(1)
+        val args = message.text.split(" ").drop(1)
 
-        handleCommand(update.message, args)
+        handleCommand(message, args)
 
         return true
     }
