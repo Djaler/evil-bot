@@ -96,7 +96,7 @@ private fun encodeCallbackData(memberId: Int, permissions: ChatPermissions): Str
 }
 
 private fun parseCallbackData(callbackData: String): CallbackData {
-    val (memberId, permissions) = callbackData.split('/', limit = 2).map { it.toInt() }
+    val (memberId, permissions) = callbackData.split('/', limit = 2)
 
-    return CallbackData(memberId, decodeChatPermission(permissions))
+    return CallbackData(memberId.toInt(), decodeChatPermission(permissions))
 }

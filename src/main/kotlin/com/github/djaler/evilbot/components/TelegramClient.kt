@@ -123,7 +123,10 @@ class TelegramClient(
             canSendMediaMessages = member.canSendMediaMessages ?: true,
             canSendPolls = member.canSendPolls ?: true,
             canSendOtherMessages = member.canSendOtherMessages ?: true,
-            canAddWebPagePreviews = member.canAddWebPagePreviews ?: true
+            canAddWebPagePreviews = member.canAddWebPagePreviews ?: true,
+            canChangeInfo = member.canChangeInformation ?: true,
+            canInviteUsers = member.canInviteUsers ?: true,
+            canPinMessages = member.canPinMessages ?: true
         )
     }
 
