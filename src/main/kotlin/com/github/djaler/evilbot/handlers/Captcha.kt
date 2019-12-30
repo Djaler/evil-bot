@@ -5,10 +5,7 @@ import com.github.djaler.evilbot.filters.CanRestrictMemberFilter
 import com.github.djaler.evilbot.filters.Filters
 import com.github.djaler.evilbot.filters.and
 import com.github.djaler.evilbot.filters.not
-import com.github.djaler.evilbot.utils.createCallbackDataForHandler
-import com.github.djaler.evilbot.utils.decodeChatPermission
-import com.github.djaler.evilbot.utils.encode
-import com.github.djaler.evilbot.utils.usernameOrName
+import com.github.djaler.evilbot.utils.*
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
@@ -83,7 +80,14 @@ class CaptchaCallbackHandler(
             return
         }
 
-        telegramClient.restoreChatMemberPermissions(query.message.chatId, suspectId, permissions)
+        val chat = telegramClient.getChat(query.message.chatId)
+
+        if (permissions.lessThan(chat.permissions)) {
+            telegramClient.restoreChatMemberPermissions(query.message.chatId, suspectId, permissions)
+        } else {
+            telegramClient.restoreChatMemberPermissions(query.message.chatId, suspectId)
+        }
+
 
         telegramClient.deleteMessage(query.message)
     }
