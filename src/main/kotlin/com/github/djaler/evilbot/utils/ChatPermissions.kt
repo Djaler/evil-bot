@@ -7,7 +7,10 @@ fun createChatPermissions(
     canSendMediaMessages: Boolean,
     canSendPolls: Boolean,
     canSendOtherMessages: Boolean,
-    canAddWebPagePreviews: Boolean
+    canAddWebPagePreviews: Boolean,
+    canChangeInfo: Boolean,
+    canInviteUsers: Boolean,
+    canPinMessages: Boolean
 ): ChatPermissions {
     val permissions = ChatPermissions()
 
@@ -33,45 +36,51 @@ fun createChatPermissions(
             isAccessible = true
             set(permissions, canAddWebPagePreviews)
         }
+        with(getDeclaredField("canChangeInfo")) {
+            isAccessible = true
+            set(permissions, canChangeInfo)
+        }
+        with(getDeclaredField("canInviteUsers")) {
+            isAccessible = true
+            set(permissions, canInviteUsers)
+        }
+        with(getDeclaredField("canPinMessages")) {
+            isAccessible = true
+            set(permissions, canPinMessages)
+        }
     }
 
     return permissions
 }
 
-private const val CAN_SEND_MESSAGES = 1 shl 0
-private const val CAN_SEND_MEDIA_MESSAGES = 1 shl 1
-private const val CAN_SEND_POLLS = 1 shl 2
-private const val CAN_SEND_OTHER_MESSAGES = 1 shl 4
-private const val CAN_ADD_WEB_PAGE_PREVIEWS = 1 shl 8
-
-fun ChatPermissions.encode(): Int {
-    var value = 0
-
-    if (canSendMessages) {
-        value = value or CAN_SEND_MESSAGES
-    }
-    if (getCanSendMediaMessages) {
-        value = value or CAN_SEND_MEDIA_MESSAGES
-    }
-    if (canSendPolls) {
-        value = value or CAN_SEND_POLLS
-    }
-    if (canSendOtherMessages) {
-        value = value or CAN_SEND_OTHER_MESSAGES
-    }
-    if (canAddWebPagePreviews) {
-        value = value or CAN_ADD_WEB_PAGE_PREVIEWS
-    }
-
-    return value
+fun ChatPermissions.encode(): String {
+    return listOf(
+        canSendMessages,
+        getCanSendMediaMessages,
+        canSendPolls,
+        canSendOtherMessages,
+        canAddWebPagePreviews,
+        canChangeInfo,
+        canInviteUsers,
+        canPinMessages
+    ).joinToString(separator = "") { it.asSymbol().toString() }
 }
 
-fun decodeChatPermission(value: Int): ChatPermissions {
+fun decodeChatPermission(value: String): ChatPermissions {
+    val chars = value.toCharArray()
+
     return createChatPermissions(
-        canSendMessages = value and CAN_SEND_MESSAGES > 0,
-        canSendMediaMessages = value and CAN_SEND_MEDIA_MESSAGES > 0,
-        canSendPolls = value and CAN_SEND_POLLS > 0,
-        canSendOtherMessages = value and CAN_SEND_OTHER_MESSAGES > 0,
-        canAddWebPagePreviews = value and CAN_ADD_WEB_PAGE_PREVIEWS > 0
+        canSendMessages = getBooleanFromSymbol(chars[0]),
+        canSendMediaMessages = getBooleanFromSymbol(chars[1]),
+        canSendPolls = getBooleanFromSymbol(chars[2]),
+        canSendOtherMessages = getBooleanFromSymbol(chars[3]),
+        canAddWebPagePreviews = getBooleanFromSymbol(chars[4]),
+        canChangeInfo = getBooleanFromSymbol(chars[5]),
+        canInviteUsers = getBooleanFromSymbol(chars[6]),
+        canPinMessages = getBooleanFromSymbol(chars[7])
     )
 }
+
+private fun Boolean?.asSymbol() = if (this == true) '+' else '-'
+
+private fun getBooleanFromSymbol(symbol: Char) = symbol == '+'
