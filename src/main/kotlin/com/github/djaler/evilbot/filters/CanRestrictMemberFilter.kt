@@ -11,7 +11,7 @@ class CanRestrictMemberFilter(
     private val telegramClient: TelegramClient,
     private val botInfo: User
 ) : Filter {
-    override fun filter(message: Message): Boolean {
+    override suspend fun filter(message: Message): Boolean {
         val botChatInfo = telegramClient.getChatMember(message.chat.id, botInfo.id)
 
         if (botChatInfo !is AdministratorChatMember) {

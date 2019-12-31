@@ -7,7 +7,7 @@ import com.github.insanusmokrassar.TelegramBotAPI.types.update.CallbackQueryUpda
 import com.github.insanusmokrassar.TelegramBotAPI.types.update.abstracts.Update
 
 abstract class CallbackQueryHandler : UpdateHandler {
-    override fun handleUpdate(update: Update): Boolean {
+    override suspend fun handleUpdate(update: Update): Boolean {
         if (update !is CallbackQueryUpdate) {
             return false
         }
@@ -24,5 +24,5 @@ abstract class CallbackQueryHandler : UpdateHandler {
         return true
     }
 
-    protected abstract fun handleCallback(query: MessageDataCallbackQuery, data: String)
+    protected abstract suspend fun handleCallback(query: MessageDataCallbackQuery, data: String)
 }
