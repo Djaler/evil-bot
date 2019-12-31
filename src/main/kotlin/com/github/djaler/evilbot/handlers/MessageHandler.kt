@@ -1,20 +1,21 @@
 package com.github.djaler.evilbot.handlers
 
 import com.github.djaler.evilbot.filters.Filter
-import org.telegram.telegrambots.meta.api.objects.Message
-import org.telegram.telegrambots.meta.api.objects.Update
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
+import com.github.insanusmokrassar.TelegramBotAPI.types.update.MessageUpdate
+import com.github.insanusmokrassar.TelegramBotAPI.types.update.abstracts.Update
 
 abstract class MessageHandler(private val filter: Filter? = null) : UpdateHandler {
     override fun handleUpdate(update: Update): Boolean {
-        if (!update.hasMessage()) {
+        if (update !is MessageUpdate) {
             return false
         }
 
-        if (filter?.filter(update.message) == false) {
+        if (filter?.filter(update.data) == false) {
             return false
         }
 
-        return handleMessage(update.message)
+        return handleMessage(update.data)
     }
 
     abstract fun handleMessage(message: Message): Boolean

@@ -1,17 +1,17 @@
 package com.github.djaler.evilbot.handlers
 
 import com.github.djaler.evilbot.components.TelegramClient
+import com.github.insanusmokrassar.TelegramBotAPI.types.User
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.CommonMessageImpl
 import org.springframework.stereotype.Component
-import org.telegram.telegrambots.meta.api.objects.Message
-import org.telegram.telegrambots.meta.api.objects.User
 import kotlin.random.Random
 
 @Component
 class ResolveHandler(
     private val telegramClient: TelegramClient,
     botInfo: User
-) : CommandHandler(botInfo.userName, command = arrayOf("r", "resolve")) {
-    override fun handleCommand(message: Message, args: List<String>) {
+) : CommandHandler(botInfo, command = arrayOf("r", "resolve")) {
+    override fun handleCommand(message: CommonMessageImpl<*>, args: List<String>) {
         val variants = args.joinToString(" ")
             .split(Regex(" */ *"))
             .distinct()

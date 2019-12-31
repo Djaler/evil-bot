@@ -1,6 +1,6 @@
 package com.github.djaler.evilbot.handlers
 
-import org.telegram.telegrambots.meta.api.objects.Update
+import com.github.insanusmokrassar.TelegramBotAPI.types.update.abstracts.Update
 
 
 interface UpdateHandler {
