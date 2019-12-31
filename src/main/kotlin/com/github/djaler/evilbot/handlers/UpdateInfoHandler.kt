@@ -1,50 +1,50 @@
 package com.github.djaler.evilbot.handlers
 
-import com.github.djaler.evilbot.filters.Filters
-import com.github.djaler.evilbot.filters.not
 import com.github.djaler.evilbot.service.ChatService
 import com.github.djaler.evilbot.service.UserService
 import com.github.djaler.evilbot.utils.usernameOrName
+import com.github.insanusmokrassar.TelegramBotAPI.types.chat.abstracts.PublicChat
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.CommonMessageImpl
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
 import io.sentry.SentryClient
 import io.sentry.event.UserBuilder
 import org.springframework.stereotype.Component
-import org.telegram.telegrambots.meta.api.objects.Message
 
 @Component
 class UpdateInfoHandler(
     private val userService: UserService,
     private val chatService: ChatService,
     private val sentryClient: SentryClient
-) : MessageHandler(filter = Filters.PrivateChat.not()) {
+) : MessageHandler() {
     override val order = 0
 
     override fun handleMessage(message: Message): Boolean {
-        val fromUser = message.from
+        if (message !is CommonMessageImpl<*>) {
+            return false
+        }
+        val chat = message.chat as? PublicChat ?: return false
+        val fromUser = message.user
 
         sentryClient.context.user = UserBuilder()
             .setId(fromUser.id.toString())
             .setUsername(fromUser.usernameOrName)
-            .withData("chatTitle", message.chat.title)
-            .withData("chatId", message.chat.id)
+            .withData("chatTitle", chat.title)
+            .withData("chatId", chat.id)
             .build()
 
-        val user = userService.getUser(fromUser.id)
-
-        if (user != null) {
+        userService.getUser(fromUser.id)?.let {
             val actualUsername = fromUser.usernameOrName
 
-            if (user.username != actualUsername) {
-                userService.updateUsername(user, actualUsername)
+            if (it.username != actualUsername) {
+                userService.updateUsername(it, actualUsername)
             }
         }
 
-        val chat = chatService.getChat(message.chatId)
+        chatService.getChat(chat.id)?.let {
+            val actualTitle = chat.title
 
-        if (chat != null) {
-            val actualTitle = message.chat.title
-
-            if (chat.title != actualTitle) {
-                chatService.updateTitle(chat, actualTitle)
+            if (it.title != actualTitle) {
+                chatService.updateTitle(it, actualTitle)
             }
         }
 

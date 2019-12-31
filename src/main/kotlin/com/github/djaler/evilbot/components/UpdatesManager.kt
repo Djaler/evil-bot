@@ -1,12 +1,12 @@
 package com.github.djaler.evilbot.components
 
 import com.github.djaler.evilbot.handlers.UpdateHandler
+import com.github.insanusmokrassar.TelegramBotAPI.types.update.abstracts.Update
 import io.sentry.SentryClient
 import io.sentry.event.Breadcrumb
 import io.sentry.event.BreadcrumbBuilder
 import org.apache.logging.log4j.LogManager
 import org.springframework.stereotype.Component
-import org.telegram.telegrambots.meta.api.objects.Update
 
 @Component
 class UpdatesManager(

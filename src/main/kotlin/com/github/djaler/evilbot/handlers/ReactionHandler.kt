@@ -3,13 +3,15 @@ package com.github.djaler.evilbot.handlers
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.djaler.evilbot.components.TelegramClient
-import com.github.djaler.evilbot.filters.Filters
-import com.github.djaler.evilbot.filters.or
 import com.github.djaler.evilbot.model.Reaction
+import com.github.insanusmokrassar.TelegramBotAPI.types.User
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.AbleToReplyMessage
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.ContentMessage
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.FromUserMessage
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.TextContent
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.stereotype.Component
-import org.telegram.telegrambots.meta.api.objects.Message
-import org.telegram.telegrambots.meta.api.objects.User
 import javax.annotation.PostConstruct
 import javax.validation.ConstraintViolationException
 import javax.validation.Validator
@@ -21,7 +23,7 @@ class ReactionHandler(
     private val validator: Validator,
     private val botInfo: User,
     private val telegramClient: TelegramClient
-) : MessageHandler(filter = Filters.Text or Filters.Command) {
+) : MessageHandler() {
     private lateinit var reactions: List<Reaction>
 
     @PostConstruct
@@ -46,7 +48,12 @@ class ReactionHandler(
     }
 
     override fun handleMessage(message: Message): Boolean {
-        val messageReplyToBot = message.isReply && message.replyToMessage.from.userName == botInfo.userName
+        if (message !is ContentMessage<*>) {
+            return false
+        }
+        val content = message.content as? TextContent ?: return false
+
+        val messageReplyToBot = isReplyToBot(message)
 
         for (reaction in reactions) {
             val chance = reaction.chance
@@ -60,7 +67,7 @@ class ReactionHandler(
             }
 
             if (reaction.triggers.isNotEmpty() &&
-                reaction.triggers.none { Regex(it, RegexOption.IGNORE_CASE).containsMatchIn(message.text) }
+                reaction.triggers.none { Regex(it, RegexOption.IGNORE_CASE).containsMatchIn(content.text) }
             ) {
                 continue
             }
@@ -71,5 +78,19 @@ class ReactionHandler(
         }
 
         return false
+    }
+
+    private fun isReplyToBot(message: Message): Boolean {
+        if (message !is AbleToReplyMessage) {
+            return false
+        }
+
+        val replyTo = message.replyTo
+
+        if (replyTo !is FromUserMessage) {
+            return false
+        }
+
+        return replyTo.user.username == botInfo.username
     }
 }

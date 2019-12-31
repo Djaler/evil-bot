@@ -15,6 +15,8 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+    jcenter()
+    maven("https://dl.bintray.com/insanusmokrassar/StandardRepository")
 }
 
 configurations {
@@ -39,7 +41,9 @@ dependencies {
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-    implementation("org.telegram:telegrambots-spring-boot-starter:4.5")
+    implementation("io.ktor:ktor-server-netty:1.2.6")
+    implementation("io.ktor:ktor-client-okhttp:1.2.6")
+    implementation("com.github.insanusmokrassar:TelegramBotAPI-jvm:0.20.4")
 
     implementation("io.sentry:sentry:1.7.29")
 }

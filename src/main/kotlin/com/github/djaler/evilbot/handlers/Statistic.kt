@@ -1,29 +1,34 @@
 package com.github.djaler.evilbot.handlers
 
 import com.github.djaler.evilbot.components.TelegramClient
-import com.github.djaler.evilbot.filters.Filters
-import com.github.djaler.evilbot.filters.not
 import com.github.djaler.evilbot.service.ChatService
 import com.github.djaler.evilbot.service.UserService
 import com.github.djaler.evilbot.utils.getForm
+import com.github.insanusmokrassar.TelegramBotAPI.types.User
+import com.github.insanusmokrassar.TelegramBotAPI.types.chat.abstracts.PublicChat
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.CommonMessageImpl
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import org.telegram.telegrambots.meta.api.objects.Message
-import org.telegram.telegrambots.meta.api.objects.User
 
 @Component
 class UpdateStatisticHandler(
     private val chatService: ChatService,
     private val userService: UserService
-) : MessageHandler(Filters.PrivateChat.not()) {
+) : MessageHandler() {
     override val order = 0
 
     @Transactional
     override fun handleMessage(message: Message): Boolean {
-        val (chat, _) = chatService.getOrCreateChatFrom(message.chat)
-        val (user, _) = userService.getOrCreateUserFrom(message.from)
+        if (message !is CommonMessageImpl<*>) {
+            return false
+        }
+        val chat = message.chat as? PublicChat ?: return false
 
-        userService.registerMessageInStatistic(user, chat)
+        val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
+        val (userEntity, _) = userService.getOrCreateUserFrom(message.user)
+
+        userService.registerMessageInStatistic(userEntity, chatEntity)
 
         return false
     }
@@ -36,15 +41,16 @@ class DisplayStatisticHandler(
     private val userService: UserService,
     private val telegramClient: TelegramClient
 ) : CommandHandler(
-    botInfo.userName,
-    command = arrayOf("statistic"),
-    filter = Filters.PrivateChat.not()
+    botInfo,
+    command = arrayOf("statistic")
 ) {
-    override fun handleCommand(message: Message, args: List<String>) {
-        val (chat, _) = chatService.getOrCreateChatFrom(message.chat)
-        val (user, _) = userService.getOrCreateUserFrom(message.from)
+    override fun handleCommand(message: CommonMessageImpl<*>, args: List<String>) {
+        val chat = message.chat as? PublicChat ?: return
 
-        val statistic = userService.getStatistic(user, chat)
+        val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
+        val (userEntity, _) = userService.getOrCreateUserFrom(message.user)
+
+        val statistic = userService.getStatistic(userEntity, chatEntity)
         if (statistic == null) {
             telegramClient.replyTextTo(message, "Ты не писал ещё ничего, алло")
             return
@@ -71,14 +77,15 @@ class DisplayTop10Handler(
     private val userService: UserService,
     private val telegramClient: TelegramClient
 ) : CommandHandler(
-    botInfo.userName,
-    command = arrayOf("top10"),
-    filter = Filters.PrivateChat.not()
+    botInfo,
+    command = arrayOf("top10")
 ) {
-    override fun handleCommand(message: Message, args: List<String>) {
-        val (chat, _) = chatService.getOrCreateChatFrom(message.chat)
+    override fun handleCommand(message: CommonMessageImpl<*>, args: List<String>) {
+        val chat = message.chat as? PublicChat ?: return
 
-        val top = userService.getTop(chat, limit = 10)
+        val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
+
+        val top = userService.getTop(chatEntity, limit = 10)
 
         if (top.isEmpty()) {
             return

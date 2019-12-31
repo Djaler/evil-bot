@@ -1,13 +1,13 @@
 package com.github.djaler.evilbot.handlers
 
 import com.github.djaler.evilbot.components.TelegramClient
-import com.github.djaler.evilbot.filters.Filters
-import com.github.djaler.evilbot.filters.not
 import com.github.djaler.evilbot.service.ChatService
 import com.github.djaler.evilbot.service.UserService
+import com.github.djaler.evilbot.utils.userId
+import com.github.insanusmokrassar.TelegramBotAPI.types.User
+import com.github.insanusmokrassar.TelegramBotAPI.types.chat.abstracts.PublicChat
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.CommonMessageImpl
 import org.springframework.stereotype.Component
-import org.telegram.telegrambots.meta.api.objects.Message
-import org.telegram.telegrambots.meta.api.objects.User
 import kotlin.random.Random
 
 @Component
@@ -17,21 +17,22 @@ class KtoZloyHandler(
     private val userService: UserService,
     private val telegramClient: TelegramClient
 ) : CommandHandler(
-    botInfo.userName,
-    command = arrayOf("ktozloy"),
-    filter = Filters.PrivateChat.not()
+    botInfo,
+    command = arrayOf("ktozloy")
 ) {
-    override fun handleCommand(message: Message, args: List<String>) {
+    override fun handleCommand(message: CommonMessageImpl<*>, args: List<String>) {
+        val chat = message.chat as? PublicChat ?: return
+
         if (Random.nextInt(0, 10) == 0) {
             telegramClient.replyTextTo(message, "я злой ¯\\_(ツ)_/¯")
             return
         }
 
-        val (chat, _) = chatService.getOrCreateChatFrom(message.chat)
+        val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
 
-        val randomUser = userService.getLatest(chat, 10).random().user
+        val randomUser = userService.getLatest(chatEntity, 10).random().user
 
-        val username = if (randomUser.telegramId == message.from.id) "ты" else randomUser.username
+        val username = if (randomUser.telegramId == message.user.id.userId) "ты" else randomUser.username
 
         telegramClient.replyTextTo(message, "$username злой")
     }
