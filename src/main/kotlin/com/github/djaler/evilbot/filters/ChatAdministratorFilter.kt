@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 class ChatAdministratorFilter(
     private val telegramClient: TelegramClient
 ) : Filter {
-    override fun filter(message: Message): Boolean {
+    override suspend fun filter(message: Message): Boolean {
         if (message !is FromUserMessage) {
             return false
         }

@@ -31,7 +31,7 @@ class BlockStickerpackHandler(
     command = arrayOf("block_stickerpack"),
     filter = chatAdministratorFilter
 ) {
-    override fun handleCommand(message: CommonMessageImpl<*>, args: List<String>) {
+    override suspend fun handleCommand(message: CommonMessageImpl<*>, args: List<String>) {
         val chat = message.chat as? PublicChat ?: return
         val replyTo = message.replyTo as? ContentMessage<*> ?: return
         val stickerContent = replyTo.content as? StickerContent ?: return
@@ -70,7 +70,7 @@ class UnblockStickerpackHandler(
     command = arrayOf("unblock_stickerpack"),
     filter = chatAdministratorFilter
 ) {
-    override fun handleCommand(message: CommonMessageImpl<*>, args: List<String>) {
+    override suspend fun handleCommand(message: CommonMessageImpl<*>, args: List<String>) {
         val chat = message.chat as? PublicChat ?: return
 
         val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
@@ -114,7 +114,7 @@ class UnblockStickerpackCallbackHandler(
     private val telegramLinksHelper: TelegramLinksHelper,
     private val blockedStickerpackService: BlockedStickerpackService
 ) : CallbackQueryHandler() {
-    override fun handleCallback(query: MessageDataCallbackQuery, data: String) {
+    override suspend fun handleCallback(query: MessageDataCallbackQuery, data: String) {
         val message = query.message
 
         val stickerpack = blockedStickerpackService.getById(data.toInt())
@@ -146,7 +146,7 @@ class StickersWatchDog(
 ) : MessageHandler() {
     override val order = 0
 
-    override fun handleMessage(message: Message): Boolean {
+    override suspend fun handleMessage(message: Message): Boolean {
         if (message !is ContentMessage<*>) {
             return false
         }

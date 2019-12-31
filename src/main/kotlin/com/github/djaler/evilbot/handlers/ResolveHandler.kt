@@ -11,7 +11,7 @@ class ResolveHandler(
     private val telegramClient: TelegramClient,
     botInfo: User
 ) : CommandHandler(botInfo, command = arrayOf("r", "resolve")) {
-    override fun handleCommand(message: CommonMessageImpl<*>, args: List<String>) {
+    override suspend fun handleCommand(message: CommonMessageImpl<*>, args: List<String>) {
         val variants = args.joinToString(" ")
             .split(Regex(" */ *"))
             .distinct()

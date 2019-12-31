@@ -4,7 +4,7 @@ import com.github.insanusmokrassar.TelegramBotAPI.types.update.abstracts.Update
 
 
 interface UpdateHandler {
-    fun handleUpdate(update: Update): Boolean
+    suspend fun handleUpdate(update: Update): Boolean
 
     val order get() = 1
 }

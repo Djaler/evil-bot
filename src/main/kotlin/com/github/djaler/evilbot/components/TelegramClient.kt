@@ -22,153 +22,126 @@ import com.github.insanusmokrassar.TelegramBotAPI.types.buttons.InlineKeyboardMa
 import com.github.insanusmokrassar.TelegramBotAPI.types.chat.ChatPermissions
 import com.github.insanusmokrassar.TelegramBotAPI.types.chat.abstracts.extended.ExtendedChat
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
-import kotlinx.coroutines.runBlocking
 import org.springframework.stereotype.Component
 
 @Component
 class TelegramClient(
     private val requestsExecutor: RequestsExecutor
 ) {
-    fun replyTextTo(
+    suspend fun replyTextTo(
         message: Message,
         text: String,
         disableNotification: Boolean = false,
         enableMarkdown: Boolean = false
     ) {
-        runBlocking {
-            requestsExecutor.execute(
-                SendMessage(
-                    chatId = message.chat.id,
-                    text = text,
-                    replyToMessageId = message.messageId,
-                    disableNotification = disableNotification,
-                    parseMode = if (enableMarkdown) MarkdownParseMode else null
-                )
+        requestsExecutor.execute(
+            SendMessage(
+                chatId = message.chat.id,
+                text = text,
+                replyToMessageId = message.messageId,
+                disableNotification = disableNotification,
+                parseMode = if (enableMarkdown) MarkdownParseMode else null
             )
-        }
+        )
     }
 
-    fun replyStickerTo(message: Message, sticker: InputFile, disableNotification: Boolean = false) {
-        runBlocking {
-            requestsExecutor.execute(
-                SendSticker(
-                    chatId = message.chat.id,
-                    sticker = sticker,
-                    replyToMessageId = message.messageId,
-                    disableNotification = disableNotification
-                )
+    suspend fun replyStickerTo(message: Message, sticker: InputFile, disableNotification: Boolean = false) {
+        requestsExecutor.execute(
+            SendSticker(
+                chatId = message.chat.id,
+                sticker = sticker,
+                replyToMessageId = message.messageId,
+                disableNotification = disableNotification
             )
-        }
+        )
     }
 
-    fun sendTextTo(
+    suspend fun sendTextTo(
         chatId: ChatId,
         text: String,
         enableMarkdown: Boolean = false,
         keyboard: InlineKeyboardMarkup? = null
     ) {
-        runBlocking {
-            requestsExecutor.execute(
-                SendMessage(
-                    chatId = chatId,
-                    text = text,
-                    parseMode = if (enableMarkdown) MarkdownParseMode else null,
-                    replyMarkup = keyboard
-                )
+        requestsExecutor.execute(
+            SendMessage(
+                chatId = chatId,
+                text = text,
+                parseMode = if (enableMarkdown) MarkdownParseMode else null,
+                replyMarkup = keyboard
             )
-        }
+        )
     }
 
-    fun sendStickerTo(chatId: ChatId, sticker: InputFile) {
-        runBlocking {
-            requestsExecutor.execute(
-                SendSticker(chatId, sticker)
-            )
-        }
+    suspend fun sendStickerTo(chatId: ChatId, sticker: InputFile) {
+        requestsExecutor.execute(
+            SendSticker(chatId, sticker)
+        )
     }
 
-    fun changeText(
+    suspend fun changeText(
         message: Message,
         text: String,
         enableMarkdown: Boolean = false
     ) {
-        runBlocking {
-            requestsExecutor.execute(
-                EditChatMessageText(
-                    chatId = message.chat.id,
-                    messageId = message.messageId,
-                    text = text,
-                    parseMode = if (enableMarkdown) MarkdownParseMode else null
-                )
+        requestsExecutor.execute(
+            EditChatMessageText(
+                chatId = message.chat.id,
+                messageId = message.messageId,
+                text = text,
+                parseMode = if (enableMarkdown) MarkdownParseMode else null
             )
-        }
+        )
     }
 
-    fun getChatAdministrators(chatId: ChatId): List<ChatMember> {
-        return runBlocking {
-            requestsExecutor.execute(
-                GetChatAdministrators(chatId)
-            )
-        }
+    suspend fun getChatAdministrators(chatId: ChatId): List<ChatMember> {
+        return requestsExecutor.execute(
+            GetChatAdministrators(chatId)
+        )
     }
 
-    fun deleteMessage(message: Message) {
-        runBlocking {
-            requestsExecutor.execute(
-                DeleteMessage(message.chat.id, message.messageId)
-            )
-        }
+    suspend fun deleteMessage(message: Message) {
+        requestsExecutor.execute(
+            DeleteMessage(message.chat.id, message.messageId)
+        )
     }
 
-    fun getChatMember(chatId: ChatId, memberId: UserId): ChatMember {
-        return runBlocking {
-            requestsExecutor.execute(
-                GetChatMember(chatId, memberId)
-            )
-        }
+    suspend fun getChatMember(chatId: ChatId, memberId: UserId): ChatMember {
+        return requestsExecutor.execute(
+            GetChatMember(chatId, memberId)
+        )
     }
 
-    fun restrictChatMember(chatId: ChatId, memberId: UserId) {
-        runBlocking {
-            requestsExecutor.execute(
-                RestrictChatMember(chatId, memberId, permissions = ChatPermissions())
-            )
-        }
+    suspend fun restrictChatMember(chatId: ChatId, memberId: UserId) {
+        requestsExecutor.execute(
+            RestrictChatMember(chatId, memberId, permissions = ChatPermissions())
+        )
     }
 
-    fun restoreChatMemberPermissions(
+    suspend fun restoreChatMemberPermissions(
         chatId: ChatId,
         memberId: UserId,
         permissions: ChatPermissions = fullChatPermissions
     ) {
-        runBlocking {
-            requestsExecutor.execute(
-                RestrictChatMember(chatId, memberId, permissions = permissions)
-            )
-        }
+        requestsExecutor.execute(
+            RestrictChatMember(chatId, memberId, permissions = permissions)
+        )
     }
 
-    fun kickChatMember(chatId: ChatId, memberId: UserId) {
-        runBlocking {
-            requestsExecutor.execute(
-                KickChatMember(chatId, memberId)
-            )
-        }
+    suspend fun kickChatMember(chatId: ChatId, memberId: UserId) {
+        requestsExecutor.execute(
+            KickChatMember(chatId, memberId)
+        )
     }
 
-    fun answerCallbackQuery(query: CallbackQuery, text: String) {
-        runBlocking {
-            requestsExecutor.execute(
-                AnswerCallbackQuery(query.id, text)
-            )
-        }
+    suspend fun answerCallbackQuery(query: CallbackQuery, text: String) {
+        requestsExecutor.execute(
+            AnswerCallbackQuery(query.id, text)
+        )
     }
 
-    fun getChat(chatId: ChatId): ExtendedChat {
-        return runBlocking {
-            requestsExecutor.execute(
-                GetChat(chatId)
-            )
-        }
+    suspend fun getChat(chatId: ChatId): ExtendedChat {
+        return requestsExecutor.execute(
+            GetChat(chatId)
+        )
     }
 }

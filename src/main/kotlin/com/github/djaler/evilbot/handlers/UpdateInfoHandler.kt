@@ -18,7 +18,7 @@ class UpdateInfoHandler(
 ) : MessageHandler() {
     override val order = 0
 
-    override fun handleMessage(message: Message): Boolean {
+    override suspend fun handleMessage(message: Message): Boolean {
         if (message !is CommonMessageImpl<*>) {
             return false
         }
