@@ -13,7 +13,7 @@ abstract class CommandHandler(
     private val command: Array<String>,
     private val filter: Filter? = null
 ) : UpdateHandler {
-    override fun handleUpdate(update: Update): Boolean {
+    override suspend fun handleUpdate(update: Update): Boolean {
         if (update !is MessageUpdate) {
             return false
         }
@@ -43,5 +43,5 @@ abstract class CommandHandler(
         return true
     }
 
-    protected abstract fun handleCommand(message: CommonMessageImpl<*>, args: List<String>)
+    protected abstract suspend fun handleCommand(message: CommonMessageImpl<*>, args: List<String>)
 }

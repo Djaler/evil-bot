@@ -31,7 +31,7 @@ class SendCaptchaHandler(
         private val CAPTCHA_MESSAGES = arrayOf("Аниме - моя жизнь", "Я отдаю свою жизнь и честь Ночному Дозору")
     }
 
-    override fun handleMessage(message: Message): Boolean {
+    override suspend fun handleMessage(message: Message): Boolean {
         if (message !is ChatEventMessage) {
             return false
         }
@@ -98,7 +98,7 @@ class CaptchaCallbackHandler(
         private val ACCESS_RESTRICTED_MESSAGES = arrayOf("КУДА ЖМЁШЬ?!️! РУКУ УБРАЛ!", "У тебя здесь нет власти!")
     }
 
-    override fun handleCallback(query: MessageDataCallbackQuery, data: String) {
+    override suspend fun handleCallback(query: MessageDataCallbackQuery, data: String) {
         val user = query.user
 
         val (suspectId, permissions) = parseCallbackData(data)

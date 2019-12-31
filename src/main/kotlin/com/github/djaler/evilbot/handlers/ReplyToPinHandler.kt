@@ -13,7 +13,7 @@ class ReplyToPinHandler(
     private val telegramClient: TelegramClient,
     botInfo: User
 ) : CommandHandler(botInfo, command = arrayOf("pinned")) {
-    override fun handleCommand(message: CommonMessageImpl<*>, args: List<String>) {
+    override suspend fun handleCommand(message: CommonMessageImpl<*>, args: List<String>) {
         val chat = message.chat as? PublicChat ?: return
 
         val extendedChat = telegramClient.getChat(chat.id) as ExtendedPublicChat

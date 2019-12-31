@@ -19,7 +19,7 @@ class UpdateStatisticHandler(
     override val order = 0
 
     @Transactional
-    override fun handleMessage(message: Message): Boolean {
+    override suspend fun handleMessage(message: Message): Boolean {
         if (message !is CommonMessageImpl<*>) {
             return false
         }
@@ -44,7 +44,7 @@ class DisplayStatisticHandler(
     botInfo,
     command = arrayOf("statistic")
 ) {
-    override fun handleCommand(message: CommonMessageImpl<*>, args: List<String>) {
+    override suspend fun handleCommand(message: CommonMessageImpl<*>, args: List<String>) {
         val chat = message.chat as? PublicChat ?: return
 
         val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
@@ -80,7 +80,7 @@ class DisplayTop10Handler(
     botInfo,
     command = arrayOf("top10")
 ) {
-    override fun handleCommand(message: CommonMessageImpl<*>, args: List<String>) {
+    override suspend fun handleCommand(message: CommonMessageImpl<*>, args: List<String>) {
         val chat = message.chat as? PublicChat ?: return
 
         val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)

@@ -47,7 +47,7 @@ class ReactionHandler(
         reactions = loadedReactions
     }
 
-    override fun handleMessage(message: Message): Boolean {
+    override suspend fun handleMessage(message: Message): Boolean {
         if (message !is ContentMessage<*>) {
             return false
         }

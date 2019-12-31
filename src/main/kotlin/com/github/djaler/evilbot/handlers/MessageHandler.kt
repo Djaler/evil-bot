@@ -6,7 +6,7 @@ import com.github.insanusmokrassar.TelegramBotAPI.types.update.MessageUpdate
 import com.github.insanusmokrassar.TelegramBotAPI.types.update.abstracts.Update
 
 abstract class MessageHandler(private val filter: Filter? = null) : UpdateHandler {
-    override fun handleUpdate(update: Update): Boolean {
+    override suspend fun handleUpdate(update: Update): Boolean {
         if (update !is MessageUpdate) {
             return false
         }
@@ -18,5 +18,5 @@ abstract class MessageHandler(private val filter: Filter? = null) : UpdateHandle
         return handleMessage(update.data)
     }
 
-    abstract fun handleMessage(message: Message): Boolean
+    abstract suspend fun handleMessage(message: Message): Boolean
 }
