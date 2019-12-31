@@ -2,35 +2,40 @@ package com.github.djaler.evilbot.handlers
 
 import com.github.djaler.evilbot.components.CasClient
 import com.github.djaler.evilbot.components.TelegramClient
-import com.github.djaler.evilbot.filters.Filters
-import com.github.djaler.evilbot.filters.and
-import com.github.djaler.evilbot.filters.not
+import com.github.djaler.evilbot.utils.userId
 import com.github.djaler.evilbot.utils.usernameOrName
+import com.github.insanusmokrassar.TelegramBotAPI.types.chat.abstracts.PublicChat
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.ChatEvents.NewChatMembers
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.ChatEventMessage
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
 import org.springframework.stereotype.Component
-import org.telegram.telegrambots.meta.api.objects.Message
 
 @Component
 class CasCheckHandler(
     private val casClient: CasClient,
     private val telegramClient: TelegramClient
-) : MessageHandler(filter = Filters.PrivateChat.not() and Filters.NewChatMember) {
+) : MessageHandler() {
     override val order = 0
 
     override fun handleMessage(message: Message): Boolean {
-        val newMembers = message.newChatMembers
+        if (message !is ChatEventMessage) {
+            return false
+        }
+        val chat = message.chat as? PublicChat ?: return false
+        val newMembersEvent = message.chatEvent as? NewChatMembers ?: return false
 
         var anyBlocked = false
 
-        for (member in newMembers) {
-            if (member.bot) {
+        for (member in newMembersEvent.members) {
+            if (member.isBot) {
                 continue
             }
 
-            val casInfo = casClient.getCasInfo(member.id)
+            val casInfo = casClient.getCasInfo(member.id.userId)
 
             if (casInfo.result !== null) {
                 telegramClient.sendTextTo(
-                    message.chatId,
+                    chat.id,
                     "${member.usernameOrName}, пошёл нахер! Ты забанен в CAS за сообщение \"${casInfo.result.messages.random()}\""
                 )
                 telegramClient.kickChatMember(chat.id, member.id)

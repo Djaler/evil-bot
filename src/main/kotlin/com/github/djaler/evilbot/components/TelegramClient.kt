@@ -1,21 +1,33 @@
 package com.github.djaler.evilbot.components
 
-import com.github.djaler.evilbot.utils.createChatPermissions
 import com.github.djaler.evilbot.utils.fullChatPermissions
+import com.github.insanusmokrassar.TelegramBotAPI.bot.RequestsExecutor
+import com.github.insanusmokrassar.TelegramBotAPI.requests.DeleteMessage
+import com.github.insanusmokrassar.TelegramBotAPI.requests.abstracts.InputFile
+import com.github.insanusmokrassar.TelegramBotAPI.requests.answers.AnswerCallbackQuery
+import com.github.insanusmokrassar.TelegramBotAPI.requests.chat.get.GetChat
+import com.github.insanusmokrassar.TelegramBotAPI.requests.chat.get.GetChatAdministrators
+import com.github.insanusmokrassar.TelegramBotAPI.requests.chat.members.GetChatMember
+import com.github.insanusmokrassar.TelegramBotAPI.requests.chat.members.KickChatMember
+import com.github.insanusmokrassar.TelegramBotAPI.requests.chat.members.RestrictChatMember
+import com.github.insanusmokrassar.TelegramBotAPI.requests.edit.text.EditChatMessageText
+import com.github.insanusmokrassar.TelegramBotAPI.requests.send.SendMessage
+import com.github.insanusmokrassar.TelegramBotAPI.requests.send.media.SendSticker
+import com.github.insanusmokrassar.TelegramBotAPI.types.CallbackQuery.CallbackQuery
+import com.github.insanusmokrassar.TelegramBotAPI.types.ChatId
+import com.github.insanusmokrassar.TelegramBotAPI.types.ChatMember.abstracts.ChatMember
+import com.github.insanusmokrassar.TelegramBotAPI.types.ParseMode.MarkdownParseMode
+import com.github.insanusmokrassar.TelegramBotAPI.types.UserId
+import com.github.insanusmokrassar.TelegramBotAPI.types.buttons.InlineKeyboardMarkup
+import com.github.insanusmokrassar.TelegramBotAPI.types.chat.ChatPermissions
+import com.github.insanusmokrassar.TelegramBotAPI.types.chat.abstracts.extended.ExtendedChat
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
+import kotlinx.coroutines.runBlocking
 import org.springframework.stereotype.Component
-import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery
-import org.telegram.telegrambots.meta.api.methods.groupadministration.*
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage
-import org.telegram.telegrambots.meta.api.methods.send.SendSticker
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText
-import org.telegram.telegrambots.meta.api.objects.*
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup
-import org.telegram.telegrambots.meta.bots.AbsSender
 
 @Component
 class TelegramClient(
-    private val sender: AbsSender
+    private val requestsExecutor: RequestsExecutor
 ) {
     fun replyTextTo(
         message: Message,
@@ -23,59 +35,56 @@ class TelegramClient(
         disableNotification: Boolean = false,
         enableMarkdown: Boolean = false
     ) {
-        sender.execute(
-            SendMessage(message.chatId, text)
-                .apply {
-                    replyToMessageId = message.messageId
-
-                    if (disableNotification) {
-                        disableNotification()
-                    }
-
-                    if (enableMarkdown) {
-                        enableMarkdown(true)
-                    }
-                }
-        )
+        runBlocking {
+            requestsExecutor.execute(
+                SendMessage(
+                    chatId = message.chat.id,
+                    text = text,
+                    replyToMessageId = message.messageId,
+                    disableNotification = disableNotification,
+                    parseMode = if (enableMarkdown) MarkdownParseMode else null
+                )
+            )
+        }
     }
 
-    fun replyStickerTo(message: Message, sticker: String, disableNotification: Boolean = false) {
-        sender.execute(
-            SendSticker()
-                .apply {
-                    setChatId(message.chatId)
-                    setSticker(sticker)
-
-                    replyToMessageId = message.messageId
-
-                    if (disableNotification) {
-                        disableNotification()
-                    }
-                }
-        )
+    fun replyStickerTo(message: Message, sticker: InputFile, disableNotification: Boolean = false) {
+        runBlocking {
+            requestsExecutor.execute(
+                SendSticker(
+                    chatId = message.chat.id,
+                    sticker = sticker,
+                    replyToMessageId = message.messageId,
+                    disableNotification = disableNotification
+                )
+            )
+        }
     }
 
     fun sendTextTo(
-        chatId: Long,
+        chatId: ChatId,
         text: String,
         enableMarkdown: Boolean = false,
         keyboard: InlineKeyboardMarkup? = null
     ) {
-        sender.execute(SendMessage(chatId, text).apply {
-            if (enableMarkdown) {
-                enableMarkdown(true)
-            }
-            if (keyboard != null) {
-                replyMarkup = keyboard
-            }
-        })
+        runBlocking {
+            requestsExecutor.execute(
+                SendMessage(
+                    chatId = chatId,
+                    text = text,
+                    parseMode = if (enableMarkdown) MarkdownParseMode else null,
+                    replyMarkup = keyboard
+                )
+            )
+        }
     }
 
-    fun sendStickerTo(chatId: Long, sticker: String) {
-        sender.execute(SendSticker().apply {
-            setChatId(chatId)
-            setSticker(sticker)
-        })
+    fun sendStickerTo(chatId: ChatId, sticker: InputFile) {
+        runBlocking {
+            requestsExecutor.execute(
+                SendSticker(chatId, sticker)
+            )
+        }
     }
 
     fun changeText(
@@ -83,73 +92,83 @@ class TelegramClient(
         text: String,
         enableMarkdown: Boolean = false
     ) {
-        sender.execute(EditMessageText().apply {
-            setChatId(message.chatId)
-            messageId = message.messageId
-            setText(text)
-
-            if (enableMarkdown) {
-                enableMarkdown(true)
-            }
-        })
+        runBlocking {
+            requestsExecutor.execute(
+                EditChatMessageText(
+                    chatId = message.chat.id,
+                    messageId = message.messageId,
+                    text = text,
+                    parseMode = if (enableMarkdown) MarkdownParseMode else null
+                )
+            )
+        }
     }
 
-    fun getChatAdministrators(chatId: Long): List<ChatMember> {
-        return sender.execute(GetChatAdministrators().apply {
-            setChatId(chatId)
-        })
+    fun getChatAdministrators(chatId: ChatId): List<ChatMember> {
+        return runBlocking {
+            requestsExecutor.execute(
+                GetChatAdministrators(chatId)
+            )
+        }
     }
 
     fun deleteMessage(message: Message) {
-        sender.execute(DeleteMessage(message.chatId, message.messageId))
+        runBlocking {
+            requestsExecutor.execute(
+                DeleteMessage(message.chat.id, message.messageId)
+            )
+        }
     }
 
-    fun getChatMember(chatId: Long, memberId: Int): ChatMember {
-        return sender.execute(GetChatMember().apply {
-            setChatId(chatId)
-            userId = memberId
-        })
+    fun getChatMember(chatId: ChatId, memberId: UserId): ChatMember {
+        return runBlocking {
+            requestsExecutor.execute(
+                GetChatMember(chatId, memberId)
+            )
+        }
     }
 
-    fun getChatMemberPermissions(chatId: Long, memberId: Int): ChatPermissions {
-        val member = getChatMember(chatId, memberId)
-
-        return createChatPermissions(
-            canSendMessages = member.canSendMessages ?: true,
-            canSendMediaMessages = member.canSendMediaMessages ?: true,
-            canSendPolls = member.canSendPolls ?: true,
-            canSendOtherMessages = member.canSendOtherMessages ?: true,
-            canAddWebPagePreviews = member.canAddWebPagePreviews ?: true,
-            canChangeInfo = member.canChangeInformation ?: true,
-            canInviteUsers = member.canInviteUsers ?: true,
-            canPinMessages = member.canPinMessages ?: true
-        )
+    fun restrictChatMember(chatId: ChatId, memberId: UserId) {
+        runBlocking {
+            requestsExecutor.execute(
+                RestrictChatMember(chatId, memberId, permissions = ChatPermissions())
+            )
+        }
     }
 
-    fun restrictChatMember(chatId: Long, memberId: Int) {
-        sender.execute(RestrictChatMember(chatId, memberId).apply {
-            permissions = ChatPermissions()
-        })
+    fun restoreChatMemberPermissions(
+        chatId: ChatId,
+        memberId: UserId,
+        permissions: ChatPermissions = fullChatPermissions
+    ) {
+        runBlocking {
+            requestsExecutor.execute(
+                RestrictChatMember(chatId, memberId, permissions = permissions)
+            )
+        }
     }
 
-    fun restoreChatMemberPermissions(chatId: Long, memberId: Int, permissions: ChatPermissions = fullChatPermissions) {
-        sender.execute(RestrictChatMember(chatId, memberId).apply {
-            setPermissions(permissions)
-        })
-    }
-
-    fun kickChatMember(chatId: Long, memberId: Int) {
-        sender.execute(KickChatMember(chatId, memberId))
+    fun kickChatMember(chatId: ChatId, memberId: UserId) {
+        runBlocking {
+            requestsExecutor.execute(
+                KickChatMember(chatId, memberId)
+            )
+        }
     }
 
     fun answerCallbackQuery(query: CallbackQuery, text: String) {
-        sender.execute(AnswerCallbackQuery().apply {
-            callbackQueryId = query.id
-            setText(text)
-        })
+        runBlocking {
+            requestsExecutor.execute(
+                AnswerCallbackQuery(query.id, text)
+            )
+        }
     }
 
-    fun getChat(chatId: Long): Chat {
-        return sender.execute(GetChat(chatId))
+    fun getChat(chatId: ChatId): ExtendedChat {
+        return runBlocking {
+            requestsExecutor.execute(
+                GetChat(chatId)
+            )
+        }
     }
 }

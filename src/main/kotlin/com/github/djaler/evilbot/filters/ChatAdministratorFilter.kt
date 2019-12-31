@@ -1,16 +1,21 @@
 package com.github.djaler.evilbot.filters
 
 import com.github.djaler.evilbot.components.TelegramClient
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.FromUserMessage
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
 import org.springframework.stereotype.Component
-import org.telegram.telegrambots.meta.api.objects.Message
 
 @Component
 class ChatAdministratorFilter(
     private val telegramClient: TelegramClient
 ) : Filter {
     override fun filter(message: Message): Boolean {
-        val chatAdministrators = telegramClient.getChatAdministrators(message.chatId)
+        if (message !is FromUserMessage) {
+            return false
+        }
 
-        return chatAdministrators.any { it.user.id == message.from.id }
+        val chatAdministrators = telegramClient.getChatAdministrators(message.chat.id)
+
+        return chatAdministrators.any { it.user.id == message.user.id }
     }
 }

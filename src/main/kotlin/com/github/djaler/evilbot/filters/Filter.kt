@@ -1,6 +1,6 @@
 package com.github.djaler.evilbot.filters
 
-import org.telegram.telegrambots.meta.api.objects.Message
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
 
 interface Filter {
     fun filter(message: Message): Boolean

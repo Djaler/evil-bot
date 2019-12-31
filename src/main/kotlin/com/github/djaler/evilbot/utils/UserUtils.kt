@@ -1,15 +1,15 @@
 package com.github.djaler.evilbot.utils
 
-import org.telegram.telegrambots.meta.api.objects.User
+import com.github.insanusmokrassar.TelegramBotAPI.types.User
+import com.github.insanusmokrassar.TelegramBotAPI.types.UserId
+
 
 val User.usernameOrName: String
     get() {
-        if (userName != null) {
-            return userName
-        }
-        if (lastName != null) {
-            return "$firstName $lastName"
-        }
+        username?.run { return username.trimStart('@') }
 
-        return firstName
+        return "$firstName $lastName".trim()
     }
+
+val UserId.userId: Int
+    get() = chatId.toInt()

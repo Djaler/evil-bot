@@ -1,8 +1,8 @@
 package com.github.djaler.evilbot.utils
 
-import org.telegram.telegrambots.meta.api.objects.ChatPermissions
+import com.github.insanusmokrassar.TelegramBotAPI.types.chat.ChatPermissions
 
-val fullChatPermissions = createChatPermissions(
+val fullChatPermissions = ChatPermissions(
     canSendMessages = true,
     canSendMediaMessages = true,
     canSendPolls = true,
@@ -13,32 +13,13 @@ val fullChatPermissions = createChatPermissions(
     canPinMessages = true
 )
 
-fun createChatPermissions(
-    canSendMessages: Boolean,
-    canSendMediaMessages: Boolean,
-    canSendPolls: Boolean,
-    canSendOtherMessages: Boolean,
-    canAddWebPagePreviews: Boolean,
-    canChangeInfo: Boolean,
-    canInviteUsers: Boolean,
-    canPinMessages: Boolean
-): ChatPermissions {
-    return ChatPermissions().apply {
-        setCanSendMessages(canSendMessages)
-        setGetCanSendMediaMessages(canSendMediaMessages)
-        setCanSendPolls(canSendPolls)
-        setCanSendOtherMessages(canSendOtherMessages)
-        setCanAddWebPagePreviews(canAddWebPagePreviews)
-        setCanChangeInfo(canChangeInfo)
-        setCanInviteUsers(canInviteUsers)
-        setCanPinMessages(canPinMessages)
+fun ChatPermissions?.encode(): String {
+    if (this === null) {
+        return ""
     }
-}
-
-fun ChatPermissions.encode(): String {
     return listOf(
         canSendMessages,
-        getCanSendMediaMessages,
+        canSendMediaMessages,
         canSendPolls,
         canSendOtherMessages,
         canAddWebPagePreviews,
@@ -48,10 +29,14 @@ fun ChatPermissions.encode(): String {
     ).joinToString(separator = "") { it.asSymbol().toString() }
 }
 
-fun decodeChatPermission(value: String): ChatPermissions {
+fun decodeChatPermission(value: String): ChatPermissions? {
+    if (value.isEmpty()) {
+        return null
+    }
+
     val chars = value.toCharArray()
 
-    return createChatPermissions(
+    return ChatPermissions(
         canSendMessages = getBooleanFromSymbol(chars[0]),
         canSendMediaMessages = getBooleanFromSymbol(chars[1]),
         canSendPolls = getBooleanFromSymbol(chars[2]),
@@ -66,17 +51,3 @@ fun decodeChatPermission(value: String): ChatPermissions {
 private fun Boolean?.asSymbol() = if (this == true) '+' else '-'
 
 private fun getBooleanFromSymbol(symbol: Char) = symbol == '+'
-
-fun ChatPermissions.lessThan(other: ChatPermissions): Boolean {
-    return (canSendMessages.isNullOrFalse() && other.canSendMessages.isTrue())
-            || (getCanSendMediaMessages.isNullOrFalse() && other.getCanSendMediaMessages.isTrue())
-            || (canSendPolls.isNullOrFalse() && other.canSendPolls.isTrue())
-            || (canSendOtherMessages.isNullOrFalse() && other.canSendOtherMessages.isTrue())
-            || (canAddWebPagePreviews.isNullOrFalse() && other.canAddWebPagePreviews.isTrue())
-            || (canChangeInfo.isNullOrFalse() && other.canChangeInfo.isTrue())
-            || (canInviteUsers.isNullOrFalse() && other.canInviteUsers.isTrue())
-            || (canPinMessages.isNullOrFalse() && other.canPinMessages.isTrue())
-}
-
-private fun Boolean?.isNullOrFalse() = this === null || this == false
-private fun Boolean?.isTrue() = this == true

@@ -6,7 +6,9 @@ import com.github.djaler.evilbot.entity.UserChatStatistic
 import com.github.djaler.evilbot.model.GetOrCreateResult
 import com.github.djaler.evilbot.repository.UserRepository
 import com.github.djaler.evilbot.repository.UserStatisticRepository
+import com.github.djaler.evilbot.utils.userId
 import com.github.djaler.evilbot.utils.usernameOrName
+import com.github.insanusmokrassar.TelegramBotAPI.types.UserId
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -17,18 +19,21 @@ class UserService(
     private val userStatisticRepository: UserStatisticRepository
 ) {
     @Transactional
-    fun getOrCreateUserFrom(telegramUser: org.telegram.telegrambots.meta.api.objects.User): GetOrCreateResult<User> {
-        val user = userRepository.findByTelegramId(telegramUser.id)
+    fun getOrCreateUserFrom(telegramUser: com.github.insanusmokrassar.TelegramBotAPI.types.User): GetOrCreateResult<User> {
+        val user = userRepository.findByTelegramId(telegramUser.id.userId)
 
         return if (user != null) {
             GetOrCreateResult(user, false)
         } else {
-            GetOrCreateResult(userRepository.save(User(telegramUser.usernameOrName, telegramUser.id)), true)
+            GetOrCreateResult(
+                userRepository.save(User(telegramUser.usernameOrName, telegramUser.id.userId)),
+                true
+            )
         }
     }
 
-    fun getUser(userId: Int): User? {
-        return userRepository.findByTelegramId(userId)
+    fun getUser(userId: UserId): User? {
+        return userRepository.findByTelegramId(userId.userId)
     }
 
     fun updateUsername(user: User, actualUsername: String) {

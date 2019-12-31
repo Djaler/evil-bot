@@ -1,9 +1,10 @@
 package com.github.djaler.evilbot.filters
 
 import com.github.djaler.evilbot.components.TelegramClient
+import com.github.insanusmokrassar.TelegramBotAPI.types.ChatMember.abstracts.AdministratorChatMember
+import com.github.insanusmokrassar.TelegramBotAPI.types.User
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
 import org.springframework.stereotype.Component
-import org.telegram.telegrambots.meta.api.objects.Message
-import org.telegram.telegrambots.meta.api.objects.User
 
 @Component
 class CanRestrictMemberFilter(
@@ -11,8 +12,12 @@ class CanRestrictMemberFilter(
     private val botInfo: User
 ) : Filter {
     override fun filter(message: Message): Boolean {
-        val botChatInfo = telegramClient.getChatMember(message.chatId, botInfo.id)
+        val botChatInfo = telegramClient.getChatMember(message.chat.id, botInfo.id)
 
-        return botChatInfo.canRestrictMembers ?: false
+        if (botChatInfo !is AdministratorChatMember) {
+            return false
+        }
+
+        return botChatInfo.canRestrictMembers
     }
 }
