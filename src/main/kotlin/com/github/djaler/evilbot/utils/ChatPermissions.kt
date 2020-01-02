@@ -23,45 +23,16 @@ fun createChatPermissions(
     canInviteUsers: Boolean,
     canPinMessages: Boolean
 ): ChatPermissions {
-    val permissions = ChatPermissions()
-
-    // ugly workaround of https://github.com/rubenlagus/TelegramBots/issues/646
-    with(ChatPermissions::class.java) {
-        with(getDeclaredField("canSendMessages")) {
-            isAccessible = true
-            set(permissions, canSendMessages)
-        }
-        with(getDeclaredField("getCanSendMediaMessages")) {
-            isAccessible = true
-            set(permissions, canSendMediaMessages)
-        }
-        with(getDeclaredField("canSendPolls")) {
-            isAccessible = true
-            set(permissions, canSendPolls)
-        }
-        with(getDeclaredField("canSendOtherMessages")) {
-            isAccessible = true
-            set(permissions, canSendOtherMessages)
-        }
-        with(getDeclaredField("canAddWebPagePreviews")) {
-            isAccessible = true
-            set(permissions, canAddWebPagePreviews)
-        }
-        with(getDeclaredField("canChangeInfo")) {
-            isAccessible = true
-            set(permissions, canChangeInfo)
-        }
-        with(getDeclaredField("canInviteUsers")) {
-            isAccessible = true
-            set(permissions, canInviteUsers)
-        }
-        with(getDeclaredField("canPinMessages")) {
-            isAccessible = true
-            set(permissions, canPinMessages)
-        }
+    return ChatPermissions().apply {
+        setCanSendMessages(canSendMessages)
+        setGetCanSendMediaMessages(canSendMediaMessages)
+        setCanSendPolls(canSendPolls)
+        setCanSendOtherMessages(canSendOtherMessages)
+        setCanAddWebPagePreviews(canAddWebPagePreviews)
+        setCanChangeInfo(canChangeInfo)
+        setCanInviteUsers(canInviteUsers)
+        setCanPinMessages(canPinMessages)
     }
-
-    return permissions
 }
 
 fun ChatPermissions.encode(): String {

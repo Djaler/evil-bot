@@ -1,14 +1,10 @@
 package com.github.djaler.evilbot.components
 
-import com.github.djaler.evilbot.api.GetChatMember
 import com.github.djaler.evilbot.utils.createChatPermissions
 import com.github.djaler.evilbot.utils.fullChatPermissions
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery
-import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChat
-import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatAdministrators
-import org.telegram.telegrambots.meta.api.methods.groupadministration.KickChatMember
-import org.telegram.telegrambots.meta.api.methods.groupadministration.RestrictChatMember
+import org.telegram.telegrambots.meta.api.methods.groupadministration.*
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.methods.send.SendSticker
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
@@ -108,8 +104,7 @@ class TelegramClient(
         sender.execute(DeleteMessage(message.chatId, message.messageId))
     }
 
-    // https://github.com/rubenlagus/TelegramBots/pull/699
-    fun getChatMember(chatId: Long, memberId: Int): com.github.djaler.evilbot.api.ChatMember {
+    fun getChatMember(chatId: Long, memberId: Int): ChatMember {
         return sender.execute(GetChatMember().apply {
             setChatId(chatId)
             userId = memberId
