@@ -18,5 +18,5 @@ abstract class MessageHandler(private val filter: Filter? = null) : UpdateHandle
         return handleMessage(update.data)
     }
 
-    abstract suspend fun handleMessage(message: Message): Boolean
+    protected abstract suspend fun handleMessage(message: Message): Boolean
 }
