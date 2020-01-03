@@ -4,18 +4,14 @@ import com.github.djaler.evilbot.filters.Filter
 import com.github.insanusmokrassar.TelegramBotAPI.types.MessageEntity.BotCommandMessageEntity
 import com.github.insanusmokrassar.TelegramBotAPI.types.User
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.CommonMessageImpl
-import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.TextContent
 
 abstract class CommandHandler(
     private val botInfo: User,
     private val command: Array<String>,
     private val filter: Filter? = null
-) : MessageHandler(filter) {
-    override suspend fun handleMessage(message: Message): Boolean {
-        if (message !is CommonMessageImpl<*>) {
-            return false
-        }
+) : CommonMessageHandler(filter) {
+    override suspend fun handleMessage(message: CommonMessageImpl<*>): Boolean {
         val content = message.content as? TextContent ?: return false
 
         if (content.entities.none { it.offset == 0 && it is BotCommandMessageEntity }) {

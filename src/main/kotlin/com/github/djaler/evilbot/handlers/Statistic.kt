@@ -7,7 +7,6 @@ import com.github.djaler.evilbot.utils.getForm
 import com.github.insanusmokrassar.TelegramBotAPI.types.User
 import com.github.insanusmokrassar.TelegramBotAPI.types.chat.abstracts.PublicChat
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.CommonMessageImpl
-import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
@@ -15,14 +14,11 @@ import org.springframework.transaction.annotation.Transactional
 class UpdateStatisticHandler(
     private val chatService: ChatService,
     private val userService: UserService
-) : MessageHandler() {
+) : CommonMessageHandler() {
     override val order = 0
 
     @Transactional
-    override suspend fun handleMessage(message: Message): Boolean {
-        if (message !is CommonMessageImpl<*>) {
-            return false
-        }
+    override suspend fun handleMessage(message: CommonMessageImpl<*>): Boolean {
         val chat = message.chat as? PublicChat ?: return false
 
         val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)

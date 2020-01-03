@@ -5,7 +5,6 @@ import com.github.djaler.evilbot.service.UserService
 import com.github.djaler.evilbot.utils.usernameOrName
 import com.github.insanusmokrassar.TelegramBotAPI.types.chat.abstracts.PublicChat
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.CommonMessageImpl
-import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
 import io.sentry.SentryClient
 import io.sentry.event.UserBuilder
 import org.springframework.stereotype.Component
@@ -15,13 +14,10 @@ class UpdateInfoHandler(
     private val userService: UserService,
     private val chatService: ChatService,
     private val sentryClient: SentryClient
-) : MessageHandler() {
+) : CommonMessageHandler() {
     override val order = 0
 
-    override suspend fun handleMessage(message: Message): Boolean {
-        if (message !is CommonMessageImpl<*>) {
-            return false
-        }
+    override suspend fun handleMessage(message: CommonMessageImpl<*>): Boolean {
         val chat = message.chat as? PublicChat ?: return false
         val fromUser = message.user
 
