@@ -1,11 +1,11 @@
 package com.github.djaler.evilbot.handlers
 
 import com.github.djaler.evilbot.components.TelegramClient
-import com.github.djaler.evilbot.components.TelegramLinksHelper
 import com.github.djaler.evilbot.filters.ChatAdministratorFilter
 import com.github.djaler.evilbot.service.BlockedStickerpackService
 import com.github.djaler.evilbot.service.ChatService
 import com.github.djaler.evilbot.utils.createCallbackDataForHandler
+import com.github.djaler.evilbot.utils.createStickerpackLink
 import com.github.insanusmokrassar.TelegramBotAPI.types.CallbackQuery.MessageDataCallbackQuery
 import com.github.insanusmokrassar.TelegramBotAPI.types.User
 import com.github.insanusmokrassar.TelegramBotAPI.types.buttons.InlineKeyboardButtons.CallbackDataInlineKeyboardButton
@@ -22,7 +22,6 @@ import org.springframework.stereotype.Component
 class BlockStickerpackHandler(
     botInfo: User,
     private val telegramClient: TelegramClient,
-    private val telegramLinksHelper: TelegramLinksHelper,
     private val chatService: ChatService,
     private val blockedStickerpackService: BlockedStickerpackService,
     chatAdministratorFilter: ChatAdministratorFilter
@@ -49,7 +48,7 @@ class BlockStickerpackHandler(
             chatEntity.id
         )
 
-        val packLink = telegramLinksHelper.createStickerpackLink(stickerpack.name)
+        val packLink = createStickerpackLink(stickerpack.name)
         val responseText =
             if (created) "Стикерпак $packLink успешно *заблокирован*!" else "Стикерпак $packLink *уже заблокирован*"
 
@@ -61,7 +60,6 @@ class BlockStickerpackHandler(
 class UnblockStickerpackHandler(
     botInfo: User,
     private val telegramClient: TelegramClient,
-    private val telegramLinksHelper: TelegramLinksHelper,
     private val chatService: ChatService,
     private val blockedStickerpackService: BlockedStickerpackService,
     chatAdministratorFilter: ChatAdministratorFilter
@@ -85,7 +83,7 @@ class UnblockStickerpackHandler(
         val buttons = arrayListOf<InlineKeyboardButton>()
 
         for ((index, stickerpack) in blockedStickerpacks.withIndex()) {
-            packsLinks.add("${index + 1}. ${telegramLinksHelper.createStickerpackLink(stickerpack.name)}")
+            packsLinks.add("${index + 1}. ${createStickerpackLink(stickerpack.name)}")
             buttons.add(
                 CallbackDataInlineKeyboardButton(
                     (index + 1).toString(),
@@ -111,7 +109,6 @@ class UnblockStickerpackHandler(
 @Component
 class UnblockStickerpackCallbackHandler(
     private val telegramClient: TelegramClient,
-    private val telegramLinksHelper: TelegramLinksHelper,
     private val blockedStickerpackService: BlockedStickerpackService
 ) : CallbackQueryHandler() {
     override suspend fun handleCallback(query: MessageDataCallbackQuery, data: String) {
@@ -129,7 +126,7 @@ class UnblockStickerpackCallbackHandler(
 
         blockedStickerpackService.unblock(stickerpack)
 
-        val packLink = telegramLinksHelper.createStickerpackLink(stickerpack.name)
+        val packLink = createStickerpackLink(stickerpack.name)
         telegramClient.changeText(
             message,
             "Стикерпак $packLink успешно *разблокирован*.",
