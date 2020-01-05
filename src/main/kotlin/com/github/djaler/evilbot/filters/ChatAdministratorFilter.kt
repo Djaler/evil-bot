@@ -1,6 +1,7 @@
 package com.github.djaler.evilbot.filters
 
 import com.github.djaler.evilbot.components.TelegramClient
+import com.github.insanusmokrassar.TelegramBotAPI.types.chat.abstracts.PublicChat
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.FromUserMessage
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
 import org.springframework.stereotype.Component
@@ -14,7 +15,9 @@ class ChatAdministratorFilter(
             return false
         }
 
-        val chatAdministrators = telegramClient.getChatAdministrators(message.chat.id)
+        val chat = message.chat as? PublicChat ?: return false
+
+        val chatAdministrators = telegramClient.getChatAdministrators(chat.id)
 
         return chatAdministrators.any { it.user.id == message.user.id }
     }
