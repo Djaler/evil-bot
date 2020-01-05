@@ -1,6 +1,7 @@
 package com.github.djaler.evilbot.filters
 
 import com.github.djaler.evilbot.components.TelegramClient
+import com.github.insanusmokrassar.TelegramBotAPI.types.ChatMember.abstracts.AdministratorChatMember
 import com.github.insanusmokrassar.TelegramBotAPI.types.chat.abstracts.PublicChat
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.FromUserMessage
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
@@ -16,9 +17,8 @@ class ChatAdministratorFilter(
         }
 
         val chat = message.chat as? PublicChat ?: return false
+        val memberInfo = telegramClient.getChatMember(chat.id, message.user.id)
 
-        val chatAdministrators = telegramClient.getChatAdministrators(chat.id)
-
-        return chatAdministrators.any { it.user.id == message.user.id }
+        return memberInfo is AdministratorChatMember
     }
 }
