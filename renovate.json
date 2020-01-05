@@ -4,5 +4,21 @@
   ],
   "gradle": {
     "enabled": true
-  }
+  },
+  "packageRules": [
+    {
+      "packagePatterns": [
+        "*"
+      ],
+      "semanticCommitType": "deps",
+      "semanticCommitScope": null
+    },
+    {
+      "packagePatterns": [
+        "gradle"
+      ],
+      "semanticCommitType": "build",
+      "semanticCommitScope": "deps"
+    }
+  ]
 }
