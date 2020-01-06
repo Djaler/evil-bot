@@ -25,6 +25,7 @@ import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Messag
 import org.springframework.stereotype.Component
 
 @Component
+@RecordBreadcrumb
 class TelegramClient(
     private val requestsExecutor: RequestsExecutor
 ) {
