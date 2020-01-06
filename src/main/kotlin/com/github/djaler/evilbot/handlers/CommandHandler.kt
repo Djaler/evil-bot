@@ -8,9 +8,9 @@ import com.github.insanusmokrassar.TelegramBotAPI.types.message.CommonMessageImp
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.TextContent
 
 abstract class CommandHandler(
-    private val botInfo: User,
-    private val command: Array<String>,
-    private val filter: Filter? = null
+    botInfo: User,
+    command: Array<String>,
+    filter: Filter? = null
 ) : CommonMessageHandler(
     CommandFilter(command, botInfo).let { if (filter === null) it else it and filter }
 ) {
