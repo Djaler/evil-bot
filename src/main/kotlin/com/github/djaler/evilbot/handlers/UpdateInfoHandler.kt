@@ -4,7 +4,8 @@ import com.github.djaler.evilbot.service.ChatService
 import com.github.djaler.evilbot.service.UserService
 import com.github.djaler.evilbot.utils.usernameOrName
 import com.github.insanusmokrassar.TelegramBotAPI.types.chat.abstracts.PublicChat
-import com.github.insanusmokrassar.TelegramBotAPI.types.message.CommonMessageImpl
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.FromUserMessage
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
 import io.sentry.SentryClient
 import io.sentry.event.UserBuilder
 import org.springframework.stereotype.Component
@@ -14,35 +15,42 @@ class UpdateInfoHandler(
     private val userService: UserService,
     private val chatService: ChatService,
     private val sentryClient: SentryClient
-) : CommonMessageHandler() {
+) : MessageHandler() {
     override val order = 0
 
-    override suspend fun handleMessage(message: CommonMessageImpl<*>): Boolean {
-        val chat = message.chat as? PublicChat ?: return false
-        val fromUser = message.user
+    override suspend fun handleMessage(message: Message): Boolean {
+        val userBuilder = UserBuilder()
 
-        sentryClient.context.user = UserBuilder()
-            .setId(fromUser.id.toString())
-            .setUsername(fromUser.usernameOrName)
-            .withData("chatTitle", chat.title)
-            .withData("chatId", chat.id)
-            .build()
+        if (message is FromUserMessage) {
+            userBuilder
+                .setId(message.user.id.toString())
+                .setUsername(message.user.usernameOrName)
 
-        userService.getUser(fromUser.id)?.let {
-            val actualUsername = fromUser.usernameOrName
+            userService.getUser(message.user.id)?.let {
+                val actualUsername = message.user.usernameOrName
 
-            if (it.username != actualUsername) {
-                userService.updateUsername(it, actualUsername)
+                if (it.username != actualUsername) {
+                    userService.updateUsername(it, actualUsername)
+                }
             }
         }
 
-        chatService.getChat(chat.id)?.let {
-            val actualTitle = chat.title
+        val chat = message.chat
+        if (chat is PublicChat) {
+            userBuilder
+                .withData("chatTitle", chat.title)
+                .withData("chatId", chat.id)
 
-            if (it.title != actualTitle) {
-                chatService.updateTitle(it, actualTitle)
+            chatService.getChat(chat.id)?.let {
+                val actualTitle = chat.title
+
+                if (it.title != actualTitle) {
+                    chatService.updateTitle(it, actualTitle)
+                }
             }
         }
+
+        sentryClient.context.user = userBuilder.build()
 
         return false
     }
