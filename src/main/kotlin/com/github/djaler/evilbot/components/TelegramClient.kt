@@ -16,7 +16,7 @@ import com.github.insanusmokrassar.TelegramBotAPI.requests.send.media.SendSticke
 import com.github.insanusmokrassar.TelegramBotAPI.types.CallbackQuery.CallbackQuery
 import com.github.insanusmokrassar.TelegramBotAPI.types.ChatId
 import com.github.insanusmokrassar.TelegramBotAPI.types.ChatMember.abstracts.ChatMember
-import com.github.insanusmokrassar.TelegramBotAPI.types.ParseMode.MarkdownParseMode
+import com.github.insanusmokrassar.TelegramBotAPI.types.ParseMode.MarkdownV2
 import com.github.insanusmokrassar.TelegramBotAPI.types.UserId
 import com.github.insanusmokrassar.TelegramBotAPI.types.buttons.InlineKeyboardMarkup
 import com.github.insanusmokrassar.TelegramBotAPI.types.chat.ChatPermissions
@@ -41,7 +41,7 @@ class TelegramClient(
                 text = text,
                 replyToMessageId = message.messageId,
                 disableNotification = disableNotification,
-                parseMode = if (enableMarkdown) MarkdownParseMode else null
+                parseMode = if (enableMarkdown) MarkdownV2 else null
             )
         )
     }
@@ -67,7 +67,7 @@ class TelegramClient(
             SendMessage(
                 chatId = chatId,
                 text = text,
-                parseMode = if (enableMarkdown) MarkdownParseMode else null,
+                parseMode = if (enableMarkdown) MarkdownV2 else null,
                 replyMarkup = keyboard
             )
         )
@@ -89,7 +89,7 @@ class TelegramClient(
                 chatId = message.chat.id,
                 messageId = message.messageId,
                 text = text,
-                parseMode = if (enableMarkdown) MarkdownParseMode else null
+                parseMode = if (enableMarkdown) MarkdownV2 else null
             )
         )
     }
