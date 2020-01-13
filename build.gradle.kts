@@ -14,9 +14,8 @@ group = "com.github.djaler"
 version = "1.0-SNAPSHOT"
 
 repositories {
-    mavenCentral()
     jcenter()
-    maven("https://dl.bintray.com/insanusmokrassar/StandardRepository")
+    mavenCentral()
 }
 
 configurations {
@@ -42,7 +41,7 @@ dependencies {
 
     implementation("io.ktor:ktor-server-netty:1.2.6")
     implementation("io.ktor:ktor-client-okhttp:1.2.6")
-    implementation("com.github.insanusmokrassar:TelegramBotAPI-jvm:0.21.0")
+    implementation("com.github.insanusmokrassar:TelegramBotAPI:0.21.0")
 
     implementation("io.sentry:sentry:1.7.29")
 }
