@@ -14,12 +14,9 @@ import com.github.insanusmokrassar.TelegramBotAPI.types.message.ChatEvents.NewCh
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.ChatEventMessage
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
 import com.github.insanusmokrassar.TelegramBotAPI.types.toChatId
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
 
 @Component
-@ConditionalOnProperty("evil.bot.captcha-enabled", havingValue = "true", matchIfMissing = false)
 class SendCaptchaHandler(
     private val telegramClient: TelegramClient,
     canRestrictMemberFilter: CanRestrictMemberFilter
@@ -87,7 +84,6 @@ class SendCaptchaHandler(
 }
 
 @Component
-@ConditionalOnBean(SendCaptchaHandler::class)
 class CaptchaCallbackHandler(
     private val telegramClient: TelegramClient
 ) : CallbackQueryHandler() {
