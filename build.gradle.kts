@@ -39,7 +39,7 @@ dependencies {
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-    implementation("io.ktor:ktor-server-netty:1.2.6")
+    implementation("io.ktor:ktor-server-netty:1.3.0")
     implementation("io.ktor:ktor-client-okhttp:1.2.6")
     implementation("com.github.insanusmokrassar:TelegramBotAPI:0.21.0")
 
