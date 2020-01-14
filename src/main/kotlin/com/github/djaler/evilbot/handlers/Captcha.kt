@@ -1,7 +1,9 @@
 package com.github.djaler.evilbot.handlers
 
 import com.github.djaler.evilbot.components.TelegramClient
+import com.github.djaler.evilbot.config.BotProperties
 import com.github.djaler.evilbot.filters.CanRestrictMemberFilter
+import com.github.djaler.evilbot.service.CaptchaService
 import com.github.djaler.evilbot.utils.*
 import com.github.insanusmokrassar.TelegramBotAPI.types.CallbackQuery.MessageDataCallbackQuery
 import com.github.insanusmokrassar.TelegramBotAPI.types.ChatMember.RestrictedChatMember
@@ -19,6 +21,8 @@ import org.springframework.stereotype.Component
 @Component
 class SendCaptchaHandler(
     private val telegramClient: TelegramClient,
+    private val captchaService: CaptchaService,
+    private val botProperties: BotProperties,
     canRestrictMemberFilter: CanRestrictMemberFilter
 ) : MessageHandler(filter = canRestrictMemberFilter) {
     companion object {
@@ -70,11 +74,17 @@ class SendCaptchaHandler(
                 )
             )
 
+            val kickTimeoutMinutes = botProperties.captchaKickTimeout.toMinutes()
+
             telegramClient.sendTextTo(
-                chat.id,
-                "Эй, ${member.usernameOrName}! Мы отобрали твою свободу слова, пока ты не тыкнешь сюда \uD83D\uDC47",
+                chat.id, """
+                    Эй, ${member.usernameOrName}! Мы отобрали твою свободу слова, пока ты не тыкнешь сюда 👇
+                    У тебя есть $kickTimeoutMinutes ${kickTimeoutMinutes.getForm("минута", "минуты", "минут")}
+                    """.trimIndent(),
                 keyboard = keyboard
             )
+
+            captchaService.fixRestriction(chat, member)
 
             anyUser = true
         }
@@ -85,13 +95,15 @@ class SendCaptchaHandler(
 
 @Component
 class CaptchaCallbackHandler(
-    private val telegramClient: TelegramClient
+    private val telegramClient: TelegramClient,
+    private val captchaService: CaptchaService
 ) : CallbackQueryHandler() {
     companion object {
         private val ACCESS_RESTRICTED_MESSAGES = arrayOf("КУДА ЖМЁШЬ?!️! РУКУ УБРАЛ!", "У тебя здесь нет власти!")
     }
 
     override suspend fun handleCallback(query: MessageDataCallbackQuery, data: String) {
+        val chat = query.message.chat
         val user = query.user
 
         val (suspectId, permissions) = parseCallbackData(data)
@@ -102,12 +114,14 @@ class CaptchaCallbackHandler(
         }
 
         if (permissions !== null) {
-            telegramClient.restoreChatMemberPermissions(query.message.chat.id, suspectId, permissions)
+            telegramClient.restoreChatMemberPermissions(chat.id, suspectId, permissions)
         } else {
-            telegramClient.restoreChatMemberPermissions(query.message.chat.id, suspectId)
+            telegramClient.restoreChatMemberPermissions(chat.id, suspectId)
         }
 
         telegramClient.deleteMessage(query.message)
+
+        captchaService.removeRestriction(chat.id, user.id)
     }
 }
 
