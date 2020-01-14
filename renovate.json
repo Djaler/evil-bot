@@ -19,6 +19,12 @@
       ],
       "semanticCommitType": "build",
       "semanticCommitScope": "deps"
+    },
+    {
+      "sourceUrlPrefixes": [
+        "https://github.com/ktorio/ktor"
+      ],
+      "groupName": "ktor monorepo"
     }
   ]
 }
