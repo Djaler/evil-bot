@@ -17,6 +17,9 @@
       "packagePatterns": [
         "gradle"
       ],
+      "excludePackageNames": [
+        "org.springframework.boot:org.springframework.boot.gradle.plugin"
+      ],
       "semanticCommitType": "build",
       "semanticCommitScope": "deps"
     },
