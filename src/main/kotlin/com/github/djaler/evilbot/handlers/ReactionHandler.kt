@@ -5,10 +5,10 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.djaler.evilbot.components.TelegramClient
 import com.github.djaler.evilbot.model.Reaction
 import com.github.insanusmokrassar.TelegramBotAPI.types.User
-import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.AbleToReplyMessage
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.ContentMessage
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.FromUserMessage
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.PossiblyReplyMessage
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.TextContent
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.stereotype.Component
@@ -81,7 +81,7 @@ class ReactionHandler(
     }
 
     private fun isReplyToBot(message: Message): Boolean {
-        if (message !is AbleToReplyMessage) {
+        if (message !is PossiblyReplyMessage) {
             return false
         }
 

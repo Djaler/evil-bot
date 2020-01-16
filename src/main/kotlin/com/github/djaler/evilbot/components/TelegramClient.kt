@@ -11,7 +11,7 @@ import com.github.insanusmokrassar.TelegramBotAPI.requests.chat.members.GetChatM
 import com.github.insanusmokrassar.TelegramBotAPI.requests.chat.members.KickChatMember
 import com.github.insanusmokrassar.TelegramBotAPI.requests.chat.members.RestrictChatMember
 import com.github.insanusmokrassar.TelegramBotAPI.requests.edit.text.EditChatMessageText
-import com.github.insanusmokrassar.TelegramBotAPI.requests.send.SendMessage
+import com.github.insanusmokrassar.TelegramBotAPI.requests.send.SendTextMessage
 import com.github.insanusmokrassar.TelegramBotAPI.requests.send.media.SendSticker
 import com.github.insanusmokrassar.TelegramBotAPI.types.CallbackQuery.CallbackQuery
 import com.github.insanusmokrassar.TelegramBotAPI.types.ChatId
@@ -36,7 +36,7 @@ class TelegramClient(
         enableMarkdown: Boolean = false
     ) {
         requestsExecutor.execute(
-            SendMessage(
+            SendTextMessage(
                 chatId = message.chat.id,
                 text = text,
                 replyToMessageId = message.messageId,
@@ -64,7 +64,7 @@ class TelegramClient(
         keyboard: InlineKeyboardMarkup? = null
     ) {
         requestsExecutor.execute(
-            SendMessage(
+            SendTextMessage(
                 chatId = chatId,
                 text = text,
                 parseMode = if (enableMarkdown) MarkdownV2 else null,
