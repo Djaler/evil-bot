@@ -2,6 +2,7 @@ package com.github.djaler.evilbot.components
 
 import com.github.djaler.evilbot.service.CaptchaService
 import com.github.djaler.evilbot.utils.toUserId
+import com.github.insanusmokrassar.TelegramBotAPI.types.ParseMode.MarkdownV2
 import com.github.insanusmokrassar.TelegramBotAPI.types.link
 import com.github.insanusmokrassar.TelegramBotAPI.types.toChatId
 import kotlinx.coroutines.GlobalScope
@@ -25,7 +26,7 @@ class CaptchaScheduler(
                 telegramClient.sendTextTo(
                     chatId,
                     "[Ты](${userId.link}) молчал слишком долго, прощай",
-                    enableMarkdown = true
+                    parseMode = MarkdownV2
                 )
 
                 telegramClient.kickChatMember(chatId, userId)

@@ -7,6 +7,7 @@ import com.github.djaler.evilbot.service.ChatService
 import com.github.djaler.evilbot.utils.createCallbackDataForHandler
 import com.github.djaler.evilbot.utils.createStickerpackLink
 import com.github.insanusmokrassar.TelegramBotAPI.types.CallbackQuery.MessageDataCallbackQuery
+import com.github.insanusmokrassar.TelegramBotAPI.types.ParseMode.MarkdownV2
 import com.github.insanusmokrassar.TelegramBotAPI.types.User
 import com.github.insanusmokrassar.TelegramBotAPI.types.buttons.InlineKeyboardButtons.CallbackDataInlineKeyboardButton
 import com.github.insanusmokrassar.TelegramBotAPI.types.buttons.InlineKeyboardButtons.InlineKeyboardButton
@@ -16,6 +17,7 @@ import com.github.insanusmokrassar.TelegramBotAPI.types.message.CommonMessageImp
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.ContentMessage
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.media.StickerContent
+import com.github.insanusmokrassar.TelegramBotAPI.utils.regularMarkdownV2
 import org.springframework.stereotype.Component
 
 @Component
@@ -52,7 +54,7 @@ class BlockStickerpackHandler(
         val responseText =
             if (created) "Стикерпак $packLink успешно *заблокирован*!" else "Стикерпак $packLink *уже заблокирован*"
 
-        telegramClient.sendTextTo(chat.id, responseText, enableMarkdown = true)
+        telegramClient.sendTextTo(chat.id, responseText, parseMode = MarkdownV2)
     }
 }
 
@@ -75,7 +77,7 @@ class UnblockStickerpackHandler(
 
         val blockedStickerpacks = blockedStickerpackService.getAll(chatEntity)
         if (blockedStickerpacks.isEmpty()) {
-            telegramClient.replyTextTo(message, "Заблокированных стикерпаков *нет*", enableMarkdown = true)
+            telegramClient.replyTextTo(message, "Заблокированных стикерпаков *нет*", parseMode = MarkdownV2)
             return
         }
 
@@ -97,11 +99,13 @@ class UnblockStickerpackHandler(
 
         val keyboard = InlineKeyboardMarkup(buttons.chunked(5))
 
+        val text = "*Заблокированные стикерпаки:*\n${packsLinks.joinToString("\n")}\n\nКакой *разблокировать*?"
+
         telegramClient.sendTextTo(
             message.chat.id,
-            "*Заблокированные стикерпаки:*\n${packsLinks.joinToString("\n")}\n\nКакой *разблокировать*?",
+            text.regularMarkdownV2(),
             keyboard = keyboard,
-            enableMarkdown = true
+            parseMode = MarkdownV2
         )
     }
 }
@@ -119,7 +123,7 @@ class UnblockStickerpackCallbackHandler(
             telegramClient.changeText(
                 message,
                 "Выбранный стикерпак *не был найден* в списке заблокированных.",
-                enableMarkdown = true
+                parseMode = MarkdownV2
             )
             return
         }
@@ -130,7 +134,7 @@ class UnblockStickerpackCallbackHandler(
         telegramClient.changeText(
             message,
             "Стикерпак $packLink успешно *разблокирован*.",
-            enableMarkdown = true
+            parseMode = MarkdownV2
         )
     }
 }

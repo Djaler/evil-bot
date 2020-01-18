@@ -16,7 +16,7 @@ import com.github.insanusmokrassar.TelegramBotAPI.requests.send.media.SendSticke
 import com.github.insanusmokrassar.TelegramBotAPI.types.CallbackQuery.CallbackQuery
 import com.github.insanusmokrassar.TelegramBotAPI.types.ChatId
 import com.github.insanusmokrassar.TelegramBotAPI.types.ChatMember.abstracts.ChatMember
-import com.github.insanusmokrassar.TelegramBotAPI.types.ParseMode.MarkdownV2
+import com.github.insanusmokrassar.TelegramBotAPI.types.ParseMode.ParseMode
 import com.github.insanusmokrassar.TelegramBotAPI.types.UserId
 import com.github.insanusmokrassar.TelegramBotAPI.types.buttons.InlineKeyboardMarkup
 import com.github.insanusmokrassar.TelegramBotAPI.types.chat.ChatPermissions
@@ -33,7 +33,7 @@ class TelegramClient(
         message: Message,
         text: String,
         disableNotification: Boolean = false,
-        enableMarkdown: Boolean = false
+        parseMode: ParseMode? = null
     ) {
         requestsExecutor.execute(
             SendTextMessage(
@@ -41,7 +41,7 @@ class TelegramClient(
                 text = text,
                 replyToMessageId = message.messageId,
                 disableNotification = disableNotification,
-                parseMode = if (enableMarkdown) MarkdownV2 else null
+                parseMode = parseMode
             )
         )
     }
@@ -60,14 +60,14 @@ class TelegramClient(
     suspend fun sendTextTo(
         chatId: ChatId,
         text: String,
-        enableMarkdown: Boolean = false,
+        parseMode: ParseMode? = null,
         keyboard: InlineKeyboardMarkup? = null
     ) {
         requestsExecutor.execute(
             SendTextMessage(
                 chatId = chatId,
                 text = text,
-                parseMode = if (enableMarkdown) MarkdownV2 else null,
+                parseMode = parseMode,
                 replyMarkup = keyboard
             )
         )
@@ -82,14 +82,14 @@ class TelegramClient(
     suspend fun changeText(
         message: Message,
         text: String,
-        enableMarkdown: Boolean = false
+        parseMode: ParseMode? = null
     ) {
         requestsExecutor.execute(
             EditChatMessageText(
                 chatId = message.chat.id,
                 messageId = message.messageId,
                 text = text,
-                parseMode = if (enableMarkdown) MarkdownV2 else null
+                parseMode = parseMode
             )
         )
     }
