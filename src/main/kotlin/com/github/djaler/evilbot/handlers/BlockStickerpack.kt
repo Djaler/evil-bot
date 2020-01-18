@@ -7,7 +7,7 @@ import com.github.djaler.evilbot.service.ChatService
 import com.github.djaler.evilbot.utils.createCallbackDataForHandler
 import com.github.djaler.evilbot.utils.createStickerpackLink
 import com.github.insanusmokrassar.TelegramBotAPI.types.CallbackQuery.MessageDataCallbackQuery
-import com.github.insanusmokrassar.TelegramBotAPI.types.ParseMode.MarkdownV2
+import com.github.insanusmokrassar.TelegramBotAPI.types.ParseMode.HTML
 import com.github.insanusmokrassar.TelegramBotAPI.types.User
 import com.github.insanusmokrassar.TelegramBotAPI.types.buttons.InlineKeyboardButtons.CallbackDataInlineKeyboardButton
 import com.github.insanusmokrassar.TelegramBotAPI.types.buttons.InlineKeyboardButtons.InlineKeyboardButton
@@ -17,7 +17,7 @@ import com.github.insanusmokrassar.TelegramBotAPI.types.message.CommonMessageImp
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.ContentMessage
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.media.StickerContent
-import com.github.insanusmokrassar.TelegramBotAPI.utils.regularMarkdownV2
+import com.github.insanusmokrassar.TelegramBotAPI.utils.bold
 import org.springframework.stereotype.Component
 
 @Component
@@ -32,6 +32,8 @@ class BlockStickerpackHandler(
     command = arrayOf("block_stickerpack"),
     filter = chatAdministratorFilter
 ) {
+    private val parseMode = HTML
+
     override suspend fun handleCommand(message: CommonMessageImpl<*>, args: List<String>) {
         val chat = message.chat as? PublicChat ?: return
         val replyTo = message.replyTo as? ContentMessage<*> ?: return
@@ -50,11 +52,15 @@ class BlockStickerpackHandler(
             chatEntity.id
         )
 
-        val packLink = createStickerpackLink(stickerpack.name)
+        val packLink = createStickerpackLink(stickerpack.name, parseMode)
         val responseText =
-            if (created) "Стикерпак $packLink успешно *заблокирован*!" else "Стикерпак $packLink *уже заблокирован*"
+            if (created) {
+                "Стикерпак $packLink успешно ${"заблокирован".bold(parseMode)}"
+            } else {
+                "Стикерпак $packLink ${"уже заблокирован".bold(parseMode)}"
+            }
 
-        telegramClient.sendTextTo(chat.id, responseText, parseMode = MarkdownV2)
+        telegramClient.sendTextTo(chat.id, responseText, parseMode = parseMode)
     }
 }
 
@@ -70,6 +76,8 @@ class UnblockStickerpackHandler(
     command = arrayOf("unblock_stickerpack"),
     filter = chatAdministratorFilter
 ) {
+    private val parseMode = HTML
+
     override suspend fun handleCommand(message: CommonMessageImpl<*>, args: List<String>) {
         val chat = message.chat as? PublicChat ?: return
 
@@ -77,7 +85,11 @@ class UnblockStickerpackHandler(
 
         val blockedStickerpacks = blockedStickerpackService.getAll(chatEntity)
         if (blockedStickerpacks.isEmpty()) {
-            telegramClient.replyTextTo(message, "Заблокированных стикерпаков *нет*", parseMode = MarkdownV2)
+            telegramClient.replyTextTo(
+                message,
+                "Заблокированных стикерпаков ${"нет".bold(parseMode)}",
+                parseMode = parseMode
+            )
             return
         }
 
@@ -85,7 +97,7 @@ class UnblockStickerpackHandler(
         val buttons = arrayListOf<InlineKeyboardButton>()
 
         for ((index, stickerpack) in blockedStickerpacks.withIndex()) {
-            packsLinks.add("${index + 1}. ${createStickerpackLink(stickerpack.name)}")
+            packsLinks.add("${index + 1}. ${createStickerpackLink(stickerpack.name, parseMode)}")
             buttons.add(
                 CallbackDataInlineKeyboardButton(
                     (index + 1).toString(),
@@ -99,13 +111,17 @@ class UnblockStickerpackHandler(
 
         val keyboard = InlineKeyboardMarkup(buttons.chunked(5))
 
-        val text = "*Заблокированные стикерпаки:*\n${packsLinks.joinToString("\n")}\n\nКакой *разблокировать*?"
+        val text = """
+            ${"Заблокированные стикерпаки:".bold(parseMode)}
+            ${packsLinks.joinToString("\n")}
+
+            Какой ${"разблокировать".bold(parseMode)}?""".trimIndent()
 
         telegramClient.sendTextTo(
             message.chat.id,
-            text.regularMarkdownV2(),
+            text,
             keyboard = keyboard,
-            parseMode = MarkdownV2
+            parseMode = parseMode
         )
     }
 }
@@ -115,6 +131,8 @@ class UnblockStickerpackCallbackHandler(
     private val telegramClient: TelegramClient,
     private val blockedStickerpackService: BlockedStickerpackService
 ) : CallbackQueryHandler() {
+    private val parseMode = HTML
+
     override suspend fun handleCallback(query: MessageDataCallbackQuery, data: String) {
         val message = query.message
 
@@ -122,19 +140,19 @@ class UnblockStickerpackCallbackHandler(
         if (stickerpack == null) {
             telegramClient.changeText(
                 message,
-                "Выбранный стикерпак *не был найден* в списке заблокированных.",
-                parseMode = MarkdownV2
+                "Выбранный стикерпак ${"не был найден".bold(parseMode)} в списке заблокированных.",
+                parseMode = parseMode
             )
             return
         }
 
         blockedStickerpackService.unblock(stickerpack)
 
-        val packLink = createStickerpackLink(stickerpack.name)
+        val packLink = createStickerpackLink(stickerpack.name, parseMode)
         telegramClient.changeText(
             message,
-            "Стикерпак $packLink успешно *разблокирован*.",
-            parseMode = MarkdownV2
+            "Стикерпак $packLink успешно ${"разблокирован".bold(parseMode)}.",
+            parseMode = parseMode
         )
     }
 }

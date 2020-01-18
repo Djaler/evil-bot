@@ -2,9 +2,10 @@ package com.github.djaler.evilbot.components
 
 import com.github.djaler.evilbot.service.CaptchaService
 import com.github.djaler.evilbot.utils.toUserId
-import com.github.insanusmokrassar.TelegramBotAPI.types.ParseMode.MarkdownV2
+import com.github.insanusmokrassar.TelegramBotAPI.types.ParseMode.HTML
 import com.github.insanusmokrassar.TelegramBotAPI.types.link
 import com.github.insanusmokrassar.TelegramBotAPI.types.toChatId
+import com.github.insanusmokrassar.TelegramBotAPI.utils.link
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.springframework.scheduling.annotation.Scheduled
@@ -15,6 +16,8 @@ class CaptchaScheduler(
     private val telegramClient: TelegramClient,
     private val captchaService: CaptchaService
 ) {
+    private val parseMode = HTML
+
     @Scheduled(fixedRate = 1000 * 30)
     fun kickOverdue() {
         val overdueRestrictions = captchaService.getOverdueRestrictions()
@@ -25,8 +28,8 @@ class CaptchaScheduler(
                 val userId = it.memberTelegramId.toUserId()
                 telegramClient.sendTextTo(
                     chatId,
-                    "[Ты](${userId.link}) молчал слишком долго, прощай",
-                    parseMode = MarkdownV2
+                    "${("Ты" to userId.link).link(parseMode)} молчал слишком долго, прощай",
+                    parseMode = parseMode
                 )
 
                 telegramClient.kickChatMember(chatId, userId)
