@@ -4,6 +4,7 @@ import com.github.djaler.evilbot.components.CasClient
 import com.github.djaler.evilbot.components.TelegramClient
 import com.github.djaler.evilbot.utils.userId
 import com.github.djaler.evilbot.utils.usernameOrName
+import com.github.insanusmokrassar.TelegramBotAPI.types.Bot
 import com.github.insanusmokrassar.TelegramBotAPI.types.chat.abstracts.PublicChat
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.ChatEvents.NewChatMembers
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.ChatEventMessage
@@ -27,7 +28,7 @@ class CasCheckHandler(
         var anyBlocked = false
 
         for (member in newMembersEvent.members) {
-            if (member.isBot) {
+            if (member is Bot) {
                 continue
             }
 

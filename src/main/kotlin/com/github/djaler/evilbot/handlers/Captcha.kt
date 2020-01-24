@@ -5,6 +5,7 @@ import com.github.djaler.evilbot.config.BotProperties
 import com.github.djaler.evilbot.filters.CanRestrictMemberFilter
 import com.github.djaler.evilbot.service.CaptchaService
 import com.github.djaler.evilbot.utils.*
+import com.github.insanusmokrassar.TelegramBotAPI.types.Bot
 import com.github.insanusmokrassar.TelegramBotAPI.types.CallbackQuery.MessageDataCallbackQuery
 import com.github.insanusmokrassar.TelegramBotAPI.types.ChatMember.RestrictedChatMember
 import com.github.insanusmokrassar.TelegramBotAPI.types.UserId
@@ -39,7 +40,7 @@ class SendCaptchaHandler(
         var anyUser = false;
 
         for (member in newMembersEvent.members) {
-            if (member.isBot) {
+            if (member is Bot) {
                 continue
             }
 
