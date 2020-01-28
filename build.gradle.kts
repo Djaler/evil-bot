@@ -43,7 +43,7 @@ dependencies {
     implementation("io.ktor:ktor-client-okhttp:1.3.0")
     implementation("com.github.insanusmokrassar:TelegramBotAPI:0.23.0")
 
-    implementation("io.sentry:sentry:1.7.29")
+    implementation("io.sentry:sentry:1.7.30")
 }
 
 tasks.withType<KotlinCompile> {
