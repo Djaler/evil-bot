@@ -16,12 +16,15 @@ import com.github.insanusmokrassar.TelegramBotAPI.requests.send.media.SendSticke
 import com.github.insanusmokrassar.TelegramBotAPI.types.CallbackQuery.CallbackQuery
 import com.github.insanusmokrassar.TelegramBotAPI.types.ChatId
 import com.github.insanusmokrassar.TelegramBotAPI.types.ChatMember.abstracts.ChatMember
+import com.github.insanusmokrassar.TelegramBotAPI.types.MessageIdentifier
 import com.github.insanusmokrassar.TelegramBotAPI.types.ParseMode.ParseMode
 import com.github.insanusmokrassar.TelegramBotAPI.types.UserId
 import com.github.insanusmokrassar.TelegramBotAPI.types.buttons.InlineKeyboardMarkup
 import com.github.insanusmokrassar.TelegramBotAPI.types.chat.ChatPermissions
 import com.github.insanusmokrassar.TelegramBotAPI.types.chat.abstracts.extended.ExtendedChat
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.ContentMessage
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.TextContent
 import org.springframework.stereotype.Component
 
 @Component
@@ -62,8 +65,8 @@ class TelegramClient(
         text: String,
         parseMode: ParseMode? = null,
         keyboard: InlineKeyboardMarkup? = null
-    ) {
-        requestsExecutor.execute(
+    ): ContentMessage<TextContent> {
+        return requestsExecutor.execute(
             SendTextMessage(
                 chatId = chatId,
                 text = text,
@@ -84,10 +87,19 @@ class TelegramClient(
         text: String,
         parseMode: ParseMode? = null
     ) {
+        changeText(message.chat.id, message.messageId, text, parseMode)
+    }
+
+    suspend fun changeText(
+        chatId: ChatId,
+        messageId: MessageIdentifier,
+        text: String,
+        parseMode: ParseMode? = null
+    ) {
         requestsExecutor.execute(
             EditChatMessageText(
-                chatId = message.chat.id,
-                messageId = message.messageId,
+                chatId = chatId,
+                messageId = messageId,
                 text = text,
                 parseMode = parseMode
             )

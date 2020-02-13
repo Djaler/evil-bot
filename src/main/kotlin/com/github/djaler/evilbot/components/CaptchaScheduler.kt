@@ -25,11 +25,14 @@ class CaptchaScheduler(
         overdueRestrictions.forEach {
             GlobalScope.launch {
                 val chatId = it.chat.telegramId.toChatId()
+                val messageId = it.captchaMessageId
                 val userId = it.memberTelegramId.toUserId()
-                telegramClient.sendTextTo(
+
+                telegramClient.changeText(
                     chatId,
+                    messageId,
                     "${("Ты" to userId.link).link(parseMode)} молчал слишком долго, прощай",
-                    parseMode = parseMode
+                    parseMode
                 )
 
                 telegramClient.kickChatMember(chatId, userId)

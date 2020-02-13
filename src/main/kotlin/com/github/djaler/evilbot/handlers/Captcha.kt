@@ -77,7 +77,7 @@ class SendCaptchaHandler(
 
             val kickTimeoutMinutes = botProperties.captchaKickTimeout.toMinutes()
 
-            telegramClient.sendTextTo(
+            val captchaMessage = telegramClient.sendTextTo(
                 chat.id, """
                     Эй, ${member.usernameOrName}! Мы отобрали твою свободу слова, пока ты не тыкнешь сюда 👇
                     У тебя есть $kickTimeoutMinutes ${kickTimeoutMinutes.getForm("минута", "минуты", "минут")}
@@ -85,7 +85,7 @@ class SendCaptchaHandler(
                 keyboard = keyboard
             )
 
-            captchaService.fixRestriction(chat, member)
+            captchaService.fixRestriction(chat, member, captchaMessage)
 
             anyUser = true
         }

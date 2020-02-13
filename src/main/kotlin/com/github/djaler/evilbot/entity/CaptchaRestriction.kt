@@ -16,6 +16,9 @@ data class CaptchaRestriction(
     @Column
     val dateTime: LocalDateTime,
 
+    @Column
+    val captchaMessageId: Long,
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int = 0

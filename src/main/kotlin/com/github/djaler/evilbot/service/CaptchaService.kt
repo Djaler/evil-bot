@@ -8,6 +8,7 @@ import com.github.insanusmokrassar.TelegramBotAPI.types.ChatId
 import com.github.insanusmokrassar.TelegramBotAPI.types.User
 import com.github.insanusmokrassar.TelegramBotAPI.types.UserId
 import com.github.insanusmokrassar.TelegramBotAPI.types.chat.abstracts.PublicChat
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
 import org.hibernate.exception.ConstraintViolationException
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -18,11 +19,22 @@ class CaptchaService(
     private val captchaRestrictionRepository: CaptchaRestrictionRepository,
     private val botProperties: BotProperties
 ) {
-    fun fixRestriction(chat: PublicChat, member: User) {
+    fun fixRestriction(
+        chat: PublicChat,
+        member: User,
+        captchaMessage: Message
+    ) {
         val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
 
         try {
-            captchaRestrictionRepository.save(CaptchaRestriction(chatEntity, member.id.userId, LocalDateTime.now()))
+            captchaRestrictionRepository.save(
+                CaptchaRestriction(
+                    chatEntity,
+                    member.id.userId,
+                    LocalDateTime.now(),
+                    captchaMessage.messageId
+                )
+            )
         } catch (e: ConstraintViolationException) {
             // ignore duplicate
         }
