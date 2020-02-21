@@ -40,7 +40,7 @@ class DisplayStatisticHandler(
     botInfo,
     command = arrayOf("statistic")
 ) {
-    override suspend fun handleCommand(message: CommonMessageImpl<*>, args: List<String>) {
+    override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
         val chat = message.chat as? PublicChat ?: return
 
         val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
@@ -76,7 +76,7 @@ class DisplayTop10Handler(
     botInfo,
     command = arrayOf("top10")
 ) {
-    override suspend fun handleCommand(message: CommonMessageImpl<*>, args: List<String>) {
+    override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
         val chat = message.chat as? PublicChat ?: return
 
         val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)

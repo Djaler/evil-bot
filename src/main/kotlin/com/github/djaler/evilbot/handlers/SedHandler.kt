@@ -13,14 +13,16 @@ class SedHandler(
     private val telegramClient: TelegramClient,
     botInfo: User
 ) : CommandHandler(botInfo, command = arrayOf("sed")) {
-    override suspend fun handleCommand(message: CommonMessageImpl<*>, args: List<String>) {
+    override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
+        if (args === null) {
+            return
+        }
+
         val replyTo = message.replyTo as? ContentMessage<*> ?: return
         val content = replyTo.content as? TextContent ?: return
 
-        val expression = args.joinToString(" ")
-
         val result = try {
-            Unix4j.fromString(content.text).sed(expression).toStringResult()
+            Unix4j.fromString(content.text).sed(args).toStringResult()
         } catch (e: IllegalArgumentException) {
             e.localizedMessage
         }

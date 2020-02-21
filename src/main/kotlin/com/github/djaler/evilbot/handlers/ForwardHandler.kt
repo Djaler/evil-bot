@@ -11,8 +11,12 @@ class ForwardHandler(
     private val telegramClient: TelegramClient,
     botInfo: User
 ) : CommandHandler(botInfo, command = arrayOf("me")) {
-    override suspend fun handleCommand(message: CommonMessageImpl<*>, args: List<String>) {
-        telegramClient.sendTextTo(message.chat.id, message.user.usernameOrName + " " + args.joinToString(" "))
+    override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
+        if (args === null) {
+            return
+        }
+
+        telegramClient.sendTextTo(message.chat.id, message.user.usernameOrName + " " + args)
         telegramClient.deleteMessage(message)
     }
 }

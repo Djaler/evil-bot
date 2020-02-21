@@ -16,7 +16,7 @@ class PayRespectHandler(
         ClassPathResource("f_stickers.txt").inputStream.reader().readLines()
     }
 
-    override suspend fun handleCommand(message: CommonMessageImpl<*>, args: List<String>) {
+    override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
         val sticker = FileId(stickers.random())
 
         val replyTo = message.replyTo

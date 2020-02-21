@@ -34,7 +34,7 @@ class BlockStickerpackHandler(
 ) {
     private val parseMode = HTML
 
-    override suspend fun handleCommand(message: CommonMessageImpl<*>, args: List<String>) {
+    override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
         val chat = message.chat as? PublicChat ?: return
         val replyTo = message.replyTo as? ContentMessage<*> ?: return
         val stickerContent = replyTo.content as? StickerContent ?: return
@@ -78,7 +78,7 @@ class UnblockStickerpackHandler(
 ) {
     private val parseMode = HTML
 
-    override suspend fun handleCommand(message: CommonMessageImpl<*>, args: List<String>) {
+    override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
         val chat = message.chat as? PublicChat ?: return
 
         val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)

@@ -22,7 +22,7 @@ class CommandFilter(
             return false
         }
 
-        val command = content.text.split(" ").first().drop(1).split("@")
+        val command = content.text.split(" ", limit = 2).first().drop(1).split("@")
         if (command[0].toLowerCase() !in this.command) {
             return false
         }

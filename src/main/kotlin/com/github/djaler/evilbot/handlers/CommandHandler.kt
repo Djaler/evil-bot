@@ -17,12 +17,12 @@ abstract class CommandHandler(
     override suspend fun handleMessage(message: CommonMessageImpl<*>): Boolean {
         val content = message.content as? TextContent ?: return false
 
-        val args = content.text.split(" ").drop(1)
+        val args = content.text.split(" ", limit = 2).drop(1).firstOrNull()
 
         handleCommand(message, args)
 
         return true
     }
 
-    protected abstract suspend fun handleCommand(message: CommonMessageImpl<*>, args: List<String>)
+    protected abstract suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?)
 }

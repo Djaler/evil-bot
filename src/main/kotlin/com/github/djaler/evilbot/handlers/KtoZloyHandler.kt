@@ -20,7 +20,7 @@ class KtoZloyHandler(
     botInfo,
     command = arrayOf("ktozloy")
 ) {
-    override suspend fun handleCommand(message: CommonMessageImpl<*>, args: List<String>) {
+    override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
         val chat = message.chat as? PublicChat ?: return
 
         if (Random.nextInt(0, 10) == 0) {
