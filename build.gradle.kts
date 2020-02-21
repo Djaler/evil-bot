@@ -44,6 +44,8 @@ dependencies {
     implementation("com.github.insanusmokrassar:TelegramBotAPI:0.23.3")
 
     implementation("io.sentry:sentry:1.7.30")
+
+    implementation("org.unix4j:unix4j-command:0.5")
 }
 
 tasks.withType<KotlinCompile> {
