@@ -21,12 +21,11 @@ class SedHandler(
         val replyTo = message.replyTo as? ContentMessage<*> ?: return
         val content = replyTo.content as? TextContent ?: return
 
-        val result = try {
-            Unix4j.fromString(content.text).sed(args).toStringResult()
+        try {
+            val result = Unix4j.fromString(content.text).sed(args).toStringResult()
+            telegramClient.replyTextTo(replyTo, result)
         } catch (e: IllegalArgumentException) {
-            e.localizedMessage
+            telegramClient.replyTextTo(message, e.localizedMessage)
         }
-
-        telegramClient.replyTextTo(replyTo, result)
     }
 }
