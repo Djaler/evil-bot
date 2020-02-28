@@ -11,6 +11,9 @@ data class User(
     @Column
     val telegramId: Int,
 
+    @Column
+    val male: Boolean = true,
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int = 0
