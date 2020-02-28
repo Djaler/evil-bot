@@ -40,6 +40,10 @@ class UserService(
         userRepository.save(user.copy(username = actualUsername))
     }
 
+    fun switchGender(user: User) {
+        userRepository.save(user.copy(male = !user.male))
+    }
+
     @Transactional
     fun registerMessageInStatistic(user: User, chat: Chat) {
         val statistic = userStatisticRepository.findByChatAndUser(chat.id, user.id)
