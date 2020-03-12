@@ -5,10 +5,12 @@ import com.github.djaler.evilbot.components.TelegramClient
 import com.github.djaler.evilbot.utils.userId
 import com.github.djaler.evilbot.utils.usernameOrName
 import com.github.insanusmokrassar.TelegramBotAPI.types.Bot
+import com.github.insanusmokrassar.TelegramBotAPI.types.ParseMode.HTML
 import com.github.insanusmokrassar.TelegramBotAPI.types.chat.abstracts.PublicChat
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.ChatEvents.NewChatMembers
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.ChatEventMessage
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
+import com.github.insanusmokrassar.TelegramBotAPI.utils.link
 import org.springframework.stereotype.Component
 
 @Component
@@ -17,6 +19,8 @@ class CasCheckHandler(
     private val telegramClient: TelegramClient
 ) : MessageHandler() {
     override val order = 0
+
+    private val parseMode = HTML
 
     override suspend fun handleMessage(message: Message): Boolean {
         if (message !is ChatEventMessage) {
@@ -37,7 +41,9 @@ class CasCheckHandler(
             if (casInfo.result !== null) {
                 telegramClient.sendTextTo(
                     chat.id,
-                    "${member.usernameOrName}, пошёл нахер! Ты забанен в CAS за сообщение \"${casInfo.result.messages.random()}\""
+                    "${member.usernameOrName}, пошёл нахер! " +
+                            "Ты забанен в ${("CAS" to "https://cas.chat/query?u=${member.id.userId}").link(parseMode)}",
+                    parseMode = parseMode
                 )
                 telegramClient.kickChatMember(chat.id, member.id)
 
