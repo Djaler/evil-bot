@@ -3,8 +3,8 @@ package com.github.djaler.evilbot.components
 import com.github.djaler.evilbot.config.TelegramProperties
 import com.github.djaler.evilbot.utils.getMD5
 import com.github.insanusmokrassar.TelegramBotAPI.bot.RequestsExecutor
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.updates.startGettingOfUpdates
 import com.github.insanusmokrassar.TelegramBotAPI.utils.extensions.setWebhook
-import com.github.insanusmokrassar.TelegramBotAPI.utils.extensions.startGettingOfUpdates
 import io.ktor.server.netty.Netty
 import kotlinx.coroutines.runBlocking
 import org.springframework.stereotype.Component
@@ -34,7 +34,7 @@ class BotInitializer(
                 }
             }
         } else {
-            requestExecutor.startGettingOfUpdates(timeoutMillis = 1000) {
+            requestExecutor.startGettingOfUpdates(timeoutSeconds = 1) {
                 updatesManager.processUpdate(it)
             }
         }

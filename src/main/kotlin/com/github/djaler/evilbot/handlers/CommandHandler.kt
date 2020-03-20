@@ -3,12 +3,12 @@ package com.github.djaler.evilbot.handlers
 import com.github.djaler.evilbot.filters.CommandFilter
 import com.github.djaler.evilbot.filters.Filter
 import com.github.djaler.evilbot.filters.and
-import com.github.insanusmokrassar.TelegramBotAPI.types.User
+import com.github.insanusmokrassar.TelegramBotAPI.types.ExtendedBot
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.CommonMessageImpl
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.TextContent
 
 abstract class CommandHandler(
-    botInfo: User,
+    botInfo: ExtendedBot,
     command: Array<String>,
     filter: Filter? = null
 ) : CommonMessageHandler(

@@ -1,14 +1,14 @@
 package com.github.djaler.evilbot.filters
 
+import com.github.insanusmokrassar.TelegramBotAPI.types.ExtendedBot
 import com.github.insanusmokrassar.TelegramBotAPI.types.MessageEntity.textsources.BotCommandTextSource
-import com.github.insanusmokrassar.TelegramBotAPI.types.User
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.CommonMessageImpl
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.TextContent
 
 class CommandFilter(
     private val command: Array<String>,
-    botInfo: User
+    botInfo: ExtendedBot
 ) : Filter {
     private val botUsername = botInfo.username!!.username
 

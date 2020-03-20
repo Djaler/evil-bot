@@ -1,7 +1,7 @@
 package com.github.djaler.evilbot.handlers
 
 import com.github.djaler.evilbot.components.TelegramClient
-import com.github.insanusmokrassar.TelegramBotAPI.types.User
+import com.github.insanusmokrassar.TelegramBotAPI.types.ExtendedBot
 import com.github.insanusmokrassar.TelegramBotAPI.types.chat.abstracts.PublicChat
 import com.github.insanusmokrassar.TelegramBotAPI.types.chat.abstracts.extended.ExtendedPublicChat
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.CommonMessageImpl
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 @Component
 class ReplyToPinHandler(
     private val telegramClient: TelegramClient,
-    botInfo: User
+    botInfo: ExtendedBot
 ) : CommandHandler(botInfo, command = arrayOf("pinned")) {
     override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
         val chat = message.chat as? PublicChat ?: return

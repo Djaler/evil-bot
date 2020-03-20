@@ -5,7 +5,7 @@ import com.github.djaler.evilbot.service.ChatService
 import com.github.djaler.evilbot.service.UserService
 import com.github.djaler.evilbot.utils.getFormByGender
 import com.github.djaler.evilbot.utils.userId
-import com.github.insanusmokrassar.TelegramBotAPI.types.User
+import com.github.insanusmokrassar.TelegramBotAPI.types.ExtendedBot
 import com.github.insanusmokrassar.TelegramBotAPI.types.chat.abstracts.PublicChat
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.CommonMessageImpl
 import org.springframework.stereotype.Component
@@ -13,7 +13,7 @@ import kotlin.random.Random
 
 @Component
 class KtoZloyHandler(
-    botInfo: User,
+    botInfo: ExtendedBot,
     private val chatService: ChatService,
     private val userService: UserService,
     private val telegramClient: TelegramClient
