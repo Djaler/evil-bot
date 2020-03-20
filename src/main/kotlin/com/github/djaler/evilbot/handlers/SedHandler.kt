@@ -15,6 +15,7 @@ class SedHandler(
 ) : CommandHandler(botInfo, command = arrayOf("sed")) {
     override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
         if (args === null) {
+            telegramClient.replyTextTo(message, "Ну а где выражение для sed?")
             return
         }
 

@@ -13,6 +13,7 @@ class ResolveHandler(
 ) : CommandHandler(botInfo, command = arrayOf("r", "resolve")) {
     override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
         if (args === null) {
+            telegramClient.replyTextTo(message, "Ну а где варианты? Пришли варианты, разделенные слэшом (/)")
             return
         }
 
