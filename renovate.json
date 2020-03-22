@@ -28,6 +28,12 @@
         "https://github.com/ktorio/ktor"
       ],
       "groupName": "ktor monorepo"
+    },
+    {
+      "packagePatterns": [
+        "TelegramBotAPI"
+      ],
+      "groupName": "TelegramBotAPI monorepo"
     }
   ]
 }
