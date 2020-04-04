@@ -2,17 +2,17 @@ package com.github.djaler.evilbot.components
 
 import com.github.djaler.evilbot.utils.fullChatPermissions
 import com.github.insanusmokrassar.TelegramBotAPI.bot.RequestsExecutor
-import com.github.insanusmokrassar.TelegramBotAPI.requests.DeleteMessage
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.answers.answerCallbackQuery
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.chat.get.getChat
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.chat.get.getChatAdministrators
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.chat.members.getChatMember
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.chat.members.kickChatMember
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.chat.members.restrictChatMember
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.deleteMessage
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.edit.text.editMessageText
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.media.sendSticker
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.sendMessage
 import com.github.insanusmokrassar.TelegramBotAPI.requests.abstracts.InputFile
-import com.github.insanusmokrassar.TelegramBotAPI.requests.answers.AnswerCallbackQuery
-import com.github.insanusmokrassar.TelegramBotAPI.requests.chat.get.GetChat
-import com.github.insanusmokrassar.TelegramBotAPI.requests.chat.get.GetChatAdministrators
-import com.github.insanusmokrassar.TelegramBotAPI.requests.chat.members.GetChatMember
-import com.github.insanusmokrassar.TelegramBotAPI.requests.chat.members.KickChatMember
-import com.github.insanusmokrassar.TelegramBotAPI.requests.chat.members.RestrictChatMember
-import com.github.insanusmokrassar.TelegramBotAPI.requests.edit.text.EditChatMessageText
-import com.github.insanusmokrassar.TelegramBotAPI.requests.send.SendTextMessage
-import com.github.insanusmokrassar.TelegramBotAPI.requests.send.media.SendSticker
 import com.github.insanusmokrassar.TelegramBotAPI.types.CallbackQuery.CallbackQuery
 import com.github.insanusmokrassar.TelegramBotAPI.types.ChatId
 import com.github.insanusmokrassar.TelegramBotAPI.types.ChatMember.abstracts.ChatMember
@@ -38,25 +38,21 @@ class TelegramClient(
         disableNotification: Boolean = false,
         parseMode: ParseMode? = null
     ) {
-        requestsExecutor.execute(
-            SendTextMessage(
-                chatId = message.chat.id,
-                text = text,
-                replyToMessageId = message.messageId,
-                disableNotification = disableNotification,
-                parseMode = parseMode
-            )
+        requestsExecutor.sendMessage(
+            chat = message.chat,
+            text = text,
+            replyToMessageId = message.messageId,
+            disableNotification = disableNotification,
+            parseMode = parseMode
         )
     }
 
     suspend fun replyStickerTo(message: Message, sticker: InputFile, disableNotification: Boolean = false) {
-        requestsExecutor.execute(
-            SendSticker(
-                chatId = message.chat.id,
-                sticker = sticker,
-                replyToMessageId = message.messageId,
-                disableNotification = disableNotification
-            )
+        requestsExecutor.sendSticker(
+            chatId = message.chat.id,
+            sticker = sticker,
+            replyToMessageId = message.messageId,
+            disableNotification = disableNotification
         )
     }
 
@@ -66,20 +62,11 @@ class TelegramClient(
         parseMode: ParseMode? = null,
         keyboard: InlineKeyboardMarkup? = null
     ): ContentMessage<TextContent> {
-        return requestsExecutor.execute(
-            SendTextMessage(
-                chatId = chatId,
-                text = text,
-                parseMode = parseMode,
-                replyMarkup = keyboard
-            )
-        )
+        return requestsExecutor.sendMessage(chatId, text, parseMode, replyMarkup = keyboard)
     }
 
     suspend fun sendStickerTo(chatId: ChatId, sticker: InputFile) {
-        requestsExecutor.execute(
-            SendSticker(chatId, sticker)
-        )
+        requestsExecutor.sendSticker(chatId, sticker)
     }
 
     suspend fun changeText(
@@ -96,38 +83,23 @@ class TelegramClient(
         text: String,
         parseMode: ParseMode? = null
     ) {
-        requestsExecutor.execute(
-            EditChatMessageText(
-                chatId = chatId,
-                messageId = messageId,
-                text = text,
-                parseMode = parseMode
-            )
-        )
+        requestsExecutor.editMessageText(chatId, messageId, text, parseMode)
     }
 
     suspend fun getChatAdministrators(chatId: ChatId): List<ChatMember> {
-        return requestsExecutor.execute(
-            GetChatAdministrators(chatId)
-        )
+        return requestsExecutor.getChatAdministrators(chatId)
     }
 
     suspend fun deleteMessage(message: Message) {
-        requestsExecutor.execute(
-            DeleteMessage(message.chat.id, message.messageId)
-        )
+        requestsExecutor.deleteMessage(message)
     }
 
     suspend fun getChatMember(chatId: ChatId, memberId: UserId): ChatMember {
-        return requestsExecutor.execute(
-            GetChatMember(chatId, memberId)
-        )
+        return requestsExecutor.getChatMember(chatId, memberId)
     }
 
     suspend fun restrictChatMember(chatId: ChatId, memberId: UserId) {
-        requestsExecutor.execute(
-            RestrictChatMember(chatId, memberId, permissions = ChatPermissions())
-        )
+        requestsExecutor.restrictChatMember(chatId, memberId)
     }
 
     suspend fun restoreChatMemberPermissions(
@@ -135,26 +107,18 @@ class TelegramClient(
         memberId: UserId,
         permissions: ChatPermissions = fullChatPermissions
     ) {
-        requestsExecutor.execute(
-            RestrictChatMember(chatId, memberId, permissions = permissions)
-        )
+        requestsExecutor.restrictChatMember(chatId, memberId, permissions = permissions)
     }
 
     suspend fun kickChatMember(chatId: ChatId, memberId: UserId) {
-        requestsExecutor.execute(
-            KickChatMember(chatId, memberId)
-        )
+        requestsExecutor.kickChatMember(chatId, memberId)
     }
 
     suspend fun answerCallbackQuery(query: CallbackQuery, text: String) {
-        requestsExecutor.execute(
-            AnswerCallbackQuery(query.id, text)
-        )
+        requestsExecutor.answerCallbackQuery(query, text)
     }
 
     suspend fun getChat(chatId: ChatId): ExtendedChat {
-        return requestsExecutor.execute(
-            GetChat(chatId)
-        )
+        return requestsExecutor.getChat(chatId)
     }
 }
