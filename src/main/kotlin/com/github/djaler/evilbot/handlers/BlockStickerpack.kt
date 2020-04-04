@@ -7,8 +7,8 @@ import com.github.djaler.evilbot.service.ChatService
 import com.github.djaler.evilbot.utils.createCallbackDataForHandler
 import com.github.djaler.evilbot.utils.createStickerpackLink
 import com.github.insanusmokrassar.TelegramBotAPI.types.CallbackQuery.MessageDataCallbackQuery
+import com.github.insanusmokrassar.TelegramBotAPI.types.ExtendedBot
 import com.github.insanusmokrassar.TelegramBotAPI.types.ParseMode.HTML
-import com.github.insanusmokrassar.TelegramBotAPI.types.User
 import com.github.insanusmokrassar.TelegramBotAPI.types.buttons.InlineKeyboardButtons.CallbackDataInlineKeyboardButton
 import com.github.insanusmokrassar.TelegramBotAPI.types.buttons.InlineKeyboardButtons.InlineKeyboardButton
 import com.github.insanusmokrassar.TelegramBotAPI.types.buttons.InlineKeyboardMarkup
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class BlockStickerpackHandler(
-    botInfo: User,
+    botInfo: ExtendedBot,
     private val telegramClient: TelegramClient,
     private val chatService: ChatService,
     private val blockedStickerpackService: BlockedStickerpackService,
@@ -66,7 +66,7 @@ class BlockStickerpackHandler(
 
 @Component
 class UnblockStickerpackHandler(
-    botInfo: User,
+    botInfo: ExtendedBot,
     private val telegramClient: TelegramClient,
     private val chatService: ChatService,
     private val blockedStickerpackService: BlockedStickerpackService,

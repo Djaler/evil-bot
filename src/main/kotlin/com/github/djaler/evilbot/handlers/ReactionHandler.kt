@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.djaler.evilbot.components.TelegramClient
 import com.github.djaler.evilbot.model.Reaction
-import com.github.insanusmokrassar.TelegramBotAPI.types.User
+import com.github.insanusmokrassar.TelegramBotAPI.types.ExtendedBot
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.ContentMessage
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.FromUserMessage
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
@@ -21,7 +21,7 @@ import kotlin.random.Random
 class ReactionHandler(
     private val objectMapper: ObjectMapper,
     private val validator: Validator,
-    private val botInfo: User,
+    private val botInfo: ExtendedBot,
     private val telegramClient: TelegramClient
 ) : MessageHandler() {
     private lateinit var reactions: List<Reaction>

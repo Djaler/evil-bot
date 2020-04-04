@@ -5,7 +5,7 @@ import com.github.djaler.evilbot.service.ChatService
 import com.github.djaler.evilbot.service.UserService
 import com.github.djaler.evilbot.utils.getForm
 import com.github.djaler.evilbot.utils.getFormByGender
-import com.github.insanusmokrassar.TelegramBotAPI.types.User
+import com.github.insanusmokrassar.TelegramBotAPI.types.ExtendedBot
 import com.github.insanusmokrassar.TelegramBotAPI.types.chat.abstracts.PublicChat
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.CommonMessageImpl
 import org.springframework.stereotype.Component
@@ -33,7 +33,7 @@ class UpdateStatisticHandler(
 
 @Component
 class DisplayStatisticHandler(
-    botInfo: User,
+    botInfo: ExtendedBot,
     private val chatService: ChatService,
     private val userService: UserService,
     private val telegramClient: TelegramClient
@@ -72,7 +72,7 @@ class DisplayStatisticHandler(
 
 @Component
 class DisplayTop10Handler(
-    botInfo: User,
+    botInfo: ExtendedBot,
     private val chatService: ChatService,
     private val userService: UserService,
     private val telegramClient: TelegramClient

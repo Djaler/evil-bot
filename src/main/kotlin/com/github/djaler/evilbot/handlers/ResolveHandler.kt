@@ -1,7 +1,7 @@
 package com.github.djaler.evilbot.handlers
 
 import com.github.djaler.evilbot.components.TelegramClient
-import com.github.insanusmokrassar.TelegramBotAPI.types.User
+import com.github.insanusmokrassar.TelegramBotAPI.types.ExtendedBot
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.CommonMessageImpl
 import org.springframework.stereotype.Component
 import kotlin.random.Random
@@ -9,7 +9,7 @@ import kotlin.random.Random
 @Component
 class ResolveHandler(
     private val telegramClient: TelegramClient,
-    botInfo: User
+    botInfo: ExtendedBot
 ) : CommandHandler(botInfo, command = arrayOf("r", "resolve")) {
     override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
         if (args === null) {
