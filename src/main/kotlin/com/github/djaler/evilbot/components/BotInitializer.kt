@@ -34,7 +34,7 @@ class BotInitializer(
                 }
             }
         } else {
-            requestExecutor.startGettingOfUpdates(timeoutMillis = 1000) {
+            requestExecutor.startGettingOfUpdates {
                 updatesManager.processUpdate(it)
             }
         }
