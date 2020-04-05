@@ -1,25 +1,24 @@
 package com.github.djaler.evilbot.config
 
-import org.springframework.boot.web.client.RestTemplateBuilder
+import com.fasterxml.jackson.databind.ObjectMapper
+import io.ktor.client.HttpClient
+import io.ktor.client.features.json.JacksonSerializer
+import io.ktor.client.features.json.Json
+import io.ktor.http.ContentType
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.MediaType
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
-import org.springframework.web.client.RestTemplate
 
 @Configuration
 class RestConfig {
     @Bean
-    fun casRestTemplate(): RestTemplate {
-        return RestTemplateBuilder()
-            .defaultHeader("User-Agent", "evil-bot")
-            .messageConverters(MappingAnyJsonHttpMessageConverter())
-            .build()
-    }
-}
+    fun httpClient(objectMapper: ObjectMapper): HttpClient {
+        return HttpClient {
+            Json {
+                serializer = JacksonSerializer(objectMapper)
 
-private class MappingAnyJsonHttpMessageConverter : MappingJackson2HttpMessageConverter() {
-    init {
-        this.supportedMediaTypes = listOf(MediaType.ALL)
+                acceptContentTypes = listOf(ContentType.Any)
+                //TODO заменить на accept после исправления бага https://github.com/ktorio/ktor/issues/1765
+            }
+        }
     }
 }

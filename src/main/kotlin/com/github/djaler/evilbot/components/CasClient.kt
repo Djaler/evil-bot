@@ -1,16 +1,16 @@
 package com.github.djaler.evilbot.components
 
+import io.ktor.client.HttpClient
+import io.ktor.client.request.get
 import org.springframework.stereotype.Component
-import org.springframework.web.client.RestTemplate
-import org.springframework.web.client.getForObject
 
 @Component
 @RecordBreadcrumb
 class CasClient(
-    private val casRestTemplate: RestTemplate
+    private val httpClient: HttpClient
 ) {
-    fun getCasInfo(userId: Int): CasInfo {
-        return casRestTemplate.getForObject("https://api.cas.chat/check?user_id=$userId")
+    suspend fun getCasInfo(userId: Int): CasInfo {
+        return httpClient.get("https://api.cas.chat/check?user_id=$userId")
     }
 }
 

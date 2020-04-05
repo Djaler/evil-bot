@@ -29,7 +29,6 @@ dependencies {
     implementation(kotlin("reflect"))
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-json")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-log4j2")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
@@ -37,13 +36,12 @@ dependencies {
     implementation("org.postgresql:postgresql")
     implementation("org.flywaydb:flyway-core")
 
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-
     implementation("com.github.insanusmokrassar:TelegramBotAPI:0.26.0")
     implementation("com.github.insanusmokrassar:TelegramBotAPI-extensions-api:0.26.0")
 
     implementation("io.ktor:ktor-server-netty:1.3.2")
     implementation("io.ktor:ktor-client-okhttp:1.3.2")
+    implementation("io.ktor:ktor-client-jackson:1.3.2")
 
     implementation("io.sentry:sentry:1.7.30")
 
