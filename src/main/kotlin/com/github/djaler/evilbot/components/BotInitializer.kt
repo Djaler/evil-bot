@@ -28,13 +28,16 @@ class BotInitializer(
                     listenHost = "0.0.0.0",
                     listenRoute = path,
                     port = webhook.port,
-                    engineFactory = Netty
+                    engineFactory = Netty,
+                    allowedUpdates = updatesManager.getAllowedUpdates()
                 ) {
                     updatesManager.processUpdate(it)
                 }
             }
         } else {
-            requestExecutor.startGettingOfUpdates {
+            requestExecutor.startGettingOfUpdates(
+                allowedUpdates = updatesManager.getAllowedUpdates()
+            ) {
                 updatesManager.processUpdate(it)
             }
         }

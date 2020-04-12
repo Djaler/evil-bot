@@ -3,10 +3,13 @@ package com.github.djaler.evilbot.handlers
 import com.github.djaler.evilbot.utils.decodeCallbackData
 import com.github.djaler.evilbot.utils.isCallbackForHandler
 import com.github.insanusmokrassar.TelegramBotAPI.types.CallbackQuery.MessageDataCallbackQuery
+import com.github.insanusmokrassar.TelegramBotAPI.types.UPDATE_CALLBACK_QUERY
 import com.github.insanusmokrassar.TelegramBotAPI.types.update.CallbackQueryUpdate
 import com.github.insanusmokrassar.TelegramBotAPI.types.update.abstracts.Update
 
 abstract class CallbackQueryHandler : UpdateHandler {
+    override val updateType get() = UPDATE_CALLBACK_QUERY
+
     override suspend fun handleUpdate(update: Update): Boolean {
         if (update !is CallbackQueryUpdate) {
             return false

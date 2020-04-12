@@ -19,6 +19,10 @@ class UpdatesManager(
 
     private val handlers = handlers.sortedBy { it.order }
 
+    fun getAllowedUpdates(): List<String> {
+        return handlers.map { it.updateType }.distinct()
+    }
+
     suspend fun processUpdate(update: Update) {
         sentryClient.clearContext()
         for (handler in handlers) {
