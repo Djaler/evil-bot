@@ -1,10 +1,13 @@
 package com.github.djaler.evilbot.components
 
 import com.github.djaler.evilbot.handlers.UpdateHandler
+import com.github.insanusmokrassar.TelegramBotAPI.types.update.abstracts.UnknownUpdateType
 import com.github.insanusmokrassar.TelegramBotAPI.types.update.abstracts.Update
 import io.sentry.SentryClient
 import io.sentry.event.Breadcrumb
 import io.sentry.event.BreadcrumbBuilder
+import io.sentry.event.Event
+import io.sentry.event.EventBuilder
 import org.apache.logging.log4j.LogManager
 import org.springframework.stereotype.Component
 
@@ -25,6 +28,20 @@ class UpdatesManager(
 
     suspend fun processUpdate(update: Update) {
         sentryClient.clearContext()
+
+        if (update is UnknownUpdateType) {
+            log.error("Unknown update type: $update")
+
+            sentryClient.context.addExtra("update", update)
+            sentryClient.sendEvent(
+                EventBuilder()
+                    .withMessage("Unknown update type")
+                    .withLevel(Event.Level.ERROR)
+                    .build()
+            )
+            return
+        }
+
         for (handler in handlers) {
             try {
                 sentryClient.context.recordBreadcrumb(createHandlerBreadcrumb(handler))
