@@ -31,18 +31,23 @@ class BotInitializer(
             val path = telegramProperties.token.getMD5()
 
             runBlocking {
-                requestExecutor.setWebhookInfoAndStartListenWebhooks(
-                    setWebhookRequest = SetWebhook(
-                        url = webhook.url + path,
-                        allowedUpdates = updatesManager.getAllowedUpdates()
-                    ),
-                    engineFactory = Netty,
-                    listenHost = "0.0.0.0",
-                    listenPort = webhook.port,
-                    listenRoute = path,
-                    exceptionsHandler = { handleException(it) }
-                ) {
-                    updatesManager.processUpdate(it)
+                try {
+                    requestExecutor.setWebhookInfoAndStartListenWebhooks(
+                        setWebhookRequest = SetWebhook(
+                            url = webhook.url + path,
+                            allowedUpdates = updatesManager.getAllowedUpdates()
+                        ),
+                        engineFactory = Netty,
+                        listenHost = "0.0.0.0",
+                        listenPort = webhook.port,
+                        listenRoute = path,
+                        exceptionsHandler = { handleException(it) }
+                    ) {
+                        updatesManager.processUpdate(it)
+                    }
+                } catch (e: Exception) {
+                    log.error("Exception on webhook setup", e)
+                    sentryClient.sendException(e)
                 }
             }
         } else {
