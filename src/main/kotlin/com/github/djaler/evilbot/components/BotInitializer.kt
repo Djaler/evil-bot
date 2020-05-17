@@ -3,8 +3,9 @@ package com.github.djaler.evilbot.components
 import com.github.djaler.evilbot.config.TelegramProperties
 import com.github.djaler.evilbot.utils.getMD5
 import com.github.insanusmokrassar.TelegramBotAPI.bot.RequestsExecutor
-import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.updates.startGettingOfUpdates
-import com.github.insanusmokrassar.TelegramBotAPI.utils.extensions.setWebhook
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.utils.updates.retrieving.setWebhookInfoAndStartListenWebhooks
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.utils.updates.retrieving.startGettingOfUpdatesByLongPolling
+import com.github.insanusmokrassar.TelegramBotAPI.requests.webhook.SetWebhook
 import io.ktor.server.netty.Netty
 import io.sentry.SentryClient
 import kotlinx.coroutines.runBlocking
@@ -30,20 +31,22 @@ class BotInitializer(
             val path = telegramProperties.token.getMD5()
 
             runBlocking {
-                requestExecutor.setWebhook(
-                    url = webhook.url + path,
-                    listenHost = "0.0.0.0",
-                    listenRoute = path,
-                    port = webhook.port,
+                requestExecutor.setWebhookInfoAndStartListenWebhooks(
+                    setWebhookRequest = SetWebhook(
+                        url = webhook.url + path,
+                        allowedUpdates = updatesManager.getAllowedUpdates()
+                    ),
                     engineFactory = Netty,
-                    allowedUpdates = updatesManager.getAllowedUpdates(),
+                    listenHost = "0.0.0.0",
+                    listenPort = webhook.port,
+                    listenRoute = path,
                     exceptionsHandler = { handleException(it) }
                 ) {
                     updatesManager.processUpdate(it)
                 }
             }
         } else {
-            requestExecutor.startGettingOfUpdates(
+            requestExecutor.startGettingOfUpdatesByLongPolling(
                 allowedUpdates = updatesManager.getAllowedUpdates(),
                 exceptionsHandler = { handleException(it) }
             ) {
