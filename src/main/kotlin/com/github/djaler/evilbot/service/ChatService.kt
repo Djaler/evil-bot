@@ -1,16 +1,20 @@
 package com.github.djaler.evilbot.service
 
 import com.github.djaler.evilbot.entity.Chat
+import com.github.djaler.evilbot.entity.ChatHistory
 import com.github.djaler.evilbot.model.GetOrCreateResult
+import com.github.djaler.evilbot.repository.ChatHistoryRepository
 import com.github.djaler.evilbot.repository.ChatRepository
 import com.github.insanusmokrassar.TelegramBotAPI.types.ChatId
 import com.github.insanusmokrassar.TelegramBotAPI.types.chat.abstracts.PublicChat
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @Service
 class ChatService(
-    private val chatRepository: ChatRepository
+    private val chatRepository: ChatRepository,
+    private val chatHistoryRepository: ChatHistoryRepository
 ) {
     @Transactional
     fun getOrCreateChatFrom(telegramChat: PublicChat): GetOrCreateResult<Chat> {
@@ -29,5 +33,18 @@ class ChatService(
 
     fun updateTitle(chat: Chat, actualTitle: String) {
         chatRepository.save(chat.copy(title = actualTitle))
+    }
+
+    fun fixChatJoin(chat: Chat) {
+        chatHistoryRepository.save(ChatHistory(chat.id, joinDate = LocalDateTime.now()))
+    }
+
+    fun fixChatLeave(chat: Chat) {
+        val historyEntry = chatHistoryRepository.findActiveHistoryEntry(chat.id)
+
+        chatHistoryRepository.save(
+            historyEntry?.copy(leaveDate = LocalDateTime.now())
+                ?: ChatHistory(chat.id, leaveDate = LocalDateTime.now())
+        )
     }
 }
