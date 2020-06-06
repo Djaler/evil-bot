@@ -11,7 +11,11 @@ class SwitchGenderHandler(
     private val telegramClient: TelegramClient,
     private val userService: UserService,
     botInfo: ExtendedBot
-) : CommandHandler(botInfo, command = arrayOf("switch_gender")) {
+) : CommandHandler(
+    botInfo,
+    command = arrayOf("switch_gender"),
+    commandDescription = "сменить пол"
+) {
     override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
         val (userEntity, _) = userService.getOrCreateUserFrom(message.user)
 

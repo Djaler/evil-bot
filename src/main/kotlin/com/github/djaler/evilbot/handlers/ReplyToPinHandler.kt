@@ -12,7 +12,11 @@ import org.springframework.stereotype.Component
 class ReplyToPinHandler(
     private val telegramClient: TelegramClient,
     botInfo: ExtendedBot
-) : CommandHandler(botInfo, command = arrayOf("pinned")) {
+) : CommandHandler(
+    botInfo,
+    command = arrayOf("pinned"),
+    commandDescription = "указать на запиненное сообщение"
+) {
     override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
         val chat = message.chat as? PublicChat ?: return
 

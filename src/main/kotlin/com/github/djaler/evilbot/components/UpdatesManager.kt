@@ -1,6 +1,8 @@
 package com.github.djaler.evilbot.components
 
+import com.github.djaler.evilbot.handlers.CommandHandler
 import com.github.djaler.evilbot.handlers.UpdateHandler
+import com.github.insanusmokrassar.TelegramBotAPI.types.BotCommand
 import com.github.insanusmokrassar.TelegramBotAPI.types.update.abstracts.UnknownUpdateType
 import com.github.insanusmokrassar.TelegramBotAPI.types.update.abstracts.Update
 import io.sentry.SentryClient
@@ -24,6 +26,11 @@ class UpdatesManager(
 
     fun getAllowedUpdates(): List<String> {
         return handlers.map { it.updateType }.distinct()
+    }
+
+    fun getCommands(): List<BotCommand> {
+        return handlers.filterIsInstance(CommandHandler::class.java)
+            .map { it.getCommandInfo() }
     }
 
     suspend fun processUpdate(update: Update) {

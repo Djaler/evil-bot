@@ -11,7 +11,11 @@ import org.springframework.stereotype.Component
 class PayRespectHandler(
     private val telegramClient: TelegramClient,
     botInfo: ExtendedBot
-) : CommandHandler(botInfo, command = arrayOf("f")) {
+) : CommandHandler(
+    botInfo,
+    command = arrayOf("f"),
+    commandDescription = "pay respect"
+) {
     private val stickers by lazy {
         ClassPathResource("f_stickers.txt").inputStream.reader().readLines()
     }
