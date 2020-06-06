@@ -19,7 +19,8 @@ class KtoZloyHandler(
     private val telegramClient: TelegramClient
 ) : CommandHandler(
     botInfo,
-    command = arrayOf("ktozloy")
+    command = arrayOf("ktozloy"),
+    commandDescription = "выясняет, кто злой"
 ) {
     override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
         val chat = message.chat as? PublicChat ?: return

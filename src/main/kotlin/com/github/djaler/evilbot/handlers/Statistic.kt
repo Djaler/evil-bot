@@ -39,7 +39,8 @@ class DisplayStatisticHandler(
     private val telegramClient: TelegramClient
 ) : CommandHandler(
     botInfo,
-    command = arrayOf("statistic")
+    command = arrayOf("statistic"),
+    commandDescription = "сколько сообщений ты написал"
 ) {
     override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
         val chat = message.chat as? PublicChat ?: return
@@ -78,7 +79,8 @@ class DisplayTop10Handler(
     private val telegramClient: TelegramClient
 ) : CommandHandler(
     botInfo,
-    command = arrayOf("top10")
+    command = arrayOf("top10"),
+    commandDescription = "кто больше всех пишет"
 ) {
     override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
         val chat = message.chat as? PublicChat ?: return

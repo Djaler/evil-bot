@@ -12,7 +12,11 @@ import org.unix4j.Unix4j
 class SedHandler(
     private val telegramClient: TelegramClient,
     botInfo: ExtendedBot
-) : CommandHandler(botInfo, command = arrayOf("sed")) {
+) : CommandHandler(
+    botInfo,
+    command = arrayOf("sed"),
+    commandDescription = "преобразовать строку с помощью sed"
+) {
     override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
         if (args === null) {
             telegramClient.replyTextTo(message, "Ну а где выражение для sed?")

@@ -10,7 +10,11 @@ import org.springframework.stereotype.Component
 class ForwardHandler(
     private val telegramClient: TelegramClient,
     botInfo: ExtendedBot
-) : CommandHandler(botInfo, command = arrayOf("me")) {
+) : CommandHandler(
+    botInfo,
+    command = arrayOf("me"),
+    commandDescription = "отправить сообщение от имени бота"
+) {
     override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
         if (args === null) {
             telegramClient.replyTextTo(message, "И что я должен отправить, по твоему?")

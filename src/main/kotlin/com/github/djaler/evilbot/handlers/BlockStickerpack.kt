@@ -30,6 +30,7 @@ class BlockStickerpackHandler(
 ) : CommandHandler(
     botInfo,
     command = arrayOf("block_stickerpack"),
+    commandDescription = "заблокировать стикерпак",
     filter = chatAdministratorFilter
 ) {
     private val parseMode = HTML
@@ -74,6 +75,7 @@ class UnblockStickerpackHandler(
 ) : CommandHandler(
     botInfo,
     command = arrayOf("unblock_stickerpack"),
+    commandDescription = "разблокировать стикерпак",
     filter = chatAdministratorFilter
 ) {
     private val parseMode = HTML

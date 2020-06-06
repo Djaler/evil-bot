@@ -3,6 +3,8 @@ package com.github.djaler.evilbot.components
 import com.github.djaler.evilbot.config.TelegramProperties
 import com.github.djaler.evilbot.utils.getMD5
 import com.github.insanusmokrassar.TelegramBotAPI.bot.RequestsExecutor
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.bot.getMyCommands
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.bot.setMyCommands
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.utils.updates.retrieving.setWebhookInfoAndStartListenWebhooks
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.utils.updates.retrieving.startGettingOfUpdatesByLongPolling
 import com.github.insanusmokrassar.TelegramBotAPI.requests.webhook.SetWebhook
@@ -56,6 +58,23 @@ class BotInitializer(
                 exceptionsHandler = { handleException(it) }
             ) {
                 updatesManager.processUpdate(it)
+            }
+        }
+
+        updateCommandsIfNeeded()
+    }
+
+    private fun updateCommandsIfNeeded() {
+        runBlocking {
+            try {
+                val oldCommands = requestExecutor.getMyCommands()
+                val newCommands = updatesManager.getCommands()
+                if (oldCommands != newCommands) {
+                    requestExecutor.setMyCommands(newCommands)
+                }
+            } catch (e: Exception) {
+                log.error("Exception on commands set", e)
+                sentryClient.sendException(e)
             }
         }
     }
