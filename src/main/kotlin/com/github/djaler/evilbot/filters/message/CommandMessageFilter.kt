@@ -1,4 +1,4 @@
-package com.github.djaler.evilbot.filters
+package com.github.djaler.evilbot.filters.message
 
 import com.github.insanusmokrassar.TelegramBotAPI.types.ExtendedBot
 import com.github.insanusmokrassar.TelegramBotAPI.types.MessageEntity.textsources.BotCommandTextSource
@@ -6,10 +6,10 @@ import com.github.insanusmokrassar.TelegramBotAPI.types.message.CommonMessageImp
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.TextContent
 
-class CommandFilter(
+class CommandMessageFilter(
     private val command: Array<String>,
     botInfo: ExtendedBot
-) : Filter {
+) : MessageFilter {
     private val botUsername = botInfo.username.username
 
     override suspend fun filter(message: Message): Boolean {

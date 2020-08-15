@@ -2,7 +2,7 @@ package com.github.djaler.evilbot.handlers
 
 import com.github.djaler.evilbot.components.TelegramClient
 import com.github.djaler.evilbot.config.BotProperties
-import com.github.djaler.evilbot.filters.CanRestrictMemberFilter
+import com.github.djaler.evilbot.filters.message.CanRestrictMemberMessageFilter
 import com.github.djaler.evilbot.service.CaptchaService
 import com.github.djaler.evilbot.utils.*
 import com.github.insanusmokrassar.TelegramBotAPI.types.Bot
@@ -24,7 +24,7 @@ class SendCaptchaHandler(
     private val telegramClient: TelegramClient,
     private val captchaService: CaptchaService,
     private val botProperties: BotProperties,
-    canRestrictMemberFilter: CanRestrictMemberFilter
+    canRestrictMemberFilter: CanRestrictMemberMessageFilter
 ) : MessageHandler(filter = canRestrictMemberFilter) {
     companion object {
         private val CAPTCHA_MESSAGES = arrayOf("Аниме - моя жизнь", "Я отдаю свою жизнь и честь Ночному Дозору")

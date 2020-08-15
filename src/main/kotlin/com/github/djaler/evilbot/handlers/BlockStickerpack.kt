@@ -1,7 +1,7 @@
 package com.github.djaler.evilbot.handlers
 
 import com.github.djaler.evilbot.components.TelegramClient
-import com.github.djaler.evilbot.filters.ChatAdministratorFilter
+import com.github.djaler.evilbot.filters.message.ChatAdministratorMessageFilter
 import com.github.djaler.evilbot.service.BlockedStickerpackService
 import com.github.djaler.evilbot.service.ChatService
 import com.github.djaler.evilbot.utils.createCallbackDataForHandler
@@ -26,7 +26,7 @@ class BlockStickerpackHandler(
     private val telegramClient: TelegramClient,
     private val chatService: ChatService,
     private val blockedStickerpackService: BlockedStickerpackService,
-    chatAdministratorFilter: ChatAdministratorFilter
+    chatAdministratorFilter: ChatAdministratorMessageFilter
 ) : CommandHandler(
     botInfo,
     command = arrayOf("block_stickerpack"),
@@ -71,7 +71,7 @@ class UnblockStickerpackHandler(
     private val telegramClient: TelegramClient,
     private val chatService: ChatService,
     private val blockedStickerpackService: BlockedStickerpackService,
-    chatAdministratorFilter: ChatAdministratorFilter
+    chatAdministratorFilter: ChatAdministratorMessageFilter
 ) : CommandHandler(
     botInfo,
     command = arrayOf("unblock_stickerpack"),

@@ -1,4 +1,4 @@
-package com.github.djaler.evilbot.filters
+package com.github.djaler.evilbot.filters.message
 
 import com.github.djaler.evilbot.components.TelegramClient
 import com.github.insanusmokrassar.TelegramBotAPI.types.ChatMember.abstracts.AdministratorChatMember
@@ -8,9 +8,9 @@ import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Messag
 import org.springframework.stereotype.Component
 
 @Component
-class ChatAdministratorFilter(
+class ChatAdministratorMessageFilter(
     private val telegramClient: TelegramClient
-) : Filter {
+) : MessageFilter {
     override suspend fun filter(message: Message): Boolean {
         if (message !is FromUserMessage) {
             return false
