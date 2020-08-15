@@ -11,6 +11,8 @@ import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.chat.members.re
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.deleteMessage
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.edit.text.editMessageText
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.media.sendSticker
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.polls.sendQuizPoll
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.polls.sendRegularPoll
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.sendMessage
 import com.github.insanusmokrassar.TelegramBotAPI.requests.abstracts.InputFile
 import com.github.insanusmokrassar.TelegramBotAPI.types.CallbackQuery.CallbackQuery
@@ -25,6 +27,8 @@ import com.github.insanusmokrassar.TelegramBotAPI.types.chat.abstracts.extended.
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.ContentMessage
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.TextContent
+import com.github.insanusmokrassar.TelegramBotAPI.types.polls.QuizPoll
+import com.github.insanusmokrassar.TelegramBotAPI.types.polls.RegularPoll
 import org.springframework.stereotype.Component
 
 @Component
@@ -53,6 +57,20 @@ class TelegramClient(
             sticker = sticker,
             replyToMessageId = message.messageId,
             disableNotification = disableNotification
+        )
+    }
+
+    suspend fun replyPollTo(message: Message, poll: RegularPoll) {
+        requestsExecutor.sendRegularPoll(
+            chat = message.chat,
+            poll = poll
+        )
+    }
+
+    suspend fun replyPollTo(message: Message, poll: QuizPoll) {
+        requestsExecutor.sendQuizPoll(
+            chat = message.chat,
+            quizPoll = poll
         )
     }
 
