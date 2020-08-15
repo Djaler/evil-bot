@@ -2,6 +2,7 @@ package com.github.djaler.evilbot.handlers
 
 import com.github.djaler.evilbot.components.TelegramClient
 import com.github.djaler.evilbot.filters.message.ChatAdministratorMessageFilter
+import com.github.djaler.evilbot.filters.query.ChatAdministratorCallbackQueryFilter
 import com.github.djaler.evilbot.service.BlockedStickerpackService
 import com.github.djaler.evilbot.service.ChatService
 import com.github.djaler.evilbot.utils.createCallbackDataForHandler
@@ -131,8 +132,9 @@ class UnblockStickerpackHandler(
 @Component
 class UnblockStickerpackCallbackHandler(
     private val telegramClient: TelegramClient,
-    private val blockedStickerpackService: BlockedStickerpackService
-) : CallbackQueryHandler() {
+    private val blockedStickerpackService: BlockedStickerpackService,
+    chatAdministratorFilter: ChatAdministratorCallbackQueryFilter
+) : CallbackQueryHandler(filter = chatAdministratorFilter) {
     private val parseMode = HTML
 
     override suspend fun handleCallback(query: MessageDataCallbackQuery, data: String) {
