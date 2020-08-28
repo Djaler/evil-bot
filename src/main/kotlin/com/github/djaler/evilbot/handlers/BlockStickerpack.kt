@@ -7,6 +7,7 @@ import com.github.djaler.evilbot.service.BlockedStickerpackService
 import com.github.djaler.evilbot.service.ChatService
 import com.github.djaler.evilbot.utils.createCallbackDataForHandler
 import com.github.djaler.evilbot.utils.createStickerpackLink
+import com.github.djaler.evilbot.utils.usernameOrName
 import com.github.insanusmokrassar.TelegramBotAPI.types.CallbackQuery.MessageDataCallbackQuery
 import com.github.insanusmokrassar.TelegramBotAPI.types.ExtendedBot
 import com.github.insanusmokrassar.TelegramBotAPI.types.ParseMode.HTML
@@ -139,6 +140,7 @@ class UnblockStickerpackCallbackHandler(
 
     override suspend fun handleCallback(query: MessageDataCallbackQuery, data: String) {
         val message = query.message
+        val userWhoClicked = query.user.usernameOrName
 
         val stickerpack = blockedStickerpackService.getById(data.toInt())
         if (stickerpack == null) {
@@ -155,7 +157,8 @@ class UnblockStickerpackCallbackHandler(
         val packLink = createStickerpackLink(stickerpack.name, parseMode)
         telegramClient.changeText(
             message,
-            "Стикерпак $packLink успешно ${"разблокирован".bold(parseMode)}.",
+            "Стикерпак $packLink успешно ${"разблокирован".bold(parseMode)} " +
+                    "администратором ${userWhoClicked.bold(parseMode)}.",
             parseMode = parseMode
         )
     }
