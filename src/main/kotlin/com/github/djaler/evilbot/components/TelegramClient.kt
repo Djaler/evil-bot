@@ -14,6 +14,7 @@ import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.media.send
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.media.sendSticker
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.polls.sendQuizPoll
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.polls.sendRegularPoll
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.sendDice
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.sendMessage
 import com.github.insanusmokrassar.TelegramBotAPI.requests.abstracts.InputFile
 import com.github.insanusmokrassar.TelegramBotAPI.types.CallbackQuery.CallbackQuery
@@ -25,8 +26,10 @@ import com.github.insanusmokrassar.TelegramBotAPI.types.UserId
 import com.github.insanusmokrassar.TelegramBotAPI.types.buttons.InlineKeyboardMarkup
 import com.github.insanusmokrassar.TelegramBotAPI.types.chat.ChatPermissions
 import com.github.insanusmokrassar.TelegramBotAPI.types.chat.abstracts.extended.ExtendedChat
+import com.github.insanusmokrassar.TelegramBotAPI.types.dice.DiceAnimationType
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.ContentMessage
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.DiceContent
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.TextContent
 import com.github.insanusmokrassar.TelegramBotAPI.types.polls.QuizPoll
 import com.github.insanusmokrassar.TelegramBotAPI.types.polls.RegularPoll
@@ -41,14 +44,16 @@ class TelegramClient(
         message: Message,
         text: String,
         disableNotification: Boolean = false,
-        parseMode: ParseMode? = null
-    ) {
-        requestsExecutor.sendMessage(
+        parseMode: ParseMode? = null,
+        keyboard: InlineKeyboardMarkup? = null
+    ): ContentMessage<TextContent> {
+        return requestsExecutor.sendMessage(
             chat = message.chat,
             text = text,
             replyToMessageId = message.messageId,
             disableNotification = disableNotification,
-            parseMode = parseMode
+            parseMode = parseMode,
+            replyMarkup = keyboard
         )
     }
 
@@ -100,6 +105,10 @@ class TelegramClient(
 
     suspend fun sendStickerTo(chatId: ChatId, sticker: InputFile) {
         requestsExecutor.sendSticker(chatId, sticker)
+    }
+
+    suspend fun sendDiceTo(chatId: ChatId, animationType: DiceAnimationType): ContentMessage<DiceContent> {
+        return requestsExecutor.sendDice(chatId = chatId, animationType = animationType)
     }
 
     suspend fun changeText(
