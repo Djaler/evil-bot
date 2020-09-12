@@ -10,6 +10,7 @@ import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.chat.members.ki
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.chat.members.restrictChatMember
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.deleteMessage
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.edit.text.editMessageText
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.media.sendAnimation
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.media.sendSticker
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.polls.sendQuizPoll
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.polls.sendRegularPoll
@@ -56,6 +57,20 @@ class TelegramClient(
             chatId = message.chat.id,
             sticker = sticker,
             replyToMessageId = message.messageId,
+            disableNotification = disableNotification
+        )
+    }
+
+    suspend fun replyAnimationTo(
+        chatId: ChatId,
+        messageId: MessageIdentifier,
+        animation: InputFile,
+        disableNotification: Boolean = false
+    ) {
+        requestsExecutor.sendAnimation(
+            chatId = chatId,
+            animation = animation,
+            replyToMessageId = messageId,
             disableNotification = disableNotification
         )
     }

@@ -5,9 +5,11 @@ import com.github.djaler.evilbot.config.BotProperties
 import com.github.djaler.evilbot.filters.message.CanRestrictMemberMessageFilter
 import com.github.djaler.evilbot.service.CaptchaService
 import com.github.djaler.evilbot.utils.*
+import com.github.insanusmokrassar.TelegramBotAPI.requests.abstracts.FileId
 import com.github.insanusmokrassar.TelegramBotAPI.types.Bot
 import com.github.insanusmokrassar.TelegramBotAPI.types.CallbackQuery.MessageDataCallbackQuery
 import com.github.insanusmokrassar.TelegramBotAPI.types.ChatMember.RestrictedChatMember
+import com.github.insanusmokrassar.TelegramBotAPI.types.MessageIdentifier
 import com.github.insanusmokrassar.TelegramBotAPI.types.UserId
 import com.github.insanusmokrassar.TelegramBotAPI.types.buttons.InlineKeyboardButtons.CallbackDataInlineKeyboardButton
 import com.github.insanusmokrassar.TelegramBotAPI.types.buttons.InlineKeyboardMarkup
@@ -37,7 +39,7 @@ class SendCaptchaHandler(
         val chat = message.chat as? GroupChat ?: return false
         val newMembersEvent = message.chatEvent as? NewChatMembers ?: return false
 
-        var anyUser = false;
+        var anyUser = false
 
         for (member in newMembersEvent.members) {
             if (member is Bot) {
@@ -67,7 +69,7 @@ class SendCaptchaHandler(
                     listOf(
                         CallbackDataInlineKeyboardButton(
                             CAPTCHA_MESSAGES.random(), createCallbackDataForHandler(
-                                encodeCallbackData(member.id, permissions),
+                                encodeCallbackData(member.id, permissions, message.messageId),
                                 CaptchaCallbackHandler::class.java
                             )
                         )
@@ -100,6 +102,7 @@ class CaptchaCallbackHandler(
     private val captchaService: CaptchaService
 ) : CallbackQueryHandler() {
     companion object {
+        private val welcomeGif = FileId("CgACAgIAAx0CSNrJgAACAQFfXM-sSEnYFcgD6Xko5OReB_pHdgACTgADsuSgS3GU1zh-LXY2GwQ")
         private val ACCESS_RESTRICTED_MESSAGES = arrayOf("КУДА ЖМЁШЬ?!️! РУКУ УБРАЛ!", "У тебя здесь нет власти!")
     }
 
@@ -107,7 +110,7 @@ class CaptchaCallbackHandler(
         val chat = query.message.chat
         val user = query.user
 
-        val (suspectId, permissions) = parseCallbackData(data)
+        val (suspectId, permissions, replyMessage) = parseCallbackData(data)
 
         if (user.id != suspectId) {
             telegramClient.answerCallbackQuery(query, ACCESS_RESTRICTED_MESSAGES.random())
@@ -123,17 +126,19 @@ class CaptchaCallbackHandler(
         telegramClient.deleteMessage(query.message)
 
         captchaService.removeRestriction(chat.id, user.id)
+
+        telegramClient.replyAnimationTo(chat.id, replyMessage, welcomeGif)
     }
 }
 
-data class CallbackData(val memberId: UserId, val permissions: ChatPermissions?)
+data class CallbackData(val memberId: UserId, val permissions: ChatPermissions?, val replyMessage: MessageIdentifier)
 
-private fun encodeCallbackData(memberId: UserId, permissions: ChatPermissions?): String {
-    return "${memberId.userId}/${permissions.encode()}"
+private fun encodeCallbackData(memberId: UserId, permissions: ChatPermissions?, replyMessage: MessageIdentifier): String {
+    return "${memberId.userId}/${permissions.encode()}/${replyMessage}"
 }
 
 private fun parseCallbackData(callbackData: String): CallbackData {
-    val (memberId, permissions) = callbackData.split('/', limit = 2)
+    val (memberId, permissions, replyMessage) = callbackData.split('/', limit = 3)
 
-    return CallbackData(memberId.toInt().toChatId(), decodeChatPermission(permissions))
+    return CallbackData(memberId.toInt().toChatId(), decodeChatPermission(permissions), replyMessage.toLong())
 }
