@@ -26,6 +26,8 @@ class ReactionHandler(
 ) : MessageHandler() {
     private lateinit var reactions: List<Reaction>
 
+    override val order = Int.MAX_VALUE
+
     @PostConstruct
     fun init() {
         val resources = PathMatchingResourcePatternResolver().getResources("classpath:reactions/*.json")
