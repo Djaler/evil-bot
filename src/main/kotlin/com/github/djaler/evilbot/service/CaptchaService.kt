@@ -9,6 +9,7 @@ import com.github.insanusmokrassar.TelegramBotAPI.types.User
 import com.github.insanusmokrassar.TelegramBotAPI.types.UserId
 import com.github.insanusmokrassar.TelegramBotAPI.types.chat.abstracts.PublicChat
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.PossiblyReplyMessage
 import org.hibernate.exception.ConstraintViolationException
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -25,6 +26,7 @@ class CaptchaService(
         captchaMessage: Message
     ) {
         val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
+        val cubeMessageId = (captchaMessage as? PossiblyReplyMessage)?.replyTo?.messageId
 
         try {
             captchaRestrictionRepository.save(
@@ -32,7 +34,8 @@ class CaptchaService(
                     chatEntity,
                     member.id.userId,
                     LocalDateTime.now(),
-                    captchaMessage.messageId
+                    captchaMessage.messageId,
+                    cubeMessageId
                 )
             )
         } catch (e: ConstraintViolationException) {
