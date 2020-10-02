@@ -136,6 +136,10 @@ class TelegramClient(
         requestsExecutor.deleteMessage(message)
     }
 
+    suspend fun deleteMessage(chatId: ChatId, messageId: MessageIdentifier) {
+        requestsExecutor.deleteMessage(chatId, messageId)
+    }
+
     suspend fun getChatMember(chatId: ChatId, memberId: UserId): ChatMember {
         return requestsExecutor.getChatMember(chatId, memberId)
     }

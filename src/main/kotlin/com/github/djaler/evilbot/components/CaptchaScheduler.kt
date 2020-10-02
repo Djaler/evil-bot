@@ -27,6 +27,7 @@ class CaptchaScheduler(
                 val chatId = it.chat.telegramId.toChatId()
                 val messageId = it.captchaMessageId
                 val userId = it.memberTelegramId.toUserId()
+                val cubeMessageId = it.cubeMessageId
 
                 telegramClient.changeText(
                     chatId,
@@ -38,6 +39,9 @@ class CaptchaScheduler(
                 telegramClient.kickChatMember(chatId, userId)
 
                 captchaService.removeRestriction(chatId, userId)
+                if (cubeMessageId != null) {
+                    telegramClient.deleteMessage(chatId, cubeMessageId)
+                }
             }
         }
     }
