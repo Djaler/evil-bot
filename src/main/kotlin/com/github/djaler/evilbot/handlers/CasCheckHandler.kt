@@ -1,9 +1,11 @@
 package com.github.djaler.evilbot.handlers
 
 import com.github.djaler.evilbot.components.CasClient
-import com.github.djaler.evilbot.components.TelegramClient
 import com.github.djaler.evilbot.utils.userId
 import com.github.djaler.evilbot.utils.usernameOrName
+import com.github.insanusmokrassar.TelegramBotAPI.bot.RequestsExecutor
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.chat.members.kickChatMember
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.sendMessage
 import com.github.insanusmokrassar.TelegramBotAPI.types.Bot
 import com.github.insanusmokrassar.TelegramBotAPI.types.ParseMode.HTML
 import com.github.insanusmokrassar.TelegramBotAPI.types.chat.abstracts.PublicChat
@@ -16,7 +18,7 @@ import org.springframework.stereotype.Component
 @Component
 class CasCheckHandler(
     private val casClient: CasClient,
-    private val telegramClient: TelegramClient
+    private val requestsExecutor: RequestsExecutor
 ) : MessageHandler() {
     override val order = 0
 
@@ -39,13 +41,13 @@ class CasCheckHandler(
             val casInfo = casClient.getCasInfo(member.id.userId)
 
             if (casInfo.result !== null) {
-                telegramClient.sendTextTo(
+                requestsExecutor.sendMessage(
                     chat.id,
                     "${member.usernameOrName}, пошёл нахер! " +
                             "Ты забанен в ${("CAS" to "https://cas.chat/query?u=${member.id.userId}").link(parseMode)}",
                     parseMode = parseMode
                 )
-                telegramClient.kickChatMember(chat.id, member.id)
+                requestsExecutor.kickChatMember(chat.id, member.id)
 
                 anyBlocked = true
             }

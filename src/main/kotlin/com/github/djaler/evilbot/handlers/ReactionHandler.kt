@@ -2,8 +2,9 @@ package com.github.djaler.evilbot.handlers
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.github.djaler.evilbot.components.TelegramClient
 import com.github.djaler.evilbot.model.Reaction
+import com.github.insanusmokrassar.TelegramBotAPI.bot.RequestsExecutor
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.sendMessage
 import com.github.insanusmokrassar.TelegramBotAPI.types.ExtendedBot
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.ContentMessage
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.FromUserMessage
@@ -22,7 +23,7 @@ class ReactionHandler(
     private val objectMapper: ObjectMapper,
     private val validator: Validator,
     private val botInfo: ExtendedBot,
-    private val telegramClient: TelegramClient
+    private val requestsExecutor: RequestsExecutor
 ) : MessageHandler() {
     private lateinit var reactions: List<Reaction>
 
@@ -74,7 +75,7 @@ class ReactionHandler(
                 continue
             }
 
-            telegramClient.replyTextTo(message, reaction.reactions.random())
+            requestsExecutor.sendMessage(message.chat, reaction.reactions.random(), replyToMessageId = message.messageId)
 
             return true
         }

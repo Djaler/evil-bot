@@ -1,6 +1,7 @@
 package com.github.djaler.evilbot.handlers
 
-import com.github.djaler.evilbot.components.TelegramClient
+import com.github.insanusmokrassar.TelegramBotAPI.bot.RequestsExecutor
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.media.sendSticker
 import com.github.insanusmokrassar.TelegramBotAPI.requests.abstracts.FileId
 import com.github.insanusmokrassar.TelegramBotAPI.types.ExtendedBot
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.CommonMessageImpl
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class PayRespectHandler(
-    private val telegramClient: TelegramClient,
+    private val requestsExecutor: RequestsExecutor,
     botInfo: ExtendedBot
 ) : CommandHandler(
     botInfo,
@@ -25,9 +26,9 @@ class PayRespectHandler(
 
         val replyTo = message.replyTo
         if (replyTo !== null) {
-            telegramClient.replyStickerTo(replyTo, sticker)
+            requestsExecutor.sendSticker(replyTo.chat.id, sticker, replyToMessageId = replyTo.messageId)
         } else {
-            telegramClient.sendStickerTo(message.chat.id, sticker)
+            requestsExecutor.sendSticker(message.chat.id, sticker)
         }
     }
 }

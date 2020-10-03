@@ -1,6 +1,5 @@
 package com.github.djaler.evilbot.handlers
 
-import com.github.djaler.evilbot.components.TelegramClient
 import com.github.djaler.evilbot.filters.message.ChatAdministratorMessageFilter
 import com.github.djaler.evilbot.filters.query.ChatAdministratorCallbackQueryFilter
 import com.github.djaler.evilbot.service.BlockedStickerpackService
@@ -8,6 +7,10 @@ import com.github.djaler.evilbot.service.ChatService
 import com.github.djaler.evilbot.utils.createCallbackDataForHandler
 import com.github.djaler.evilbot.utils.createStickerpackLink
 import com.github.djaler.evilbot.utils.usernameOrName
+import com.github.insanusmokrassar.TelegramBotAPI.bot.RequestsExecutor
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.deleteMessage
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.edit.text.editMessageText
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.sendMessage
 import com.github.insanusmokrassar.TelegramBotAPI.types.CallbackQuery.MessageDataCallbackQuery
 import com.github.insanusmokrassar.TelegramBotAPI.types.ExtendedBot
 import com.github.insanusmokrassar.TelegramBotAPI.types.ParseMode.HTML
@@ -25,7 +28,7 @@ import org.springframework.stereotype.Component
 @Component
 class BlockStickerpackHandler(
     botInfo: ExtendedBot,
-    private val telegramClient: TelegramClient,
+    private val requestsExecutor: RequestsExecutor,
     private val chatService: ChatService,
     private val blockedStickerpackService: BlockedStickerpackService,
     chatAdministratorFilter: ChatAdministratorMessageFilter
@@ -46,7 +49,7 @@ class BlockStickerpackHandler(
 
         val stickerSetName = stickerContent.media.stickerSetName
         if (stickerSetName == null) {
-            telegramClient.sendTextTo(chat.id, "Стикерпак недоступен")
+            requestsExecutor.sendMessage(chat.id, "Стикерпак недоступен")
             return
         }
 
@@ -63,14 +66,14 @@ class BlockStickerpackHandler(
                 "Стикерпак $packLink ${"уже заблокирован".bold(parseMode)}"
             }
 
-        telegramClient.sendTextTo(chat.id, responseText, parseMode = parseMode)
+        requestsExecutor.sendMessage(chat.id, responseText, parseMode = parseMode)
     }
 }
 
 @Component
 class UnblockStickerpackHandler(
     botInfo: ExtendedBot,
-    private val telegramClient: TelegramClient,
+    private val requestsExecutor: RequestsExecutor,
     private val chatService: ChatService,
     private val blockedStickerpackService: BlockedStickerpackService,
     chatAdministratorFilter: ChatAdministratorMessageFilter
@@ -89,9 +92,10 @@ class UnblockStickerpackHandler(
 
         val blockedStickerpacks = blockedStickerpackService.getAll(chatEntity)
         if (blockedStickerpacks.isEmpty()) {
-            telegramClient.replyTextTo(
-                message,
+            requestsExecutor.sendMessage(
+                message.chat.id,
                 "Заблокированных стикерпаков ${"нет".bold(parseMode)}",
+                replyToMessageId = message.messageId,
                 parseMode = parseMode
             )
             return
@@ -121,10 +125,10 @@ class UnblockStickerpackHandler(
 
             Какой ${"разблокировать".bold(parseMode)}?""".trimIndent()
 
-        telegramClient.sendTextTo(
+        requestsExecutor.sendMessage(
             message.chat.id,
             text,
-            keyboard = keyboard,
+            replyMarkup = keyboard,
             parseMode = parseMode
         )
     }
@@ -132,7 +136,7 @@ class UnblockStickerpackHandler(
 
 @Component
 class UnblockStickerpackCallbackHandler(
-    private val telegramClient: TelegramClient,
+    private val requestsExecutor: RequestsExecutor,
     private val blockedStickerpackService: BlockedStickerpackService,
     chatAdministratorFilter: ChatAdministratorCallbackQueryFilter
 ) : CallbackQueryHandler(filter = chatAdministratorFilter) {
@@ -144,8 +148,9 @@ class UnblockStickerpackCallbackHandler(
 
         val stickerpack = blockedStickerpackService.getById(data.toInt())
         if (stickerpack == null) {
-            telegramClient.changeText(
-                message,
+            requestsExecutor.editMessageText(
+                message.chat.id,
+                message.messageId,
                 "Выбранный стикерпак ${"не был найден".bold(parseMode)} в списке заблокированных.",
                 parseMode = parseMode
             )
@@ -155,8 +160,9 @@ class UnblockStickerpackCallbackHandler(
         blockedStickerpackService.unblock(stickerpack)
 
         val packLink = createStickerpackLink(stickerpack.name, parseMode)
-        telegramClient.changeText(
-            message,
+        requestsExecutor.editMessageText(
+            message.chat.id,
+            message.messageId,
             "Стикерпак $packLink успешно ${"разблокирован".bold(parseMode)} " +
                     "администратором ${userWhoClicked.bold(parseMode)}.",
             parseMode = parseMode
@@ -166,7 +172,7 @@ class UnblockStickerpackCallbackHandler(
 
 @Component
 class StickersWatchDog(
-    private val telegramClient: TelegramClient,
+    private val requestsExecutor: RequestsExecutor,
     private val chatService: ChatService,
     private val blockedStickerpackService: BlockedStickerpackService
 ) : MessageHandler() {
@@ -184,7 +190,7 @@ class StickersWatchDog(
         val stickerSetName = stickerContent.media.stickerSetName ?: return true
 
         if (blockedStickerpackService.isBlocked(stickerSetName, chatEntity)) {
-            telegramClient.deleteMessage(message)
+            requestsExecutor.deleteMessage(message)
         }
 
         return true
