@@ -1,6 +1,9 @@
 package com.github.djaler.evilbot.handlers
 
-import com.github.djaler.evilbot.components.TelegramClient
+import com.github.insanusmokrassar.TelegramBotAPI.bot.RequestsExecutor
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.polls.sendQuizPoll
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.polls.sendRegularPoll
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.sendMessage
 import com.github.insanusmokrassar.TelegramBotAPI.types.ExtendedBot
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.CommonMessageImpl
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.ContentMessage
@@ -16,7 +19,7 @@ import org.unix4j.Unix4j
 
 @Component
 class SedHandler(
-    private val telegramClient: TelegramClient,
+    private val requestsExecutor: RequestsExecutor,
     private val sentryClient: SentryClient,
     botInfo: ExtendedBot
 ) : CommandHandler(
@@ -30,7 +33,7 @@ class SedHandler(
 
     override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
         if (args === null) {
-            telegramClient.replyTextTo(message, "Ну а где выражение для sed?")
+            requestsExecutor.sendMessage(message.chat.id, "Ну а где выражение для sed?", replyToMessageId = message.messageId)
             return
         }
 
@@ -47,7 +50,7 @@ class SedHandler(
                 }
             }
         } catch (e: IllegalArgumentException) {
-            telegramClient.replyTextTo(message, e.localizedMessage)
+            requestsExecutor.sendMessage(message.chat.id, e.localizedMessage, replyToMessageId = message.messageId)
         }
     }
 
@@ -57,7 +60,7 @@ class SedHandler(
         replyTo: ContentMessage<*>
     ) {
         val result = applySed(text, args)
-        telegramClient.replyTextTo(replyTo, result)
+        requestsExecutor.sendMessage(replyTo.chat.id, result, replyToMessageId = replyTo.messageId)
     }
 
     private suspend fun handlePoll(
@@ -78,7 +81,7 @@ class SedHandler(
                     question = newQuestion,
                     options = newOptions
                 )
-                telegramClient.replyPollTo(replyTo, newPoll)
+                requestsExecutor.sendRegularPoll(replyTo.chat, poll = newPoll, replyToMessageId = replyTo.messageId)
             }
             is QuizPoll -> {
                 val newPoll = poll.copy(
@@ -86,7 +89,7 @@ class SedHandler(
                     options = newOptions,
                     explanation = poll.explanation?.let { applySed(it, args) }
                 )
-                telegramClient.replyPollTo(replyTo, newPoll)
+                requestsExecutor.sendQuizPoll(replyTo.chat, quizPoll = newPoll)
             }
             is UnknownPollType -> {
                 log.error("Unknown poll type: $poll")

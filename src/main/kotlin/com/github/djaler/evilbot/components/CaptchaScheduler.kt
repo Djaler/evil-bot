@@ -2,6 +2,10 @@ package com.github.djaler.evilbot.components
 
 import com.github.djaler.evilbot.service.CaptchaService
 import com.github.djaler.evilbot.utils.toUserId
+import com.github.insanusmokrassar.TelegramBotAPI.bot.RequestsExecutor
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.chat.members.kickChatMember
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.deleteMessage
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.edit.text.editMessageText
 import com.github.insanusmokrassar.TelegramBotAPI.types.ParseMode.HTML
 import com.github.insanusmokrassar.TelegramBotAPI.types.link
 import com.github.insanusmokrassar.TelegramBotAPI.types.toChatId
@@ -13,7 +17,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class CaptchaScheduler(
-    private val telegramClient: TelegramClient,
+    private val requestsExecutor: RequestsExecutor,
     private val captchaService: CaptchaService
 ) {
     private val parseMode = HTML
@@ -29,18 +33,18 @@ class CaptchaScheduler(
                 val userId = it.memberTelegramId.toUserId()
                 val cubeMessageId = it.cubeMessageId
 
-                telegramClient.changeText(
+                requestsExecutor.editMessageText(
                     chatId,
                     messageId,
                     "${("Ты" to userId.link).link(parseMode)} молчал слишком долго, прощай",
                     parseMode
                 )
 
-                telegramClient.kickChatMember(chatId, userId)
+                requestsExecutor.kickChatMember(chatId, userId)
 
                 captchaService.removeRestriction(chatId, userId)
                 if (cubeMessageId != null) {
-                    telegramClient.deleteMessage(chatId, cubeMessageId)
+                    requestsExecutor.deleteMessage(chatId, cubeMessageId)
                 }
             }
         }

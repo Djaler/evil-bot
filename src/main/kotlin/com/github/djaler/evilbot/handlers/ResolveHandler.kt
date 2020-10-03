@@ -1,6 +1,7 @@
 package com.github.djaler.evilbot.handlers
 
-import com.github.djaler.evilbot.components.TelegramClient
+import com.github.insanusmokrassar.TelegramBotAPI.bot.RequestsExecutor
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.sendMessage
 import com.github.insanusmokrassar.TelegramBotAPI.types.ExtendedBot
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.CommonMessageImpl
 import org.springframework.stereotype.Component
@@ -8,7 +9,7 @@ import kotlin.random.Random
 
 @Component
 class ResolveHandler(
-    private val telegramClient: TelegramClient,
+    private val requestsExecutor: RequestsExecutor,
     botInfo: ExtendedBot
 ) : CommandHandler(
     botInfo,
@@ -17,7 +18,7 @@ class ResolveHandler(
 ) {
     override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
         if (args === null) {
-            telegramClient.replyTextTo(message, "Ну а где варианты? Пришли варианты, разделенные слэшом (/)")
+            requestsExecutor.sendMessage(message.chat, "Ну а где варианты? Пришли варианты, разделенные слэшом (/)", replyToMessageId = message.messageId)
             return
         }
 
@@ -33,6 +34,6 @@ class ResolveHandler(
             else -> variants.random()
         }
 
-        telegramClient.replyTextTo(message, answerText)
+        requestsExecutor.sendMessage(message.chat, answerText, replyToMessageId = message.messageId)
     }
 }
