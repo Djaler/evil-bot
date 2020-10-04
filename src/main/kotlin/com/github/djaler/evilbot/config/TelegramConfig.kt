@@ -1,10 +1,9 @@
 package com.github.djaler.evilbot.config
 
-import com.github.insanusmokrassar.TelegramBotAPI.bot.Ktor.KtorRequestsExecutor
 import com.github.insanusmokrassar.TelegramBotAPI.bot.RequestsExecutor
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.bot.getMe
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.telegramBot
 import com.github.insanusmokrassar.TelegramBotAPI.types.ExtendedBot
-import com.github.insanusmokrassar.TelegramBotAPI.utils.TelegramAPIUrlsKeeper
 import kotlinx.coroutines.runBlocking
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -13,7 +12,7 @@ import org.springframework.context.annotation.Configuration
 class TelegramConfig {
     @Bean
     fun requestsExecutor(telegramProperties: TelegramProperties): RequestsExecutor {
-        return KtorRequestsExecutor(TelegramAPIUrlsKeeper(telegramProperties.token))
+        return telegramBot(telegramProperties.token)
     }
 
     @Bean
