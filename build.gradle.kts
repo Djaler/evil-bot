@@ -38,9 +38,9 @@ dependencies {
 
     implementation("com.github.insanusmokrassar:TelegramBotAPI-all:0.27.10")
 
-    implementation("io.ktor:ktor-server-netty:1.3.2")
-    implementation("io.ktor:ktor-client-apache:1.3.2")
-    implementation("io.ktor:ktor-client-jackson:1.3.2")
+    implementation("io.ktor:ktor-server-netty:1.4.1")
+    implementation("io.ktor:ktor-client-apache:1.4.1")
+    implementation("io.ktor:ktor-client-jackson:1.4.1")
 
     implementation("io.sentry:sentry:1.7.30")
 
