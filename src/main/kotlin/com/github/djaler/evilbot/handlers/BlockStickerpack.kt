@@ -11,6 +11,7 @@ import com.github.insanusmokrassar.TelegramBotAPI.bot.RequestsExecutor
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.deleteMessage
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.edit.text.editMessageText
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.sendMessage
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.utils.formatting.bold
 import com.github.insanusmokrassar.TelegramBotAPI.types.CallbackQuery.MessageDataCallbackQuery
 import com.github.insanusmokrassar.TelegramBotAPI.types.ExtendedBot
 import com.github.insanusmokrassar.TelegramBotAPI.types.ParseMode.HTML
@@ -22,7 +23,6 @@ import com.github.insanusmokrassar.TelegramBotAPI.types.message.CommonMessageImp
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.ContentMessage
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.media.StickerContent
-import com.github.insanusmokrassar.TelegramBotAPI.utils.bold
 import org.springframework.stereotype.Component
 
 @Component

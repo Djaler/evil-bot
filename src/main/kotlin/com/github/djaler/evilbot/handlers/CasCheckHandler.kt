@@ -6,13 +6,13 @@ import com.github.djaler.evilbot.utils.usernameOrName
 import com.github.insanusmokrassar.TelegramBotAPI.bot.RequestsExecutor
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.chat.members.kickChatMember
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.sendMessage
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.utils.formatting.link
 import com.github.insanusmokrassar.TelegramBotAPI.types.Bot
 import com.github.insanusmokrassar.TelegramBotAPI.types.ParseMode.HTML
 import com.github.insanusmokrassar.TelegramBotAPI.types.chat.abstracts.PublicChat
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.ChatEvents.NewChatMembers
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.ChatEventMessage
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
-import com.github.insanusmokrassar.TelegramBotAPI.utils.link
 import org.springframework.stereotype.Component
 
 @Component

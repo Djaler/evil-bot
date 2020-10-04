@@ -6,10 +6,10 @@ import com.github.insanusmokrassar.TelegramBotAPI.bot.RequestsExecutor
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.chat.members.kickChatMember
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.deleteMessage
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.edit.text.editMessageText
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.utils.formatting.link
 import com.github.insanusmokrassar.TelegramBotAPI.types.ParseMode.HTML
 import com.github.insanusmokrassar.TelegramBotAPI.types.link
 import com.github.insanusmokrassar.TelegramBotAPI.types.toChatId
-import com.github.insanusmokrassar.TelegramBotAPI.utils.link
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.springframework.scheduling.annotation.Scheduled

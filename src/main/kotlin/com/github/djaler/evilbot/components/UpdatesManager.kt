@@ -3,7 +3,7 @@ package com.github.djaler.evilbot.components
 import com.github.djaler.evilbot.handlers.CommandHandler
 import com.github.djaler.evilbot.handlers.UpdateHandler
 import com.github.insanusmokrassar.TelegramBotAPI.types.BotCommand
-import com.github.insanusmokrassar.TelegramBotAPI.types.update.abstracts.UnknownUpdateType
+import com.github.insanusmokrassar.TelegramBotAPI.types.update.abstracts.UnknownUpdate
 import com.github.insanusmokrassar.TelegramBotAPI.types.update.abstracts.Update
 import io.sentry.SentryClient
 import io.sentry.event.Breadcrumb
@@ -36,7 +36,7 @@ class UpdatesManager(
     suspend fun processUpdate(update: Update) {
         sentryClient.clearContext()
 
-        if (update is UnknownUpdateType) {
+        if (update is UnknownUpdate) {
             log.error("Unknown update type: $update")
 
             sentryClient.context.addExtra("update", update)
