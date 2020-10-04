@@ -8,7 +8,7 @@ import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.bot.setMyComman
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.utils.updates.retrieving.setWebhookInfoAndStartListenWebhooks
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.utils.updates.retrieving.startGettingOfUpdatesByLongPolling
 import com.github.insanusmokrassar.TelegramBotAPI.requests.webhook.SetWebhook
-import io.ktor.server.netty.Netty
+import io.ktor.server.netty.*
 import io.sentry.SentryClient
 import kotlinx.coroutines.runBlocking
 import org.apache.logging.log4j.LogManager
@@ -79,8 +79,8 @@ class BotInitializer(
         }
     }
 
-    private suspend fun handleException(exception: Exception) {
-        log.error("Exception in update parsing", exception)
-        sentryClient.sendException(exception)
+    private suspend fun handleException(throwable: Throwable) {
+        log.error("Exception in update parsing", throwable)
+        sentryClient.sendException(throwable)
     }
 }
