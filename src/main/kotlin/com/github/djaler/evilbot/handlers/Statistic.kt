@@ -53,7 +53,7 @@ class DisplayStatisticHandler(
         if (statistic == null) {
             requestsExecutor.sendMessage(
                 message.chat,
-                "Ты не ${userEntity.getFormByGender("писал", "писала")} ещё ничего, алло",
+                "Ты не ${userEntity.gender.getFormByGender("писал", "писала","писало")} ещё ничего, алло",
                 replyToMessageId = message.messageId
             )
             return
@@ -63,7 +63,7 @@ class DisplayStatisticHandler(
 
         requestsExecutor.sendMessage(
             message.chat,
-            "Ты ${userEntity.getFormByGender("написал", "написала")} $count никому не ${count.getForm(
+            "Ты ${userEntity.gender.getFormByGender("написал", "написала","написало")} $count никому не ${count.getForm(
                 "нужное сообщение",
                 "нужных сообщения",
                 "нужных сообщений"
