@@ -1,6 +1,8 @@
 package com.github.djaler.evilbot.handlers
 
+import com.github.djaler.evilbot.enums.UserGender
 import com.github.djaler.evilbot.service.UserService
+import com.github.djaler.evilbot.utils.getFormByGender
 import com.github.insanusmokrassar.TelegramBotAPI.bot.RequestsExecutor
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.sendMessage
 import com.github.insanusmokrassar.TelegramBotAPI.types.ExtendedBot
@@ -9,20 +11,35 @@ import org.springframework.stereotype.Component
 
 @Component
 class SwitchGenderHandler(
-    private val requestsExecutor: RequestsExecutor,
-    private val userService: UserService,
-    botInfo: ExtendedBot
+        private val requestsExecutor: RequestsExecutor,
+        private val userService: UserService,
+        botInfo: ExtendedBot
 ) : CommandHandler(
-    botInfo,
-    command = arrayOf("switch_gender"),
-    commandDescription = "сменить пол"
+        botInfo,
+        command = arrayOf("switch_gender"),
+        commandDescription = "сменить пол"
 ) {
+
     override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
         val (userEntity, _) = userService.getOrCreateUserFrom(message.user)
-
-        userService.switchGender(userEntity)
-
-        val newGender = if (userEntity.male) "девочка" else "мальчик"
-        requestsExecutor.sendMessage(message.chat, "Хорошо, теперь ты $newGender", replyToMessageId = message.messageId)
+        var allGenders = enumValues<UserGender>()
+        var newGender = userEntity.gender
+        var genderMessage = true
+        if (args === null){
+            newGender = allGenders[(userEntity.gender.ordinal + 1) % allGenders.size]
+        }
+        else{
+                try { UserGender.valueOf(args)
+                    newGender = UserGender.valueOf(args) }
+                catch (e: IllegalArgumentException) { genderMessage = false }
+        }
+        if (genderMessage) {
+            userService.switchGender(userEntity, newGender)
+            requestsExecutor.sendMessage(message.chat, "Хорошо, теперь ты ${newGender.getFormByGender("мальчик", "девочка", "оно")}.", replyToMessageId = message.messageId)
+        }
+        else
+        {
+            requestsExecutor.sendMessage(message.chat, "Такого гендера нет, ты все еще ${newGender.getFormByGender("мальчик", "девочка", "оно")}.", replyToMessageId = message.messageId)
+        }
     }
 }
