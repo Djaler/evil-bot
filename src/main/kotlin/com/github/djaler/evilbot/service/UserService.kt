@@ -27,7 +27,7 @@ class UserService(
             GetOrCreateResult(user, false)
         } else {
             GetOrCreateResult(
-                userRepository.save(User(telegramUser.usernameOrName, telegramUser.id.userId, UserGender.MALE)),
+                userRepository.save(User(telegramUser.usernameOrName, telegramUser.id.userId, UserGender.IT)),
                 true
             )
         }

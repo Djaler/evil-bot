@@ -25,6 +25,6 @@ class SwitchGenderHandler(
         val newGender = allGenders[(userEntity.gender.ordinal + 1) % allGenders.size]
 
         userService.switchGender(userEntity, newGender)
-        requestsExecutor.sendMessage(message.chat, "Хорошо, теперь ты ${newGender.getFormByGender("мальчик", "девочка")}", replyToMessageId = message.messageId)
+        requestsExecutor.sendMessage(message.chat, "Хорошо, теперь ты ${newGender.getFormByGender("мальчик", "девочка", "оно")}", replyToMessageId = message.messageId)
     }
 }
