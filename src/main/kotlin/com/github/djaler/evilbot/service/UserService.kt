@@ -3,6 +3,7 @@ package com.github.djaler.evilbot.service
 import com.github.djaler.evilbot.entity.Chat
 import com.github.djaler.evilbot.entity.User
 import com.github.djaler.evilbot.entity.UserChatStatistic
+import com.github.djaler.evilbot.enums.UserGender
 import com.github.djaler.evilbot.model.GetOrCreateResult
 import com.github.djaler.evilbot.repository.UserRepository
 import com.github.djaler.evilbot.repository.UserStatisticRepository
@@ -26,7 +27,7 @@ class UserService(
             GetOrCreateResult(user, false)
         } else {
             GetOrCreateResult(
-                userRepository.save(User(telegramUser.usernameOrName, telegramUser.id.userId)),
+                userRepository.save(User(telegramUser.usernameOrName, telegramUser.id.userId, UserGender.MALE)),
                 true
             )
         }
@@ -40,8 +41,8 @@ class UserService(
         userRepository.save(user.copy(username = actualUsername))
     }
 
-    fun switchGender(user: User) {
-        userRepository.save(user.copy(male = !user.male))
+    fun switchGender(user: User, newGender: UserGender) {
+        userRepository.save(user.copy(gender = newGender))
     }
 
     @Transactional

@@ -37,6 +37,6 @@ class KtoZloyHandler(
 
         val username = if (randomUser.telegramId == message.user.id.userId) "ты" else randomUser.username
 
-        requestsExecutor.sendMessage(message.chat, "$username ${randomUser.getFormByGender("злой", "злая")}", replyToMessageId = message.messageId)
+        requestsExecutor.sendMessage(message.chat, "$username ${randomUser.gender.getFormByGender("злой", "злая")}", replyToMessageId = message.messageId)
     }
 }
