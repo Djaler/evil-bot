@@ -1,5 +1,9 @@
 package com.github.djaler.evilbot.utils
 
-import com.github.djaler.evilbot.entity.User
+import com.github.djaler.evilbot.enums.UserGender
 
-fun User.getFormByGender(male: String, female: String) = if (this.male) male else female
+fun UserGender.getFormByGender(male: String, female: String) =
+    when (this) {
+        UserGender.MALE -> male
+        UserGender.FEMALE -> female
+    }

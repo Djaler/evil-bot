@@ -1,5 +1,6 @@
 package com.github.djaler.evilbot.entity
 
+import com.github.djaler.evilbot.enums.UserGender
 import javax.persistence.*
 
 @Entity
@@ -12,7 +13,8 @@ data class User(
     val telegramId: Int,
 
     @Column
-    val male: Boolean = true,
+    @Enumerated(EnumType.STRING)
+    val gender: UserGender,
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
