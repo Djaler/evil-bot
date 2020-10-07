@@ -3,18 +3,21 @@ package com.github.djaler.evilbot.handlers
 import com.github.insanusmokrassar.TelegramBotAPI.bot.RequestsExecutor
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.media.sendAnimation
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.media.sendPhoto
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.media.sendVideo
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.polls.sendQuizPoll
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.polls.sendRegularPoll
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.sendMessage
 import com.github.insanusmokrassar.TelegramBotAPI.requests.abstracts.FileId
 import com.github.insanusmokrassar.TelegramBotAPI.types.ExtendedBot
 import com.github.insanusmokrassar.TelegramBotAPI.types.files.AnimationFile
+import com.github.insanusmokrassar.TelegramBotAPI.types.files.VideoFile
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.CommonMessageImpl
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.ContentMessage
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.PollContent
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.TextContent
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.media.AnimationContent
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.media.PhotoContent
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.media.VideoContent
 import com.github.insanusmokrassar.TelegramBotAPI.types.polls.*
 import io.sentry.SentryClient
 import io.sentry.event.Event
@@ -61,6 +64,11 @@ class SedHandler(
                         handleAnimation(content.media, it, args, replyTo)
                     }
                 }
+                is VideoContent -> {
+                    content.caption?.let {
+                        handleVideo(content.media, it, args, replyTo)
+                    }
+                }
                 is PollContent -> {
                     handlePoll(content.poll, args, replyTo)
                 }
@@ -88,6 +96,16 @@ class SedHandler(
     ) {
         val result = applySed(text, args)
         requestsExecutor.sendAnimation(replyTo.chat.id, animationFile, result, replyToMessageId = replyTo.messageId)
+    }
+
+    private suspend fun handleVideo(
+        videoFile: VideoFile,
+        text: String,
+        args: String,
+        replyTo: ContentMessage<*>
+    ) {
+        val result = applySed(text, args)
+        requestsExecutor.sendVideo(replyTo.chat.id, videoFile, result, replyToMessageId = replyTo.messageId)
     }
 
     private suspend fun handleText(
