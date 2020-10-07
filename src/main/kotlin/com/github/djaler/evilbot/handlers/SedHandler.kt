@@ -1,16 +1,19 @@
 package com.github.djaler.evilbot.handlers
 
 import com.github.insanusmokrassar.TelegramBotAPI.bot.RequestsExecutor
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.media.sendAnimation
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.media.sendPhoto
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.polls.sendQuizPoll
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.polls.sendRegularPoll
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.sendMessage
 import com.github.insanusmokrassar.TelegramBotAPI.requests.abstracts.FileId
 import com.github.insanusmokrassar.TelegramBotAPI.types.ExtendedBot
+import com.github.insanusmokrassar.TelegramBotAPI.types.files.AnimationFile
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.CommonMessageImpl
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.ContentMessage
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.PollContent
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.TextContent
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.media.AnimationContent
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.media.PhotoContent
 import com.github.insanusmokrassar.TelegramBotAPI.types.polls.*
 import io.sentry.SentryClient
@@ -53,6 +56,11 @@ class SedHandler(
                         handlePhoto(content.media.fileId, it, args, replyTo)
                     }
                 }
+                is AnimationContent -> {
+                    content.caption?.let {
+                        handleAnimation(content.media, it, args, replyTo)
+                    }
+                }
                 is PollContent -> {
                     handlePoll(content.poll, args, replyTo)
                 }
@@ -70,6 +78,16 @@ class SedHandler(
     ) {
         val result = applySed(text, args)
         requestsExecutor.sendPhoto(replyTo.chat.id, fileId, result, replyToMessageId = replyTo.messageId)
+    }
+
+    private suspend fun handleAnimation(
+        animationFile: AnimationFile,
+        text: String,
+        args: String,
+        replyTo: ContentMessage<*>
+    ) {
+        val result = applySed(text, args)
+        requestsExecutor.sendAnimation(replyTo.chat.id, animationFile, result, replyToMessageId = replyTo.messageId)
     }
 
     private suspend fun handleText(
