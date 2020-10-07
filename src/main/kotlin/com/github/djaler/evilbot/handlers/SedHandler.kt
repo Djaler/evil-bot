@@ -1,14 +1,17 @@
 package com.github.djaler.evilbot.handlers
 
 import com.github.insanusmokrassar.TelegramBotAPI.bot.RequestsExecutor
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.media.sendPhoto
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.polls.sendQuizPoll
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.polls.sendRegularPoll
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.sendMessage
+import com.github.insanusmokrassar.TelegramBotAPI.requests.abstracts.FileId
 import com.github.insanusmokrassar.TelegramBotAPI.types.ExtendedBot
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.CommonMessageImpl
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.ContentMessage
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.PollContent
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.TextContent
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.media.PhotoContent
 import com.github.insanusmokrassar.TelegramBotAPI.types.polls.*
 import io.sentry.SentryClient
 import io.sentry.event.Event
@@ -45,6 +48,11 @@ class SedHandler(
                 is TextContent -> {
                     handleText(content.text, args, replyTo)
                 }
+                is PhotoContent -> {
+                    content.caption?.let {
+                        handlePhoto(content.media.fileId, it, args, replyTo)
+                    }
+                }
                 is PollContent -> {
                     handlePoll(content.poll, args, replyTo)
                 }
@@ -52,6 +60,16 @@ class SedHandler(
         } catch (e: IllegalArgumentException) {
             requestsExecutor.sendMessage(message.chat.id, e.localizedMessage, replyToMessageId = message.messageId)
         }
+    }
+
+    private suspend fun handlePhoto(
+        fileId: FileId,
+        text: String,
+        args: String,
+        replyTo: ContentMessage<*>
+    ) {
+        val result = applySed(text, args)
+        requestsExecutor.sendPhoto(replyTo.chat.id, fileId, result, replyToMessageId = replyTo.messageId)
     }
 
     private suspend fun handleText(
