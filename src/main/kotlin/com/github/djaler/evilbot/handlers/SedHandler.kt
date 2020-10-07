@@ -1,23 +1,21 @@
 package com.github.djaler.evilbot.handlers
 
 import com.github.insanusmokrassar.TelegramBotAPI.bot.RequestsExecutor
-import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.media.sendAnimation
-import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.media.sendPhoto
-import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.media.sendVideo
+import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.media.*
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.polls.sendQuizPoll
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.polls.sendRegularPoll
 import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.sendMessage
 import com.github.insanusmokrassar.TelegramBotAPI.requests.abstracts.FileId
 import com.github.insanusmokrassar.TelegramBotAPI.types.ExtendedBot
 import com.github.insanusmokrassar.TelegramBotAPI.types.files.AnimationFile
+import com.github.insanusmokrassar.TelegramBotAPI.types.files.AudioFile
 import com.github.insanusmokrassar.TelegramBotAPI.types.files.VideoFile
+import com.github.insanusmokrassar.TelegramBotAPI.types.files.VoiceFile
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.CommonMessageImpl
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.ContentMessage
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.PollContent
 import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.TextContent
-import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.media.AnimationContent
-import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.media.PhotoContent
-import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.media.VideoContent
+import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.media.*
 import com.github.insanusmokrassar.TelegramBotAPI.types.polls.*
 import io.sentry.SentryClient
 import io.sentry.event.Event
@@ -72,6 +70,16 @@ class SedHandler(
                 is PollContent -> {
                     handlePoll(content.poll, args, replyTo)
                 }
+                is VoiceContent -> {
+                    content.caption?.let {
+                        handleVoice(content.media, it, args, replyTo)
+                    }
+                }
+                is AudioContent -> {
+                    content.caption?.let {
+                        handleAudio(content.media, it, args, replyTo)
+                    }
+                }
             }
         } catch (e: IllegalArgumentException) {
             requestsExecutor.sendMessage(message.chat.id, e.localizedMessage, replyToMessageId = message.messageId)
@@ -106,6 +114,26 @@ class SedHandler(
     ) {
         val result = applySed(text, args)
         requestsExecutor.sendVideo(replyTo.chat.id, videoFile, result, replyToMessageId = replyTo.messageId)
+    }
+
+    private suspend fun handleAudio(
+        audioFile: AudioFile,
+        text: String,
+        args: String,
+        replyTo: ContentMessage<*>
+    ) {
+        val result = applySed(text, args)
+        requestsExecutor.sendAudio(replyTo.chat.id, audioFile, text = result, replyToMessageId = replyTo.messageId)
+    }
+
+    private suspend fun handleVoice(
+        voiceFile: VoiceFile,
+        text: String,
+        args: String,
+        replyTo: ContentMessage<*>
+    ) {
+        val result = applySed(text, args)
+        requestsExecutor.sendVoice(replyTo.chat.id, voiceFile.fileId, text = result, replyToMessageId = replyTo.messageId)
     }
 
     private suspend fun handleText(
