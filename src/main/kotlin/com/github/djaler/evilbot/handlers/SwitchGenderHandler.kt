@@ -4,7 +4,7 @@ import com.github.djaler.evilbot.enums.UserGender
 import com.github.djaler.evilbot.service.UserService
 import com.github.djaler.evilbot.utils.getFormByGender
 import dev.inmo.tgbotapi.bot.RequestsExecutor
-import dev.inmo.tgbotapi.extensions.api.send.sendMessage
+import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.message.CommonMessageImpl
 import org.springframework.stereotype.Component
@@ -29,11 +29,11 @@ class SwitchGenderHandler(
             try {
                 newGender = UserGender.valueOf(args)
             } catch (e: IllegalArgumentException) {
-                requestsExecutor.sendMessage(message.chat, "Такого гендера нет, ты все еще ${userEntity.gender.getFormByGender("мальчик", "девочка", "оно")}.\nНапиши корректно ${allGenders.joinToString { it.name }}.", replyToMessageId = message.messageId)
+                requestsExecutor.reply(message, "Такого гендера нет, ты все еще ${userEntity.gender.getFormByGender("мальчик", "девочка", "оно")}.\nНапиши корректно ${allGenders.joinToString { it.name }}.")
                 return
             }
         }
         userService.switchGender(userEntity, newGender)
-        requestsExecutor.sendMessage(message.chat, "Хорошо, теперь ты ${newGender.getFormByGender("мальчик", "девочка", "оно")}.", replyToMessageId = message.messageId)
+        requestsExecutor.reply(message, "Хорошо, теперь ты ${newGender.getFormByGender("мальчик", "девочка", "оно")}.")
     }
 }

@@ -10,6 +10,7 @@ import com.github.djaler.evilbot.utils.usernameOrName
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.deleteMessage
 import dev.inmo.tgbotapi.extensions.api.edit.text.editMessageText
+import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
 import dev.inmo.tgbotapi.extensions.utils.formatting.bold
 import dev.inmo.tgbotapi.types.CallbackQuery.MessageDataCallbackQuery
@@ -92,12 +93,7 @@ class UnblockStickerpackHandler(
 
         val blockedStickerpacks = blockedStickerpackService.getAll(chatEntity)
         if (blockedStickerpacks.isEmpty()) {
-            requestsExecutor.sendMessage(
-                message.chat.id,
-                "Заблокированных стикерпаков ${"нет".bold(parseMode)}",
-                replyToMessageId = message.messageId,
-                parseMode = parseMode
-            )
+            requestsExecutor.reply(message, "Заблокированных стикерпаков ${"нет".bold(parseMode)}", parseMode = parseMode)
             return
         }
 
@@ -164,7 +160,7 @@ class UnblockStickerpackCallbackHandler(
             message.chat.id,
             message.messageId,
             "Стикерпак $packLink успешно ${"разблокирован".bold(parseMode)} " +
-                    "администратором ${userWhoClicked.bold(parseMode)}.",
+                "администратором ${userWhoClicked.bold(parseMode)}.",
             parseMode = parseMode
         )
     }

@@ -10,8 +10,8 @@ import dev.inmo.tgbotapi.extensions.api.chat.members.getChatMember
 import dev.inmo.tgbotapi.extensions.api.chat.members.restrictChatMember
 import dev.inmo.tgbotapi.extensions.api.deleteMessage
 import dev.inmo.tgbotapi.extensions.api.send.media.sendAnimation
+import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.api.send.sendDice
-import dev.inmo.tgbotapi.extensions.api.send.sendMessage
 import dev.inmo.tgbotapi.requests.abstracts.FileId
 import dev.inmo.tgbotapi.types.*
 import dev.inmo.tgbotapi.types.CallbackQuery.MessageDataCallbackQuery
@@ -83,14 +83,13 @@ class SendCaptchaHandler(
 
             val kickTimeoutMinutes = botProperties.captchaKickTimeout.toMinutes()
 
-            val captchaMessage = requestsExecutor.sendMessage(
-                chatId = diceMessage.chat.id,
+            val captchaMessage = requestsExecutor.reply(
+                diceMessage,
                 text = """
                     Эй, ${member.usernameOrName}! Мы отобрали твою свободу слова, пока ты не тыкнешь число, выпавшее на кубике 👇
                     У тебя есть $kickTimeoutMinutes ${kickTimeoutMinutes.getForm("минута", "минуты", "минут")}
                     """.trimIndent(),
                 replyMarkup = keyboard,
-                replyToMessageId = diceMessage.messageId
             )
 
             captchaService.fixRestriction(chat, member, captchaMessage)

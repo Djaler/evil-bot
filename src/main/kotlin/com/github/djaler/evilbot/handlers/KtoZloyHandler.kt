@@ -5,6 +5,7 @@ import com.github.djaler.evilbot.service.UserService
 import com.github.djaler.evilbot.utils.getFormByGender
 import com.github.djaler.evilbot.utils.userId
 import dev.inmo.tgbotapi.bot.RequestsExecutor
+import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
 import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.chat.abstracts.PublicChat
@@ -37,6 +38,6 @@ class KtoZloyHandler(
 
         val username = if (randomUser.telegramId == message.user.id.userId) "ты" else randomUser.username
 
-        requestsExecutor.sendMessage(message.chat, "$username ${randomUser.gender.getFormByGender("злой", "злая", "злое")}", replyToMessageId = message.messageId)
+        requestsExecutor.reply(message, "$username ${randomUser.gender.getFormByGender("злой", "злая", "злое")}")
     }
 }

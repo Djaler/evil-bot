@@ -1,7 +1,7 @@
 package com.github.djaler.evilbot.handlers
 
 import dev.inmo.tgbotapi.bot.RequestsExecutor
-import dev.inmo.tgbotapi.extensions.api.send.sendMessage
+import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.message.CommonMessageImpl
 import org.springframework.stereotype.Component
@@ -18,7 +18,7 @@ class ResolveHandler(
 ) {
     override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
         if (args === null) {
-            requestsExecutor.sendMessage(message.chat, "Ну а где варианты? Пришли варианты, разделенные слэшом (/)", replyToMessageId = message.messageId)
+            requestsExecutor.reply(message, "Ну а где варианты? Пришли варианты, разделенные слэшом (/)")
             return
         }
 
@@ -34,6 +34,6 @@ class ResolveHandler(
             else -> variants.random()
         }
 
-        requestsExecutor.sendMessage(message.chat, answerText, replyToMessageId = message.messageId)
+        requestsExecutor.reply(message, answerText)
     }
 }

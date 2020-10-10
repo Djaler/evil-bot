@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.djaler.evilbot.model.Reaction
 import dev.inmo.tgbotapi.bot.RequestsExecutor
-import dev.inmo.tgbotapi.extensions.api.send.sendMessage
+import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.message.abstracts.ContentMessage
 import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
@@ -75,7 +75,7 @@ class ReactionHandler(
                 continue
             }
 
-            requestsExecutor.sendMessage(message.chat, reaction.reactions.random(), replyToMessageId = message.messageId)
+            requestsExecutor.reply(message, reaction.reactions.random())
 
             return true
         }
