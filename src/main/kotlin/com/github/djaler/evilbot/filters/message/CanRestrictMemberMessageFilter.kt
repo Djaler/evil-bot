@@ -1,11 +1,11 @@
 package com.github.djaler.evilbot.filters.message
 
-import com.github.insanusmokrassar.TelegramBotAPI.bot.RequestsExecutor
-import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.chat.members.getChatMember
-import com.github.insanusmokrassar.TelegramBotAPI.types.ChatMember.abstracts.AdministratorChatMember
-import com.github.insanusmokrassar.TelegramBotAPI.types.ExtendedBot
-import com.github.insanusmokrassar.TelegramBotAPI.types.chat.abstracts.PublicChat
-import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
+import dev.inmo.tgbotapi.bot.RequestsExecutor
+import dev.inmo.tgbotapi.extensions.api.chat.members.getChatMember
+import dev.inmo.tgbotapi.types.ChatMember.abstracts.AdministratorChatMember
+import dev.inmo.tgbotapi.types.ExtendedBot
+import dev.inmo.tgbotapi.types.chat.abstracts.PublicChat
+import dev.inmo.tgbotapi.types.message.abstracts.Message
 import org.springframework.stereotype.Component
 
 @Component

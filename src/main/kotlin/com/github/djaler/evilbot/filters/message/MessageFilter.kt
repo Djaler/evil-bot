@@ -1,6 +1,6 @@
 package com.github.djaler.evilbot.filters.message
 
-import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
+import dev.inmo.tgbotapi.types.message.abstracts.Message
 
 interface MessageFilter {
     suspend fun filter(message: Message): Boolean

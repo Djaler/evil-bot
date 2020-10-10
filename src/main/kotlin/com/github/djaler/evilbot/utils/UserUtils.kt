@@ -1,8 +1,8 @@
 package com.github.djaler.evilbot.utils
 
-import com.github.insanusmokrassar.TelegramBotAPI.types.User
-import com.github.insanusmokrassar.TelegramBotAPI.types.UserId
-import com.github.insanusmokrassar.TelegramBotAPI.types.toChatId
+import dev.inmo.tgbotapi.types.User
+import dev.inmo.tgbotapi.types.UserId
+import dev.inmo.tgbotapi.types.toChatId
 
 
 val User.usernameOrName: String

@@ -36,7 +36,7 @@ dependencies {
     implementation("org.postgresql:postgresql")
     implementation("org.flywaydb:flyway-core")
 
-    implementation("com.github.insanusmokrassar:TelegramBotAPI:0.28.4")
+    implementation("dev.inmo:tgbotapi:0.29.0")
 
     implementation("io.ktor:ktor-server-netty:1.4.1")
     implementation("io.ktor:ktor-client-apache:1.4.1")

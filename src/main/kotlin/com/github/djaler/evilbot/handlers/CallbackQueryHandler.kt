@@ -3,10 +3,10 @@ package com.github.djaler.evilbot.handlers
 import com.github.djaler.evilbot.filters.query.CallbackQueryFilter
 import com.github.djaler.evilbot.utils.decodeCallbackData
 import com.github.djaler.evilbot.utils.isCallbackForHandler
-import com.github.insanusmokrassar.TelegramBotAPI.types.CallbackQuery.MessageDataCallbackQuery
-import com.github.insanusmokrassar.TelegramBotAPI.types.UPDATE_CALLBACK_QUERY
-import com.github.insanusmokrassar.TelegramBotAPI.types.update.CallbackQueryUpdate
-import com.github.insanusmokrassar.TelegramBotAPI.types.update.abstracts.Update
+import dev.inmo.tgbotapi.types.CallbackQuery.MessageDataCallbackQuery
+import dev.inmo.tgbotapi.types.UPDATE_CALLBACK_QUERY
+import dev.inmo.tgbotapi.types.update.CallbackQueryUpdate
+import dev.inmo.tgbotapi.types.update.abstracts.Update
 
 abstract class CallbackQueryHandler(private val filter: CallbackQueryFilter? = null) : UpdateHandler {
     override val updateType get() = UPDATE_CALLBACK_QUERY

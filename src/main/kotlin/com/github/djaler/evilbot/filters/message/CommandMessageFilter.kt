@@ -1,10 +1,10 @@
 package com.github.djaler.evilbot.filters.message
 
-import com.github.insanusmokrassar.TelegramBotAPI.types.ExtendedBot
-import com.github.insanusmokrassar.TelegramBotAPI.types.MessageEntity.textsources.BotCommandTextSource
-import com.github.insanusmokrassar.TelegramBotAPI.types.message.CommonMessageImpl
-import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
-import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.TextContent
+import dev.inmo.tgbotapi.types.ExtendedBot
+import dev.inmo.tgbotapi.types.MessageEntity.textsources.BotCommandTextSource
+import dev.inmo.tgbotapi.types.message.CommonMessageImpl
+import dev.inmo.tgbotapi.types.message.abstracts.Message
+import dev.inmo.tgbotapi.types.message.content.TextContent
 
 class CommandMessageFilter(
     private val command: Array<String>,

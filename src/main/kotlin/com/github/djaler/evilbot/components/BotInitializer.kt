@@ -2,12 +2,12 @@ package com.github.djaler.evilbot.components
 
 import com.github.djaler.evilbot.config.TelegramProperties
 import com.github.djaler.evilbot.utils.getMD5
-import com.github.insanusmokrassar.TelegramBotAPI.bot.RequestsExecutor
-import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.bot.getMyCommands
-import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.bot.setMyCommands
-import com.github.insanusmokrassar.TelegramBotAPI.extensions.utils.updates.retrieving.setWebhookInfoAndStartListenWebhooks
-import com.github.insanusmokrassar.TelegramBotAPI.extensions.utils.updates.retrieving.startGettingOfUpdatesByLongPolling
-import com.github.insanusmokrassar.TelegramBotAPI.requests.webhook.SetWebhook
+import dev.inmo.tgbotapi.bot.RequestsExecutor
+import dev.inmo.tgbotapi.extensions.api.bot.getMyCommands
+import dev.inmo.tgbotapi.extensions.api.bot.setMyCommands
+import dev.inmo.tgbotapi.extensions.utils.updates.retrieving.setWebhookInfoAndStartListenWebhooks
+import dev.inmo.tgbotapi.extensions.utils.updates.retrieving.startGettingOfUpdatesByLongPolling
+import dev.inmo.tgbotapi.requests.webhook.SetWebhook
 import io.ktor.server.netty.*
 import io.sentry.SentryClient
 import kotlinx.coroutines.runBlocking

@@ -1,6 +1,6 @@
 package com.github.djaler.evilbot.utils
 
-import com.github.insanusmokrassar.TelegramBotAPI.types.chat.ChatPermissions
+import dev.inmo.tgbotapi.types.chat.ChatPermissions
 
 val fullChatPermissions = ChatPermissions(
     canSendMessages = true,

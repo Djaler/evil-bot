@@ -9,7 +9,7 @@ import com.github.djaler.evilbot.repository.UserRepository
 import com.github.djaler.evilbot.repository.UserStatisticRepository
 import com.github.djaler.evilbot.utils.userId
 import com.github.djaler.evilbot.utils.usernameOrName
-import com.github.insanusmokrassar.TelegramBotAPI.types.UserId
+import dev.inmo.tgbotapi.types.UserId
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -20,7 +20,7 @@ class UserService(
     private val userStatisticRepository: UserStatisticRepository
 ) {
     @Transactional
-    fun getOrCreateUserFrom(telegramUser: com.github.insanusmokrassar.TelegramBotAPI.types.User): GetOrCreateResult<User> {
+    fun getOrCreateUserFrom(telegramUser: dev.inmo.tgbotapi.types.User): GetOrCreateResult<User> {
         val user = userRepository.findByTelegramId(telegramUser.id.userId)
 
         return if (user != null) {

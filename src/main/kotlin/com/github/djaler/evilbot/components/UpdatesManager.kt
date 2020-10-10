@@ -2,9 +2,9 @@ package com.github.djaler.evilbot.components
 
 import com.github.djaler.evilbot.handlers.CommandHandler
 import com.github.djaler.evilbot.handlers.UpdateHandler
-import com.github.insanusmokrassar.TelegramBotAPI.types.BotCommand
-import com.github.insanusmokrassar.TelegramBotAPI.types.update.abstracts.UnknownUpdate
-import com.github.insanusmokrassar.TelegramBotAPI.types.update.abstracts.Update
+import dev.inmo.tgbotapi.types.BotCommand
+import dev.inmo.tgbotapi.types.update.abstracts.UnknownUpdate
+import dev.inmo.tgbotapi.types.update.abstracts.Update
 import io.sentry.SentryClient
 import io.sentry.event.Breadcrumb
 import io.sentry.event.BreadcrumbBuilder

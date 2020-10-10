@@ -3,16 +3,16 @@ package com.github.djaler.evilbot.handlers
 import com.github.djaler.evilbot.components.CasClient
 import com.github.djaler.evilbot.utils.userId
 import com.github.djaler.evilbot.utils.usernameOrName
-import com.github.insanusmokrassar.TelegramBotAPI.bot.RequestsExecutor
-import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.chat.members.kickChatMember
-import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.sendMessage
-import com.github.insanusmokrassar.TelegramBotAPI.extensions.utils.formatting.link
-import com.github.insanusmokrassar.TelegramBotAPI.types.Bot
-import com.github.insanusmokrassar.TelegramBotAPI.types.ParseMode.HTML
-import com.github.insanusmokrassar.TelegramBotAPI.types.chat.abstracts.PublicChat
-import com.github.insanusmokrassar.TelegramBotAPI.types.message.ChatEvents.NewChatMembers
-import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.ChatEventMessage
-import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
+import dev.inmo.tgbotapi.bot.RequestsExecutor
+import dev.inmo.tgbotapi.extensions.api.chat.members.kickChatMember
+import dev.inmo.tgbotapi.extensions.api.send.sendMessage
+import dev.inmo.tgbotapi.extensions.utils.formatting.link
+import dev.inmo.tgbotapi.types.Bot
+import dev.inmo.tgbotapi.types.ParseMode.HTML
+import dev.inmo.tgbotapi.types.chat.abstracts.PublicChat
+import dev.inmo.tgbotapi.types.message.ChatEvents.NewChatMembers
+import dev.inmo.tgbotapi.types.message.abstracts.ChatEventMessage
+import dev.inmo.tgbotapi.types.message.abstracts.Message
 import org.springframework.stereotype.Component
 
 @Component

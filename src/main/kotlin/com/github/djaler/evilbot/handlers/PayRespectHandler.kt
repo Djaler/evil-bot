@@ -1,10 +1,10 @@
 package com.github.djaler.evilbot.handlers
 
-import com.github.insanusmokrassar.TelegramBotAPI.bot.RequestsExecutor
-import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.send.media.sendSticker
-import com.github.insanusmokrassar.TelegramBotAPI.requests.abstracts.FileId
-import com.github.insanusmokrassar.TelegramBotAPI.types.ExtendedBot
-import com.github.insanusmokrassar.TelegramBotAPI.types.message.CommonMessageImpl
+import dev.inmo.tgbotapi.bot.RequestsExecutor
+import dev.inmo.tgbotapi.extensions.api.send.media.sendSticker
+import dev.inmo.tgbotapi.requests.abstracts.FileId
+import dev.inmo.tgbotapi.types.ExtendedBot
+import dev.inmo.tgbotapi.types.message.CommonMessageImpl
 import org.springframework.core.io.ClassPathResource
 import org.springframework.stereotype.Component
 

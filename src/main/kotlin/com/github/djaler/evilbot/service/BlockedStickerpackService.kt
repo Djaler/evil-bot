@@ -4,7 +4,7 @@ import com.github.djaler.evilbot.entity.BlockedStickerpack
 import com.github.djaler.evilbot.entity.Chat
 import com.github.djaler.evilbot.model.GetOrCreateResult
 import com.github.djaler.evilbot.repository.BlockedStickerpackRepository
-import com.github.insanusmokrassar.TelegramBotAPI.types.StickerSetName
+import dev.inmo.tgbotapi.types.StickerSetName
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

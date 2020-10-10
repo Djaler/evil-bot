@@ -1,11 +1,11 @@
 package com.github.djaler.evilbot.handlers
 
 import com.github.djaler.evilbot.filters.message.MessageFilter
-import com.github.insanusmokrassar.TelegramBotAPI.types.UPDATE_MESSAGE
-import com.github.insanusmokrassar.TelegramBotAPI.types.message.CommonMessageImpl
-import com.github.insanusmokrassar.TelegramBotAPI.types.message.abstracts.Message
-import com.github.insanusmokrassar.TelegramBotAPI.types.update.MessageUpdate
-import com.github.insanusmokrassar.TelegramBotAPI.types.update.abstracts.Update
+import dev.inmo.tgbotapi.types.UPDATE_MESSAGE
+import dev.inmo.tgbotapi.types.message.CommonMessageImpl
+import dev.inmo.tgbotapi.types.message.abstracts.Message
+import dev.inmo.tgbotapi.types.update.MessageUpdate
+import dev.inmo.tgbotapi.types.update.abstracts.Update
 
 abstract class MessageHandler(private val filter: MessageFilter? = null) : UpdateHandler {
     override val updateType get() = UPDATE_MESSAGE

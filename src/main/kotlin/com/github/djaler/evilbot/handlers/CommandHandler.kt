@@ -3,10 +3,10 @@ package com.github.djaler.evilbot.handlers
 import com.github.djaler.evilbot.filters.message.CommandMessageFilter
 import com.github.djaler.evilbot.filters.message.MessageFilter
 import com.github.djaler.evilbot.filters.message.and
-import com.github.insanusmokrassar.TelegramBotAPI.types.BotCommand
-import com.github.insanusmokrassar.TelegramBotAPI.types.ExtendedBot
-import com.github.insanusmokrassar.TelegramBotAPI.types.message.CommonMessageImpl
-import com.github.insanusmokrassar.TelegramBotAPI.types.message.content.TextContent
+import dev.inmo.tgbotapi.types.BotCommand
+import dev.inmo.tgbotapi.types.ExtendedBot
+import dev.inmo.tgbotapi.types.message.CommonMessageImpl
+import dev.inmo.tgbotapi.types.message.content.TextContent
 
 abstract class CommandHandler(
     botInfo: ExtendedBot,

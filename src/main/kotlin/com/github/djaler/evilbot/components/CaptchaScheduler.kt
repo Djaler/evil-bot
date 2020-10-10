@@ -2,14 +2,14 @@ package com.github.djaler.evilbot.components
 
 import com.github.djaler.evilbot.service.CaptchaService
 import com.github.djaler.evilbot.utils.toUserId
-import com.github.insanusmokrassar.TelegramBotAPI.bot.RequestsExecutor
-import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.chat.members.kickChatMember
-import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.deleteMessage
-import com.github.insanusmokrassar.TelegramBotAPI.extensions.api.edit.text.editMessageText
-import com.github.insanusmokrassar.TelegramBotAPI.extensions.utils.formatting.link
-import com.github.insanusmokrassar.TelegramBotAPI.types.ParseMode.HTML
-import com.github.insanusmokrassar.TelegramBotAPI.types.link
-import com.github.insanusmokrassar.TelegramBotAPI.types.toChatId
+import dev.inmo.tgbotapi.bot.RequestsExecutor
+import dev.inmo.tgbotapi.extensions.api.chat.members.kickChatMember
+import dev.inmo.tgbotapi.extensions.api.deleteMessage
+import dev.inmo.tgbotapi.extensions.api.edit.text.editMessageText
+import dev.inmo.tgbotapi.extensions.utils.formatting.link
+import dev.inmo.tgbotapi.types.ParseMode.HTML
+import dev.inmo.tgbotapi.types.link
+import dev.inmo.tgbotapi.types.toChatId
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.springframework.scheduling.annotation.Scheduled
