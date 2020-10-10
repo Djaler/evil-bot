@@ -2,6 +2,7 @@ package com.github.djaler.evilbot.handlers
 
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.chat.get.getChat
+import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
 import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.chat.abstracts.PublicChat
@@ -26,7 +27,7 @@ class ReplyToPinHandler(
         val pinnedMessage: Message? = extendedChat.pinnedMessage
 
         if (pinnedMessage != null) {
-            requestsExecutor.sendMessage(chatId = chat.id, replyToMessageId = pinnedMessage.messageId, text = "☝️️", disableNotification = true)
+            requestsExecutor.reply(pinnedMessage, "☝️️", disableNotification = true)
         } else {
             requestsExecutor.sendMessage(chat.id, "Закрепленное сообщение отсутствует")
         }

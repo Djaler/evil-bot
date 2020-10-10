@@ -2,9 +2,9 @@ package com.github.djaler.evilbot.handlers
 
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.send.media.*
-import dev.inmo.tgbotapi.extensions.api.send.polls.sendQuizPoll
-import dev.inmo.tgbotapi.extensions.api.send.polls.sendRegularPoll
-import dev.inmo.tgbotapi.extensions.api.send.sendMessage
+import dev.inmo.tgbotapi.extensions.api.send.polls.replyWithQuizPoll
+import dev.inmo.tgbotapi.extensions.api.send.polls.replyWithRegularPoll
+import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.requests.abstracts.FileId
 import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.files.AnimationFile
@@ -40,7 +40,7 @@ class SedHandler(
 
     override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
         if (args === null) {
-            requestsExecutor.sendMessage(message.chat.id, "Ну а где выражение для sed?", replyToMessageId = message.messageId)
+            requestsExecutor.reply(message, "Ну а где выражение для sed?")
             return
         }
 
@@ -82,7 +82,7 @@ class SedHandler(
                 }
             }
         } catch (e: IllegalArgumentException) {
-            requestsExecutor.sendMessage(message.chat.id, e.localizedMessage, replyToMessageId = message.messageId)
+            requestsExecutor.reply(message, e.localizedMessage)
         }
     }
 
@@ -93,7 +93,7 @@ class SedHandler(
         replyTo: ContentMessage<*>
     ) {
         val result = applySed(text, args)
-        requestsExecutor.sendPhoto(replyTo.chat.id, fileId, result, replyToMessageId = replyTo.messageId)
+        requestsExecutor.replyWithPhoto(replyTo, fileId, result)
     }
 
     private suspend fun handleAnimation(
@@ -103,7 +103,7 @@ class SedHandler(
         replyTo: ContentMessage<*>
     ) {
         val result = applySed(text, args)
-        requestsExecutor.sendAnimation(replyTo.chat.id, animationFile, result, replyToMessageId = replyTo.messageId)
+        requestsExecutor.replyWithAnimation(replyTo, animationFile, result)
     }
 
     private suspend fun handleVideo(
@@ -113,7 +113,7 @@ class SedHandler(
         replyTo: ContentMessage<*>
     ) {
         val result = applySed(text, args)
-        requestsExecutor.sendVideo(replyTo.chat.id, videoFile, result, replyToMessageId = replyTo.messageId)
+        requestsExecutor.replyWithVideo(replyTo, videoFile, result)
     }
 
     private suspend fun handleAudio(
@@ -123,7 +123,7 @@ class SedHandler(
         replyTo: ContentMessage<*>
     ) {
         val result = applySed(text, args)
-        requestsExecutor.sendAudio(replyTo.chat.id, audioFile, text = result, replyToMessageId = replyTo.messageId)
+        requestsExecutor.replyWithAudio(replyTo, audioFile, result)
     }
 
     private suspend fun handleVoice(
@@ -133,7 +133,7 @@ class SedHandler(
         replyTo: ContentMessage<*>
     ) {
         val result = applySed(text, args)
-        requestsExecutor.sendVoice(replyTo.chat.id, voiceFile.fileId, text = result, replyToMessageId = replyTo.messageId)
+        requestsExecutor.replyWithVoice(replyTo, voiceFile, result)
     }
 
     private suspend fun handleText(
@@ -142,7 +142,7 @@ class SedHandler(
         replyTo: ContentMessage<*>
     ) {
         val result = applySed(text, args)
-        requestsExecutor.sendMessage(replyTo.chat.id, result, replyToMessageId = replyTo.messageId)
+        requestsExecutor.reply(replyTo, result)
     }
 
     private suspend fun handlePoll(
@@ -163,7 +163,7 @@ class SedHandler(
                     question = newQuestion,
                     options = newOptions
                 )
-                requestsExecutor.sendRegularPoll(replyTo.chat, poll = newPoll, replyToMessageId = replyTo.messageId)
+                requestsExecutor.replyWithRegularPoll(replyTo, newPoll)
             }
             is QuizPoll -> {
                 val newPoll = poll.copy(
@@ -171,7 +171,7 @@ class SedHandler(
                     options = newOptions,
                     explanation = poll.explanation?.let { applySed(it, args) }
                 )
-                requestsExecutor.sendQuizPoll(replyTo.chat, quizPoll = newPoll)
+                requestsExecutor.replyWithQuizPoll(replyTo, quizPoll = newPoll)
             }
             is UnknownPollType -> {
                 log.error("Unknown poll type: $poll")

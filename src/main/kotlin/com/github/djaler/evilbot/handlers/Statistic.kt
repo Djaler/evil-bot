@@ -5,7 +5,7 @@ import com.github.djaler.evilbot.service.UserService
 import com.github.djaler.evilbot.utils.getForm
 import com.github.djaler.evilbot.utils.getFormByGender
 import dev.inmo.tgbotapi.bot.RequestsExecutor
-import dev.inmo.tgbotapi.extensions.api.send.sendMessage
+import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.chat.abstracts.PublicChat
 import dev.inmo.tgbotapi.types.message.CommonMessageImpl
@@ -51,26 +51,24 @@ class DisplayStatisticHandler(
 
         val statistic = userService.getStatistic(userEntity, chatEntity)
         if (statistic == null) {
-            requestsExecutor.sendMessage(
-                message.chat,
+            requestsExecutor.reply(
+                message,
                 "Ты не ${userEntity.gender.getFormByGender("писал", "писала", "писало")} ещё ничего, алло",
-                replyToMessageId = message.messageId
             )
             return
         }
 
         val count = statistic.messagesCount
 
-        requestsExecutor.sendMessage(
-            message.chat,
+        requestsExecutor.reply(
+            message,
             "Ты ${userEntity.gender.getFormByGender("написал", "написала", "написало")} $count никому не ${
                 count.getForm(
                     "нужное сообщение",
                     "нужных сообщения",
                     "нужных сообщений"
                 )
-            }",
-            replyToMessageId = message.messageId
+            }"
         )
     }
 }
@@ -102,6 +100,6 @@ class DisplayTop10Handler(
             .mapIndexed { index, statistic -> "${(index + 1)}. ${statistic.user.username} - ${statistic.messagesCount}" }
             .joinToString("\n")
 
-        requestsExecutor.sendMessage(message.chat, text, disableNotification = true, replyToMessageId = message.messageId)
+        requestsExecutor.reply(message, text, disableNotification = true)
     }
 }

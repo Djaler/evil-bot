@@ -3,6 +3,7 @@ package com.github.djaler.evilbot.handlers
 import com.github.djaler.evilbot.utils.usernameOrName
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.deleteMessage
+import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
 import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.message.CommonMessageImpl
@@ -19,7 +20,7 @@ class ForwardHandler(
 ) {
     override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
         if (args === null) {
-            requestsExecutor.sendMessage(chatId = message.chat.id, text = "И что я должен отправить, по твоему?", replyToMessageId = message.messageId)
+            requestsExecutor.reply(message, "И что я должен отправить, по твоему?")
             return
         }
 
