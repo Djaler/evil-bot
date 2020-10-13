@@ -107,7 +107,7 @@ class CaptchaCallbackHandler(
     private val captchaService: CaptchaService
 ) : CallbackQueryHandler() {
     companion object {
-        private val welcomeGif = FileId("CgACAgIAAx0CSNrJgAACAQFfXM-sSEnYFcgD6Xko5OReB_pHdgACTgADsuSgS3GU1zh-LXY2GwQ")
+        private val welcomeGif = FileId("CgACAgIAAxkBAAIFwF-FfJeQpLe9RGjLl15pt8nmFabzAAJOAAOy5KBLZaV80ssGRf0bBA")
         private val ACCESS_RESTRICTED_MESSAGES = arrayOf("КУДА ЖМЁШЬ?!️! РУКУ УБРАЛ!", "У тебя здесь нет власти!")
         private val WRONG_ANSWER_MESSAGES = arrayOf("НЕПРАВИЛЬНЫЙ ОТВЕТ!", "Кто-то не может нажать правильную кнопочку...")
     }
