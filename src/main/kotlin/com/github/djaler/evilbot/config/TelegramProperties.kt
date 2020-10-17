@@ -16,7 +16,7 @@ data class TelegramProperties(
 
 data class WebhookProperties(
     val url: String? = null,
-    @Min(0)
-    @Max(65535)
+    @field:Min(0)
+    @field:Max(65535)
     val port: Int = 8080
 )
