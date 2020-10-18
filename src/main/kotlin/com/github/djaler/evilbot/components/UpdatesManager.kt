@@ -1,5 +1,6 @@
 package com.github.djaler.evilbot.components
 
+import com.github.djaler.evilbot.errors.ExceptionHandler
 import com.github.djaler.evilbot.handlers.CommandHandler
 import com.github.djaler.evilbot.handlers.UpdateHandler
 import dev.inmo.tgbotapi.types.BotCommand
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component
 @Component
 class UpdatesManager(
     handlers: List<UpdateHandler>,
+    private val exceptionHandlers: List<ExceptionHandler>,
     private val sentryClient: SentryClient
 ) {
     companion object {
@@ -58,6 +60,10 @@ class UpdatesManager(
                 }
             } catch (e: Exception) {
                 log.error("Handler: ${handler::class.simpleName}, update: $update", e)
+
+                for (exceptionHandler in exceptionHandlers) {
+                    exceptionHandler.handleException(e)
+                }
 
                 sentryClient.context.addExtra("update", update)
                 sentryClient.sendException(e)
