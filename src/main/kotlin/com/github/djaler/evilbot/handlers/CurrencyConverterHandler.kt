@@ -1,6 +1,7 @@
 package com.github.djaler.evilbot.handlers
 
-import com.github.djaler.evilbot.components.CurrencyClient
+import com.github.djaler.evilbot.service.CurrencyService
+import com.github.djaler.evilbot.service.UnknownCurrencyException
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.types.ExtendedBot
@@ -14,7 +15,7 @@ import java.util.*
 
 @Component
 class CurrencyConverterHandler(
-    private val currencyClient: CurrencyClient,
+    private val currencyService: CurrencyService,
     private val requestsExecutor: RequestsExecutor,
     botInfo: ExtendedBot
 ) : CommandHandler(
@@ -39,17 +40,17 @@ class CurrencyConverterHandler(
             return
         }
         val (amount, from, to) = currencyMessage.destructured
-        val moneyAmount = amount.toBigDecimal()
-        val amountResult = currencyClient.getCurrencyInfo(from.toUpperCase(), to.toUpperCase())
-        if (amountResult === null) {
-            requestsExecutor.reply(message, "Такой валюты нет")
+        val originalAmount = amount.toBigDecimal()
+        val convertedAmount = try {
+            currencyService.convertCurrency(originalAmount, from, to)
+        } catch (e: UnknownCurrencyException) {
+            requestsExecutor.reply(message, "Не знаю про ${e.currency}")
             return
         }
-        val currencyResult = moneyAmount * amountResult
         val decimalFormatSymbols = DecimalFormatSymbols(Locale.forLanguageTag("ru"))
         val decimalFormat = DecimalFormat("#,###.00", decimalFormatSymbols)
-        val messageAmount = decimalFormat.format(moneyAmount.setScale(2, RoundingMode.HALF_UP))
-        val messageResult = decimalFormat.format(currencyResult.setScale(2, RoundingMode.HALF_UP))
+        val messageAmount = decimalFormat.format(originalAmount.setScale(2, RoundingMode.HALF_UP))
+        val messageResult = decimalFormat.format(convertedAmount.setScale(2, RoundingMode.HALF_UP))
         requestsExecutor.reply(
             message,
             "Твои жалкие $messageAmount ${from.toUpperCase()} равны $messageResult ${to.toUpperCase()}"

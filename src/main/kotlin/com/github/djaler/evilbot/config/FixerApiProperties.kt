@@ -7,10 +7,10 @@ import org.springframework.validation.annotation.Validated
 import javax.validation.constraints.NotBlank
 
 
-@ConfigurationProperties(prefix = "currency.api")
+@ConfigurationProperties(prefix = "fixer.api")
 @ConstructorBinding
 @Validated
-data class CurrencyProperties(
+data class FixerApiProperties(
     @field:NotBlank
     val key: String
 )
