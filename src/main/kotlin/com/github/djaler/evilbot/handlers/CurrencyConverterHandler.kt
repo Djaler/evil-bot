@@ -40,7 +40,7 @@ class CurrencyConverterHandler(
             return
         }
         val (amount, from, to) = currencyMessage.destructured
-        val originalAmount = amount.toBigDecimal()
+        val originalAmount = amount.toBigDecimal().setScale(2, RoundingMode.HALF_UP)
         val convertedAmount = try {
             currencyService.convertCurrency(originalAmount, from, to)
         } catch (e: UnknownCurrencyException) {
