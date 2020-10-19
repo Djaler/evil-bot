@@ -33,7 +33,7 @@ class CurrencyConverterHandler(
             requestsExecutor.reply(message, WRONG_MESSAGES)
             return
         }
-        val regex = """(?<amount>\d+?\.?\d+)\s(?<from>[A-z]{3})\s(?<to>[A-z]{3})""".toRegex()
+        val regex = """(?<amount>\d+?\.?\d*)\s(?<from>[A-z]{3})\s(?<to>[A-z]{3})""".toRegex()
         val currencyMessage = regex.find(args)
         if (currencyMessage === null) {
             requestsExecutor.reply(message, WRONG_MESSAGES)
