@@ -3,6 +3,7 @@ package com.github.djaler.evilbot.service
 import com.github.djaler.evilbot.components.FixerClient
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
+import java.math.RoundingMode
 
 @Service
 class CurrencyService(
@@ -15,7 +16,8 @@ class CurrencyService(
         val fromRate = latestRates[from.toUpperCase()] ?: throw UnknownCurrencyException(from)
         val toRate = latestRates[to.toUpperCase()] ?: throw UnknownCurrencyException(to)
 
-        return amount / fromRate * toRate
+        val maxScale = maxOf(amount.scale(), fromRate.scale(), toRate.scale())
+        return amount.divide(fromRate, maxScale, RoundingMode.HALF_UP).multiply(toRate)
     }
 }
 
