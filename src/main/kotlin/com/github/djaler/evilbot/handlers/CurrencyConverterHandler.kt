@@ -29,8 +29,7 @@ class CurrencyConverterHandler(
         private val parseMode = HTML
 
         private val mc = MathContext(2, RoundingMode.HALF_UP)
-        private val locale = Locale("ru")
-        private val df = DecimalFormat.getInstance(locale).apply {
+        private val df = DecimalFormat.getInstance(Locale.US).apply {
             minimumFractionDigits = 0
             maximumFractionDigits = Integer.MAX_VALUE
         }
