@@ -2,15 +2,16 @@ package com.github.djaler.evilbot.handlers
 
 import com.github.djaler.evilbot.service.CurrencyService
 import com.github.djaler.evilbot.service.UnknownCurrencyException
+import com.github.djaler.evilbot.utils.roundToSignificantDigitsAfterComma
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.ParseMode.HTML
 import dev.inmo.tgbotapi.types.message.CommonMessageImpl
 import org.springframework.stereotype.Component
+import java.math.MathContext
 import java.math.RoundingMode
 import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
 import java.util.*
 
 @Component
@@ -26,6 +27,13 @@ class CurrencyConverterHandler(
     companion object {
         private val WRONG_MESSAGES = "Пришли мне в таком виде: /currency <amount> <from> <to>"
         private val parseMode = HTML
+
+        private val mc = MathContext(2, RoundingMode.HALF_UP)
+        private val locale = Locale("ru")
+        private val df = DecimalFormat.getInstance(locale).apply {
+            minimumFractionDigits = 0
+            maximumFractionDigits = Integer.MAX_VALUE
+        }
     }
 
     override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
@@ -40,17 +48,16 @@ class CurrencyConverterHandler(
             return
         }
         val (amount, from, to) = currencyMessage.destructured
-        val originalAmount = amount.toBigDecimal().setScale(2, RoundingMode.HALF_UP)
+        val originalAmount = amount.toBigDecimal()
         val convertedAmount = try {
             currencyService.convertCurrency(originalAmount, from, to)
         } catch (e: UnknownCurrencyException) {
             requestsExecutor.reply(message, "Не знаю про ${e.currency}")
             return
         }
-        val decimalFormatSymbols = DecimalFormatSymbols(Locale.forLanguageTag("ru"))
-        val decimalFormat = DecimalFormat("#,###.00", decimalFormatSymbols)
-        val messageAmount = decimalFormat.format(originalAmount.setScale(2, RoundingMode.HALF_UP))
-        val messageResult = decimalFormat.format(convertedAmount.setScale(2, RoundingMode.HALF_UP))
+
+        val messageAmount = df.format(originalAmount.roundToSignificantDigitsAfterComma(mc))
+        val messageResult = df.format(convertedAmount.roundToSignificantDigitsAfterComma(mc))
         requestsExecutor.reply(
             message,
             "Твои жалкие $messageAmount ${from.toUpperCase()} равны $messageResult ${to.toUpperCase()}"
