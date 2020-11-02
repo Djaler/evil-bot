@@ -11,7 +11,7 @@ class CurrencyService(
 ) {
     @Throws(UnknownCurrencyException::class)
     suspend fun convertCurrency(amount: BigDecimal, from: String, to: String): BigDecimal {
-        val latestRates = fixerClient.getLatestRates()
+        val latestRates = fixerClient.getLatestRatesAsync().await()
 
         val fromRate = latestRates[from.toUpperCase()] ?: throw UnknownCurrencyException(from)
         val toRate = latestRates[to.toUpperCase()] ?: throw UnknownCurrencyException(to)
