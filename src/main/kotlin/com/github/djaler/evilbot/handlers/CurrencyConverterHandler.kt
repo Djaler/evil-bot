@@ -40,13 +40,13 @@ class CurrencyConverterHandler(
             requestsExecutor.reply(message, WRONG_MESSAGES)
             return
         }
-        val regex = """^(?<amount>\d+?\.?\d*)\s(?<from>[A-z]{3})\s(?<to>[A-z]{3})$""".toRegex()
+        val regex = """^(?<amount>\d+?\.?\d*)\s+(?<from>[A-z]{3})\s+(?<to>[A-z]{3})$""".toRegex()
         val currencyMessage = regex.find(args)
-        if (currencyMessage === null) {
+        if (currencyMessage == null) {
             requestsExecutor.reply(message, WRONG_MESSAGES)
             return
         }
-        val (amount, from, to) = currencyMessage.destructured
+        val (amount, from, to) = currencyMessage.value.split(spacesRegex, limit = 3)
         val originalAmount = amount.toBigDecimal()
         val convertedAmount = try {
             currencyService.convertCurrency(originalAmount, from, to)
