@@ -8,6 +8,8 @@ import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.message.CommonMessageImpl
 import dev.inmo.tgbotapi.types.message.content.TextContent
 
+val spacesRegex = Regex("\\s+")
+
 abstract class CommandHandler(
     botInfo: ExtendedBot,
     private val command: Array<String>,
@@ -23,7 +25,7 @@ abstract class CommandHandler(
     override suspend fun handleMessage(message: CommonMessageImpl<*>): Boolean {
         val content = message.content as? TextContent ?: return false
 
-        val args = content.text.split(" ", limit = 2).drop(1).firstOrNull()
+        val args = content.text.split(spacesRegex, limit = 2).drop(1).firstOrNull()
 
         handleCommand(message, args)
 
