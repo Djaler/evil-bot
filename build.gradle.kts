@@ -36,8 +36,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-    implementation("org.springframework.kotlin:spring-kotlin-coroutine:0.3.7")
-
     implementation("org.postgresql:postgresql")
     implementation("org.flywaydb:flyway-core")
 
