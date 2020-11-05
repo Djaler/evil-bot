@@ -2,6 +2,7 @@ package com.github.djaler.evilbot
 
 import com.github.djaler.evilbot.config.BotProperties
 import com.github.djaler.evilbot.config.FixerApiProperties
+import com.github.djaler.evilbot.config.LocationiqApiProperties
 import com.github.djaler.evilbot.config.TelegramProperties
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.EnableConfigurationProperties
@@ -14,7 +15,12 @@ import org.springframework.scheduling.annotation.EnableScheduling
 @EnableScheduling
 @EnableCaching
 @EnableCoroutine
-@EnableConfigurationProperties(TelegramProperties::class, BotProperties::class, FixerApiProperties::class)
+@EnableConfigurationProperties(
+    TelegramProperties::class,
+    BotProperties::class,
+    FixerApiProperties::class,
+    LocationiqApiProperties::class
+)
 class Application
 
 fun main(args: Array<String>) {
