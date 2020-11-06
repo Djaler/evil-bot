@@ -1,7 +1,8 @@
-package com.github.djaler.evilbot.components
+package com.github.djaler.evilbot.clients
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
+import com.github.djaler.evilbot.components.RecordBreadcrumb
 import com.github.djaler.evilbot.config.LocationiqApiProperties
 import io.github.resilience4j.kotlin.ratelimiter.RateLimiterConfig
 import io.github.resilience4j.kotlin.ratelimiter.executeSuspendFunction

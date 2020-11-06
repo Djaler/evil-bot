@@ -1,7 +1,8 @@
-package com.github.djaler.evilbot.components
+package com.github.djaler.evilbot.clients
 
-import io.ktor.client.HttpClient
-import io.ktor.client.request.get
+import com.github.djaler.evilbot.components.RecordBreadcrumb
+import io.ktor.client.*
+import io.ktor.client.request.*
 import org.springframework.stereotype.Component
 
 @Component

@@ -1,6 +1,6 @@
 package com.github.djaler.evilbot.service
 
-import com.github.djaler.evilbot.components.FixerClient
+import com.github.djaler.evilbot.clients.FixerClient
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.math.RoundingMode

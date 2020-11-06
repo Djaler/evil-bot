@@ -1,5 +1,6 @@
-package com.github.djaler.evilbot.components
+package com.github.djaler.evilbot.clients
 
+import com.github.djaler.evilbot.components.RecordBreadcrumb
 import com.github.djaler.evilbot.config.FixerApiProperties
 import io.ktor.client.*
 import io.ktor.client.request.*
