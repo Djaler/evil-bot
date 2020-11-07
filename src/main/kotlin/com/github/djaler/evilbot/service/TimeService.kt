@@ -18,7 +18,12 @@ class TimeService(
         }
 
         val location = locations.first()
-        val locationTimezone = locationiqClient.getTimezone(location.lat, location.lon)
+
+        return getTimeForLocation(location.lat, location.lon)
+    }
+
+    suspend fun getTimeForLocation(latitude: Double, longitude: Double): LocalDateTime {
+        val locationTimezone = locationiqClient.getTimezone(latitude, longitude)
 
         return LocalDateTime.now(ZoneOffset.UTC).plusSeconds(locationTimezone.offsetSec)
     }

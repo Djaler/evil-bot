@@ -5,6 +5,8 @@ import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.message.CommonMessageImpl
+import dev.inmo.tgbotapi.types.message.abstracts.ContentMessage
+import dev.inmo.tgbotapi.types.message.content.LocationContent
 import org.springframework.stereotype.Component
 import java.time.format.DateTimeFormatter
 
@@ -23,13 +25,24 @@ class CurrentTimeHandler(
     }
 
     override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
-        val query = if (args.isNullOrBlank()) "Москва" else args
+        val replyMessage = message.replyTo as? ContentMessage<*>
+        val locationContent = replyMessage?.content as? LocationContent
 
-        val timeForLocation = timeService.getTimeForLocation(query)
+        var defaultLocationChosen = false
+
+        val timeForLocation = if (locationContent !== null) {
+            val (longitude, latitude) = locationContent.location
+            timeService.getTimeForLocation(latitude, longitude)
+        } else if (!args.isNullOrBlank()) {
+            timeService.getTimeForLocation(args)
+        } else {
+            defaultLocationChosen = true
+            timeService.getTimeForLocation("Москва")
+        }
 
         val text = if (timeForLocation !== null) {
             val formattedLocationTime = timeForLocation.format(dateTimeFormatter)
-            if (args.isNullOrBlank()) "Ты не уточнил, поэтому вот результат для дефолт-сити: $formattedLocationTime" else formattedLocationTime
+            if (defaultLocationChosen) "Ты не уточнил, поэтому вот результат для дефолт-сити: $formattedLocationTime" else formattedLocationTime
         } else {
             "Не знаю такого"
         }
