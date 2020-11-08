@@ -9,6 +9,7 @@ import dev.inmo.tgbotapi.types.ChatId
 import dev.inmo.tgbotapi.types.chat.abstracts.PublicChat
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.Duration
 import java.time.LocalDateTime
 
 @Service
@@ -46,5 +47,9 @@ class ChatService(
             historyEntry?.copy(leaveDate = LocalDateTime.now())
                 ?: ChatHistory(chat.id, leaveDate = LocalDateTime.now())
         )
+    }
+
+    fun getChatsLeftFor(duration: Duration): List<Short> {
+        return chatHistoryRepository.findChatsLeftBefore(LocalDateTime.now().minus(duration))
     }
 }

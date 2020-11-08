@@ -79,4 +79,8 @@ class UserService(
     fun getLatest(chat: Chat, limit: Short): List<UserChatStatistic> {
         return userStatisticRepository.findLatest(chat.id, limit)
     }
+
+    fun deleteStatisticForChat(chatId: Short): Int {
+        return userStatisticRepository.deleteByChatId(chatId)
+    }
 }

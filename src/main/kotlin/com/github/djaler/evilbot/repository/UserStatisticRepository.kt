@@ -19,4 +19,6 @@ interface UserStatisticRepository : JpaRepository<UserChatStatistic, Int> {
         nativeQuery = true
     )
     fun findLatest(chatId: Short, limit: Short): List<UserChatStatistic>
+
+    fun deleteByChatId(chatsId: Short): Int
 }

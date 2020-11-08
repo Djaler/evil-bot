@@ -9,5 +9,6 @@ import java.time.Duration
 @ConstructorBinding
 @Validated
 data class BotProperties(
-    val captchaKickTimeout: Duration = Duration.ofMinutes(1)
+    val captchaKickTimeout: Duration = Duration.ofMinutes(1),
+    val cleanupLeftChatsTimeout: Duration = Duration.ofDays(30)
 )
