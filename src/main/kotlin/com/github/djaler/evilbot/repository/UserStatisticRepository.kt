@@ -3,6 +3,7 @@ package com.github.djaler.evilbot.repository
 import com.github.djaler.evilbot.entity.UserChatStatistic
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import org.springframework.transaction.annotation.Transactional
 
 interface UserStatisticRepository : JpaRepository<UserChatStatistic, Int> {
     @Query("select s from UserChatStatistic s where s.chatId = :chatId and s.user.id = :userId")
@@ -20,5 +21,6 @@ interface UserStatisticRepository : JpaRepository<UserChatStatistic, Int> {
     )
     fun findLatest(chatId: Short, limit: Short): List<UserChatStatistic>
 
+    @Transactional
     fun deleteByChatId(chatsId: Short): Int
 }
