@@ -32,7 +32,6 @@ class LocationiqClient(
     @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
     data class Location(val displayName: String, val lat: Double, val lon: Double) : Serializable
 
-    // TODO увеличить длительность кэширования
     @Cacheable("locations")
     suspend fun getLocation(query: String): List<Location> {
         return rateLimiter.executeSuspendFunction {
