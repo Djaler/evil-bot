@@ -4,6 +4,7 @@ import com.github.djaler.evilbot.clients.FixerClient
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.time.LocalDate
 
 @Service
 class CurrencyService(
@@ -13,6 +14,10 @@ class CurrencyService(
     suspend fun convertCurrency(amount: BigDecimal, from: String, to: String): BigDecimal {
         val (fromRate, toRate) = getRates(from, to)
 
+        return convertCurrency(amount, fromRate, toRate)
+    }
+
+    private fun convertCurrency(amount: BigDecimal, fromRate: BigDecimal, toRate: BigDecimal): BigDecimal {
         val maxScale = maxOf(amount.scale(), fromRate.scale(), toRate.scale())
         return amount.divide(fromRate, maxScale, RoundingMode.HALF_UP).multiply(toRate)
     }
