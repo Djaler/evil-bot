@@ -2,6 +2,7 @@ package com.github.djaler.evilbot.handlers
 
 import com.github.djaler.evilbot.service.CurrencyService
 import com.github.djaler.evilbot.service.UnknownCurrencyException
+import com.github.djaler.evilbot.utils.calculateIncreasePercentage
 import com.github.djaler.evilbot.utils.roundToSignificantDigitsAfterComma
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.send.reply
@@ -9,6 +10,7 @@ import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.ParseMode.HTML
 import dev.inmo.tgbotapi.types.message.CommonMessageImpl
 import org.springframework.stereotype.Component
+import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -33,6 +35,11 @@ class CurrencyConverterHandler(
             minimumFractionDigits = 0
             maximumFractionDigits = Integer.MAX_VALUE
         }
+        private val diffFormat = (DecimalFormat.getInstance(Locale.US) as DecimalFormat).apply {
+            minimumFractionDigits = 0
+            maximumFractionDigits = Integer.MAX_VALUE
+            positivePrefix = "+"
+        }
     }
 
     override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
@@ -48,18 +55,29 @@ class CurrencyConverterHandler(
         }
         val (amount, from, to) = currencyMessage.value.split(spacesRegex, limit = 3)
         val originalAmount = amount.toBigDecimal()
-        val convertedAmount = try {
+        val (convertedAmount, convertedAmountDayAgo) = try {
             currencyService.convertCurrency(originalAmount, from, to)
         } catch (e: UnknownCurrencyException) {
             requestsExecutor.reply(message, "Не знаю про ${e.currency}")
             return
         }
 
-        val messageAmount = df.format(originalAmount.roundToSignificantDigitsAfterComma(mc))
-        val messageResult = df.format(convertedAmount.roundToSignificantDigitsAfterComma(mc))
-        requestsExecutor.reply(
-            message,
-            "Твои жалкие $messageAmount ${from.toUpperCase()} равны $messageResult ${to.toUpperCase()}"
-        )
+        val amountDiff = convertedAmount - convertedAmountDayAgo
+        val percentDiff = calculateIncreasePercentage(convertedAmountDayAgo, convertedAmount)
+
+        val diffText = "${formatDiff(amountDiff, to)} / ${formatDiff(percentDiff, "%")}"
+
+        val text = """
+            Твои жалкие ${formatAmount(originalAmount, from)} сейчас равны ${formatAmount(convertedAmount, to)}
+            Вчера - ${formatAmount(convertedAmountDayAgo, to)} ($diffText)
+            """.trimIndent()
+
+        requestsExecutor.reply(message, text)
     }
+
+    private fun formatAmount(originalAmount: BigDecimal, currency: String) =
+        "${df.format(originalAmount.roundToSignificantDigitsAfterComma(mc))} ${currency.toUpperCase()}"
+
+    private fun formatDiff(diff: BigDecimal, currency: String) =
+        "${diffFormat.format(diff.roundToSignificantDigitsAfterComma(mc))} ${currency.toUpperCase()}"
 }

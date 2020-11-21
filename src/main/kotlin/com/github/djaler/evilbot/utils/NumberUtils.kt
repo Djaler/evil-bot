@@ -19,3 +19,7 @@ fun BigDecimal.roundToSignificantDigitsAfterComma(mc: MathContext): BigDecimal {
     val fractionalPart = this.remainder(BigDecimal.ONE)
     return this.subtract(fractionalPart).add(fractionalPart.round(mc))
 }
+
+fun calculateIncreasePercentage(from: BigDecimal, to: BigDecimal): BigDecimal {
+    return (to - from) / from * BigDecimal.valueOf(100)
+}
