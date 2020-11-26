@@ -36,7 +36,7 @@ class SendCaptchaHandler(
 ) : MessageHandler(filter = canRestrictMemberFilter) {
 
     override suspend fun handleMessage(message: Message): Boolean {
-        if (message !is ChatEventMessage) {
+        if (message !is ChatEventMessage<*>) {
             return false
         }
         val chat = message.chat as? GroupChat ?: return false

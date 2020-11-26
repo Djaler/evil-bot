@@ -31,8 +31,8 @@ class CurrentTimeHandler(
         var defaultLocationChosen = false
 
         val timeForLocation = if (locationContent !== null) {
-            val (longitude, latitude) = locationContent.location
-            timeService.getTimeForLocation(latitude, longitude)
+            val location = locationContent.location
+            timeService.getTimeForLocation(location.latitude, location.longitude)
         } else if (!args.isNullOrBlank()) {
             timeService.getTimeForLocation(args)
         } else {
