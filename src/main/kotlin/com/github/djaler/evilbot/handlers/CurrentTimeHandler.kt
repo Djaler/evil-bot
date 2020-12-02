@@ -40,16 +40,20 @@ class CurrentTimeHandler(
             timeService.getTimeForLocation("Москва")
         }
 
-        val text = if (timeForLocation !== null) {
-            val formattedLocationTime = timeForLocation.format(dateTimeFormatter)
-            if (defaultLocationChosen) "Ты не уточнил, поэтому вот результат для дефолт-сити: $formattedLocationTime" else formattedLocationTime
-        } else {
-            "Не знаю такого"
+        if (timeForLocation === null) {
+            requestsExecutor.reply(message, "Не знаю такого")
+            return
         }
+
+        val formattedLocationTime = timeForLocation.format(dateTimeFormatter)
 
         requestsExecutor.reply(
             message,
-            text
+            if (defaultLocationChosen) {
+                "Ты не уточнил, поэтому вот результат для дефолт-сити: $formattedLocationTime"
+            } else {
+                formattedLocationTime
+            }
         )
     }
 }
