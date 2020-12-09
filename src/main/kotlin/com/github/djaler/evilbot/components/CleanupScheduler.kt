@@ -23,7 +23,8 @@ class CleanupScheduler(
         private val log = LogManager.getLogger()
     }
 
-    @Scheduled(cron = "0 0 0 * * ?")
+    // TODO отключено из-за ошибки в формировании списка чатов
+    // @Scheduled(cron = "0 0 0 * * ?")
     fun cleanupLeftChats() {
         try {
             val chatsIds = chatService.getChatsLeftFor(botProperties.cleanupLeftChatsTimeout)
