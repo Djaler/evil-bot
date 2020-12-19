@@ -11,8 +11,8 @@ interface ChatHistoryRepository : JpaRepository<ChatHistory, Int> {
 
     @Query(
         """select ch.chatId from ChatHistory ch
-                where ch.joinDate < ch.leaveDate
-                    or ch.joinDate is null
+                where ch.leaveDate is not null
+                and not exists (select 1 from ChatHistory other where ch.chatId = other.chatId AND other.joinDate > ch.leaveDate)
                 group by ch.chatId
                 having max(ch.leaveDate) < :date"""
     )
