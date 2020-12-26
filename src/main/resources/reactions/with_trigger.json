@@ -146,5 +146,13 @@
       "давно пора"
     ],
     "chance": 50
+  },
+  {
+    "triggers": [
+      "\\bкхъ\\b"
+    ],
+    "reactions": [
+      "sticker:CAACAgIAAx0CUkp6rgACAzhf55sIRWmxa9f5IGmphf6TrWdBcAACggUAAiMFDQABbV2IIHJbXSUeBA"
+    ]
   }
 ]
