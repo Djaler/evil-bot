@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.djaler.evilbot.model.Reaction
 import dev.inmo.tgbotapi.bot.RequestsExecutor
+import dev.inmo.tgbotapi.extensions.api.send.media.replyWithSticker
 import dev.inmo.tgbotapi.extensions.api.send.reply
+import dev.inmo.tgbotapi.requests.abstracts.FileId
 import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.message.abstracts.ContentMessage
 import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
@@ -25,6 +27,10 @@ class ReactionHandler(
     private val botInfo: ExtendedBot,
     private val requestsExecutor: RequestsExecutor
 ) : MessageHandler() {
+    companion object {
+        private const val STICKER_REACTION_PREFIX = "sticker:"
+    }
+
     private lateinit var reactions: List<Reaction>
 
     override val order = Int.MAX_VALUE
@@ -75,12 +81,20 @@ class ReactionHandler(
                 continue
             }
 
-            requestsExecutor.reply(message, reaction.reactions.random())
+            react(message, reaction.reactions.random())
 
             return true
         }
 
         return false
+    }
+
+    private suspend fun react(message: Message, reaction: String) {
+        if (reaction.startsWith(STICKER_REACTION_PREFIX)) {
+            requestsExecutor.replyWithSticker(message, FileId(reaction.removePrefix(STICKER_REACTION_PREFIX)))
+        } else {
+            requestsExecutor.reply(message, reaction)
+        }
     }
 
     private fun isReplyToBot(message: Message): Boolean {
