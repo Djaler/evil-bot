@@ -12,7 +12,7 @@ import dev.inmo.tgbotapi.extensions.api.deleteMessage
 import dev.inmo.tgbotapi.extensions.api.send.media.sendAnimation
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.api.send.sendDice
-import dev.inmo.tgbotapi.requests.abstracts.FileId
+import dev.inmo.tgbotapi.requests.abstracts.MultipartFile
 import dev.inmo.tgbotapi.types.*
 import dev.inmo.tgbotapi.types.CallbackQuery.MessageDataCallbackQuery
 import dev.inmo.tgbotapi.types.ChatMember.RestrictedChatMember
@@ -25,6 +25,7 @@ import dev.inmo.tgbotapi.types.message.ChatEvents.NewChatMembers
 import dev.inmo.tgbotapi.types.message.abstracts.ChatEventMessage
 import dev.inmo.tgbotapi.types.message.abstracts.Message
 import dev.inmo.tgbotapi.types.message.abstracts.PossiblyReplyMessage
+import org.springframework.core.io.ClassPathResource
 import org.springframework.stereotype.Component
 
 @Component
@@ -107,7 +108,9 @@ class CaptchaCallbackHandler(
     private val captchaService: CaptchaService
 ) : CallbackQueryHandler() {
     companion object {
-        private val welcomeGif = FileId("CgACAgIAAxkBAAIFwF-FfJeQpLe9RGjLl15pt8nmFabzAAJOAAOy5KBLZaV80ssGRf0bBA")
+        private val welcomeGif by lazy {
+            MultipartFile(StorageFile(ClassPathResource("media/welcome_to_the_club.mp4")))
+        }
         private val ACCESS_RESTRICTED_MESSAGES = arrayOf("КУДА ЖМЁШЬ?!️! РУКУ УБРАЛ!", "У тебя здесь нет власти!")
         private val WRONG_ANSWER_MESSAGES = arrayOf("НЕПРАВИЛЬНЫЙ ОТВЕТ!", "Кто-то не может нажать правильную кнопочку...")
     }

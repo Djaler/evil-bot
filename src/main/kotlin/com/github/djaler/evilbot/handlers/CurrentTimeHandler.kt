@@ -1,14 +1,16 @@
 package com.github.djaler.evilbot.handlers
 
 import com.github.djaler.evilbot.service.TimeService
+import com.github.djaler.evilbot.utils.StorageFile
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.send.media.replyWithPhoto
 import dev.inmo.tgbotapi.extensions.api.send.reply
-import dev.inmo.tgbotapi.requests.abstracts.FileId
+import dev.inmo.tgbotapi.requests.abstracts.MultipartFile
 import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.message.CommonMessageImpl
 import dev.inmo.tgbotapi.types.message.abstracts.ContentMessage
 import dev.inmo.tgbotapi.types.message.content.LocationContent
+import org.springframework.core.io.ClassPathResource
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -25,8 +27,10 @@ class CurrentTimeHandler(
 ) {
     companion object {
         private val dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
-        private val noonImage =
-            FileId("AgACAgIAAxkBAAIYYl_H9ZRoIRbKaPQreD_96Tz-M5jqAAIjsDEbG1VBSt5s1ejS7mc0fbvRly4AAwEAAwIAA3kAAyevAwABHgQ")
+
+        private val noonImage by lazy {
+            MultipartFile(StorageFile(ClassPathResource("media/high_noon.jpg")))
+        }
     }
 
     override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
