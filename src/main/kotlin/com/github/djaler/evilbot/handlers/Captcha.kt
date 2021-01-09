@@ -28,7 +28,7 @@ import dev.inmo.tgbotapi.types.message.abstracts.PossiblyReplyMessage
 import org.springframework.core.io.ClassPathResource
 import org.springframework.stereotype.Component
 
-@Component
+//@Component
 class SendCaptchaHandler(
     private val requestsExecutor: RequestsExecutor,
     private val captchaService: CaptchaService,
@@ -103,6 +103,7 @@ class SendCaptchaHandler(
 }
 
 @Component
+@Deprecated("Используется новая реализация капчи (см. DicePollCaptcha)")
 class CaptchaCallbackHandler(
     private val requestsExecutor: RequestsExecutor,
     private val captchaService: CaptchaService
