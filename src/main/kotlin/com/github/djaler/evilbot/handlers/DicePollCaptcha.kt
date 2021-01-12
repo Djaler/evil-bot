@@ -108,6 +108,10 @@ class DicePollCaptchaAnswerHandler(
         val chatId = restriction.chat.telegramId.toChatId()
         val userId = restriction.memberTelegramId.toUserId()
 
+        if (answer.user.id != userId) {
+            return
+        }
+
         val correct = answer.chosen.size == 1 && answer.chosen.first() == restriction.correctAnswerIndex
 
         if (!correct) {
