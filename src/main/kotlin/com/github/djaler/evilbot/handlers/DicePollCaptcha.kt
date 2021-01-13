@@ -11,6 +11,7 @@ import dev.inmo.tgbotapi.extensions.api.chat.members.restrictChatMember
 import dev.inmo.tgbotapi.extensions.api.deleteMessage
 import dev.inmo.tgbotapi.extensions.api.send.media.sendAnimation
 import dev.inmo.tgbotapi.extensions.api.send.polls.replyWithRegularPoll
+import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.api.send.sendDice
 import dev.inmo.tgbotapi.requests.abstracts.MultipartFile
 import dev.inmo.tgbotapi.types.Bot
@@ -46,6 +47,12 @@ class DicePollCaptchaSendHandler(
 
         for (member in newMembersEvent.members) {
             if (member is Bot) {
+                continue
+            }
+
+            if (captchaService.getRestriction(chat.id, member.id) != null) {
+                requestsExecutor.reply(message, "Ты чего перезаходишь. Капчу пройди")
+                anyUser = true
                 continue
             }
 
