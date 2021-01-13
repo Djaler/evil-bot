@@ -16,6 +16,7 @@ import dev.inmo.tgbotapi.extensions.api.send.sendDice
 import dev.inmo.tgbotapi.requests.abstracts.MultipartFile
 import dev.inmo.tgbotapi.types.Bot
 import dev.inmo.tgbotapi.types.ChatMember.RestrictedChatMember
+import dev.inmo.tgbotapi.types.User
 import dev.inmo.tgbotapi.types.chat.ChatPermissions
 import dev.inmo.tgbotapi.types.chat.abstracts.GroupChat
 import dev.inmo.tgbotapi.types.dice.CubeDiceAnimationType
@@ -45,61 +46,67 @@ class DicePollCaptchaSendHandler(
 
         var anyUser = false
 
-        for (member in newMembersEvent.members) {
-            if (member is Bot) {
-                continue
-            }
+        val newMembers = newMembersEvent.members.filter { it !is Bot }
 
-            val previousRestriction = captchaService.getRestriction(chat.id, member.id)
-            if (previousRestriction != null) {
-                val newDiceMessage = requestsExecutor.forwardMessage(chat, chat, previousRestriction.diceMessageId)
-                requestsExecutor.deleteMessage(chat, previousRestriction.diceMessageId)
-                val newPollMessage = requestsExecutor.forwardMessage(chat, chat, previousRestriction.pollMessageId)
-                requestsExecutor.deleteMessage(chat, previousRestriction.pollMessageId)
-                captchaService.updateRestriction(previousRestriction, newDiceMessage, newPollMessage)
-                anyUser = true
-                continue
-            }
-
-            val chatMember = requestsExecutor.getChatMember(chat.id, member.id)
-
-            val permissions = (chatMember as? RestrictedChatMember)?.chatPermissions ?: fullChatPermissions
-
-            requestsExecutor.restrictChatMember(chat.id, member.id)
-
-            val diceMessage = requestsExecutor.sendDice(chat.id, CubeDiceAnimationType)
-            val cubeValue = diceMessage.content.dice.value
-
-            val kickTimeoutMinutes = botProperties.captchaKickTimeout.toMinutes()
-
-            val options = diceResultLimit.shuffled()
-            val correctIndex = options.indexOf(cubeValue)
-
-            val pollMessage = requestsExecutor.replyWithRegularPoll(
-                diceMessage,
-                """
-                    Эй, ${member.usernameOrName}! Мы отобрали твою свободу слова, пока ты не тыкнешь число, выпавшее сверху на кубике 👇
-                    У тебя есть $kickTimeoutMinutes ${kickTimeoutMinutes.getForm("минута", "минуты", "минут")}
-                    """.trimIndent(),
-                options = options.map { it.toString() },
-                isAnonymous = false,
-                allowMultipleAnswers = true,
-            )
-
-            captchaService.fixRestriction(
-                chat,
-                member,
-                message,
-                diceMessage,
-                pollMessage,
-                correctIndex,
-                permissions
-            )
-
-            anyUser = true
+        if (newMembers.isEmpty()) {
+            return false
         }
 
-        return anyUser
+        newMembers.forEach { member ->
+            val previousRestriction = captchaService.getRestriction(chat.id, member.id)
+            if (previousRestriction != null) {
+                forwardPreviousCaptcha(chat, previousRestriction)
+            } else {
+                createCaptcha(chat, member, message)
+            }
+        }
+
+        return true
+    }
+
+    private suspend fun forwardPreviousCaptcha(chat: GroupChat, previousRestriction: DicePollCaptchaRestriction) {
+        val newDiceMessage = requestsExecutor.forwardMessage(chat, chat, previousRestriction.diceMessageId)
+        requestsExecutor.deleteMessage(chat, previousRestriction.diceMessageId)
+        val newPollMessage = requestsExecutor.forwardMessage(chat, chat, previousRestriction.pollMessageId)
+        requestsExecutor.deleteMessage(chat, previousRestriction.pollMessageId)
+        captchaService.updateRestriction(previousRestriction, newDiceMessage, newPollMessage)
+    }
+
+    private suspend fun createCaptcha(chat: GroupChat, member: User, message: ChatEventMessage) {
+        val chatMember = requestsExecutor.getChatMember(chat.id, member.id)
+
+        val originalPermissions = (chatMember as? RestrictedChatMember)?.chatPermissions ?: fullChatPermissions
+
+        requestsExecutor.restrictChatMember(chat.id, member.id)
+
+        val diceMessage = requestsExecutor.sendDice(chat.id, CubeDiceAnimationType)
+        val cubeValue = diceMessage.content.dice.value
+
+        val kickTimeoutMinutes = botProperties.captchaKickTimeout.toMinutes()
+
+        val options = diceResultLimit.shuffled()
+        val correctIndex = options.indexOf(cubeValue)
+
+        val pollMessage = requestsExecutor.replyWithRegularPoll(
+            diceMessage,
+            """
+                Эй, ${member.usernameOrName}! Мы отобрали твою свободу слова, пока ты не тыкнешь число, выпавшее сверху на кубике 👇
+                У тебя есть $kickTimeoutMinutes ${kickTimeoutMinutes.getForm("минута", "минуты", "минут")}
+                """.trimIndent(),
+            options = options.map { it.toString() },
+            isAnonymous = false,
+            allowMultipleAnswers = true,
+        )
+
+        captchaService.fixRestriction(
+            chat,
+            member,
+            message,
+            diceMessage,
+            pollMessage,
+            correctIndex,
+            originalPermissions
+        )
     }
 }
 
