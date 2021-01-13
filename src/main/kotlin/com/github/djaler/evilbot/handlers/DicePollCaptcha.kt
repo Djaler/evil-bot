@@ -9,9 +9,9 @@ import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.chat.members.getChatMember
 import dev.inmo.tgbotapi.extensions.api.chat.members.restrictChatMember
 import dev.inmo.tgbotapi.extensions.api.deleteMessage
+import dev.inmo.tgbotapi.extensions.api.forwardMessage
 import dev.inmo.tgbotapi.extensions.api.send.media.sendAnimation
 import dev.inmo.tgbotapi.extensions.api.send.polls.replyWithRegularPoll
-import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.api.send.sendDice
 import dev.inmo.tgbotapi.requests.abstracts.MultipartFile
 import dev.inmo.tgbotapi.types.Bot
@@ -50,8 +50,13 @@ class DicePollCaptchaSendHandler(
                 continue
             }
 
-            if (captchaService.getRestriction(chat.id, member.id) != null) {
-                requestsExecutor.reply(message, "Ты чего перезаходишь. Капчу пройди")
+            val previousRestriction = captchaService.getRestriction(chat.id, member.id)
+            if (previousRestriction != null) {
+                val newDiceMessage = requestsExecutor.forwardMessage(chat, chat, previousRestriction.diceMessageId)
+                requestsExecutor.deleteMessage(chat, previousRestriction.diceMessageId)
+                val newPollMessage = requestsExecutor.forwardMessage(chat, chat, previousRestriction.pollMessageId)
+                requestsExecutor.deleteMessage(chat, previousRestriction.pollMessageId)
+                captchaService.updateRestriction(previousRestriction, newDiceMessage, newPollMessage)
                 anyUser = true
                 continue
             }

@@ -12,6 +12,7 @@ import dev.inmo.tgbotapi.types.chat.ChatPermissions
 import dev.inmo.tgbotapi.types.chat.abstracts.PublicChat
 import dev.inmo.tgbotapi.types.message.abstracts.ChatEventMessage
 import dev.inmo.tgbotapi.types.message.abstracts.ContentMessage
+import dev.inmo.tgbotapi.types.message.abstracts.Message
 import dev.inmo.tgbotapi.types.message.content.DiceContent
 import dev.inmo.tgbotapi.types.message.content.PollContent
 import org.hibernate.exception.ConstraintViolationException
@@ -77,5 +78,15 @@ class DicePollCaptchaService(
 
     fun getRestrictionForPollOrNull(pollId: PollIdentifier): DicePollCaptchaRestriction? {
         return captchaRestrictionRepository.findByPollId(pollId)
+    }
+
+    fun updateRestriction(restriction: DicePollCaptchaRestriction, diceMessage: Message, pollMessage: Message) {
+        captchaRestrictionRepository.save(
+            restriction.copy(
+                diceMessageId = diceMessage.messageId,
+                pollMessageId = pollMessage.messageId,
+                dateTime = LocalDateTime.now()
+            )
+        )
     }
 }
