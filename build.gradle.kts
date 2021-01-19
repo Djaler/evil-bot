@@ -49,7 +49,7 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1")
 
-    implementation("io.sentry:sentry:1.7.30")
+    implementation("io.sentry:sentry:3.2.1")
 
     implementation("org.unix4j:unix4j-command:0.5")
 
