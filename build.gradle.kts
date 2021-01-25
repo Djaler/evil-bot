@@ -53,8 +53,8 @@ dependencies {
 
     implementation("org.unix4j:unix4j-command:0.5")
 
-    implementation("io.github.resilience4j:resilience4j-kotlin:1.6.1")
-    implementation("io.github.resilience4j:resilience4j-ratelimiter:1.6.1")
+    implementation("io.github.resilience4j:resilience4j-kotlin:1.7.0")
+    implementation("io.github.resilience4j:resilience4j-ratelimiter:1.7.0")
 }
 
 tasks.withType<KotlinCompile> {
