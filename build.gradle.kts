@@ -43,9 +43,9 @@ dependencies {
 
     implementation("dev.inmo:tgbotapi:0.29.3")
 
-    implementation("io.ktor:ktor-server-netty:1.4.1")
-    implementation("io.ktor:ktor-client-apache:1.4.1")
-    implementation("io.ktor:ktor-client-jackson:1.4.1")
+    implementation("io.ktor:ktor-server-netty:1.5.1")
+    implementation("io.ktor:ktor-client-apache:1.5.1")
+    implementation("io.ktor:ktor-client-jackson:1.5.1")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1")
 
