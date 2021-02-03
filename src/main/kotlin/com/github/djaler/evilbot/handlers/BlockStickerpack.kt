@@ -20,9 +20,11 @@ import dev.inmo.tgbotapi.types.buttons.InlineKeyboardButtons.CallbackDataInlineK
 import dev.inmo.tgbotapi.types.buttons.InlineKeyboardButtons.InlineKeyboardButton
 import dev.inmo.tgbotapi.types.buttons.InlineKeyboardMarkup
 import dev.inmo.tgbotapi.types.chat.abstracts.PublicChat
-import dev.inmo.tgbotapi.types.message.CommonMessageImpl
+import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import dev.inmo.tgbotapi.types.message.abstracts.ContentMessage
+import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
 import dev.inmo.tgbotapi.types.message.abstracts.Message
+import dev.inmo.tgbotapi.types.message.content.TextContent
 import dev.inmo.tgbotapi.types.message.content.media.StickerContent
 import org.springframework.stereotype.Component
 
@@ -41,7 +43,10 @@ class BlockStickerpackHandler(
 ) {
     private val parseMode = HTML
 
-    override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
+    override suspend fun <M> handleCommand(
+        message: M,
+        args: String?
+    ) where M : CommonMessage<TextContent>, M : FromUserMessage {
         val chat = message.chat as? PublicChat ?: return
         val replyTo = message.replyTo as? ContentMessage<*> ?: return
         val stickerContent = replyTo.content as? StickerContent ?: return
@@ -86,14 +91,21 @@ class UnblockStickerpackHandler(
 ) {
     private val parseMode = HTML
 
-    override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
+    override suspend fun <M> handleCommand(
+        message: M,
+        args: String?
+    ) where M : CommonMessage<TextContent>, M : FromUserMessage {
         val chat = message.chat as? PublicChat ?: return
 
         val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
 
         val blockedStickerpacks = blockedStickerpackService.getAll(chatEntity)
         if (blockedStickerpacks.isEmpty()) {
-            requestsExecutor.reply(message, "Заблокированных стикерпаков ${"нет".bold(parseMode)}", parseMode = parseMode)
+            requestsExecutor.reply(
+                message,
+                "Заблокированных стикерпаков ${"нет".bold(parseMode)}",
+                parseMode = parseMode
+            )
             return
         }
 
@@ -160,7 +172,7 @@ class UnblockStickerpackCallbackHandler(
             message.chat.id,
             message.messageId,
             "Стикерпак $packLink успешно ${"разблокирован".bold(parseMode)} " +
-                "администратором ${userWhoClicked.bold(parseMode)}.",
+                    "администратором ${userWhoClicked.bold(parseMode)}.",
             parseMode = parseMode
         )
     }

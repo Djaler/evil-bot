@@ -6,7 +6,9 @@ import dev.inmo.tgbotapi.extensions.api.deleteMessage
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
 import dev.inmo.tgbotapi.types.ExtendedBot
-import dev.inmo.tgbotapi.types.message.CommonMessageImpl
+import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
+import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
+import dev.inmo.tgbotapi.types.message.content.TextContent
 import org.springframework.stereotype.Component
 
 @Component
@@ -18,7 +20,10 @@ class ForwardHandler(
     command = arrayOf("me"),
     commandDescription = "отправить сообщение от имени бота"
 ) {
-    override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
+    override suspend fun <M> handleCommand(
+        message: M,
+        args: String?
+    ) where M : CommonMessage<TextContent>, M : FromUserMessage {
         if (args === null) {
             requestsExecutor.reply(message, "И что я должен отправить, по твоему?")
             return

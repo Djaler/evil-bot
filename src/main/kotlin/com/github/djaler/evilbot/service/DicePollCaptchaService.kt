@@ -28,7 +28,7 @@ class DicePollCaptchaService(
     fun fixRestriction(
         chat: PublicChat,
         member: User,
-        joinMessage: ChatEventMessage,
+        joinMessage: ChatEventMessage<*>,
         diceMessage: ContentMessage<DiceContent>,
         pollMessage: ContentMessage<PollContent>,
         correctAnswerIndex: Int,

@@ -15,7 +15,7 @@ class BotJoinHandler(
     private val chatService: ChatService
 ) : MessageHandler() {
     override suspend fun handleMessage(message: Message): Boolean {
-        if (message !is ChatEventMessage) {
+        if (message !is ChatEventMessage<*>) {
             return false
         }
         val chat = message.chat as? PublicChat ?: return false
@@ -40,7 +40,7 @@ class BotLeaveHandler(
     override val order = 0
 
     override suspend fun handleMessage(message: Message): Boolean {
-        if (message !is ChatEventMessage) {
+        if (message !is ChatEventMessage<*>) {
             return false
         }
         val chat = message.chat as? PublicChat ?: return false

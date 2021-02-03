@@ -8,7 +8,9 @@ import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.chat.abstracts.PublicChat
-import dev.inmo.tgbotapi.types.message.CommonMessageImpl
+import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
+import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
+import dev.inmo.tgbotapi.types.message.content.TextContent
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
@@ -20,7 +22,11 @@ class UpdateStatisticHandler(
     override val order = 0
 
     @Transactional
-    override suspend fun handleMessage(message: CommonMessageImpl<*>): Boolean {
+    override suspend fun handleMessage(message: CommonMessage<*>): Boolean {
+        if (message !is FromUserMessage) {
+            return false
+        }
+
         val chat = message.chat as? PublicChat ?: return false
 
         val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
@@ -43,7 +49,10 @@ class DisplayStatisticHandler(
     command = arrayOf("statistic"),
     commandDescription = "сколько сообщений ты написал"
 ) {
-    override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
+    override suspend fun <M> handleCommand(
+        message: M,
+        args: String?
+    ) where M : CommonMessage<TextContent>, M : FromUserMessage {
         val chat = message.chat as? PublicChat ?: return
 
         val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
@@ -85,7 +94,10 @@ class DisplayTop10Handler(
     command = arrayOf("top10"),
     commandDescription = "кто больше всех пишет"
 ) {
-    override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
+    override suspend fun <M> handleCommand(
+        message: M,
+        args: String?
+    ) where M : CommonMessage<TextContent>, M : FromUserMessage {
         val chat = message.chat as? PublicChat ?: return
 
         val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)

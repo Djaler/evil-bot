@@ -2,7 +2,7 @@ package com.github.djaler.evilbot.filters.message
 
 import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.MessageEntity.textsources.BotCommandTextSource
-import dev.inmo.tgbotapi.types.message.CommonMessageImpl
+import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import dev.inmo.tgbotapi.types.message.abstracts.Message
 import dev.inmo.tgbotapi.types.message.content.TextContent
 
@@ -13,12 +13,12 @@ class CommandMessageFilter(
     private val botUsername = botInfo.username.username
 
     override suspend fun filter(message: Message): Boolean {
-        if (message !is CommonMessageImpl<*>) {
+        if (message !is CommonMessage<*>) {
             return false
         }
         val content = message.content as? TextContent ?: return false
 
-        if (content.entities.none { it.source is BotCommandTextSource }) {
+        if (content.textEntities.none { it.source is BotCommandTextSource }) {
             return false
         }
 
