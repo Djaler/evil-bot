@@ -37,7 +37,7 @@ class SendCaptchaHandler(
 ) : MessageHandler(filter = canRestrictMemberFilter) {
 
     override suspend fun handleMessage(message: Message): Boolean {
-        if (message !is ChatEventMessage) {
+        if (message !is ChatEventMessage<*>) {
             return false
         }
         val chat = message.chat as? GroupChat ?: return false
@@ -71,8 +71,9 @@ class SendCaptchaHandler(
             val diceMessage = requestsExecutor.sendDice(chat.id, CubeDiceAnimationType)
             val cubeValue = diceMessage.content.dice.value
 
-            val buttons = diceResultLimit.map {
-                CallbackDataInlineKeyboardButton(it.toString(),
+            val buttons = dartsCubeAndBowlingDiceResultLimit.map {
+                CallbackDataInlineKeyboardButton(
+                    it.toString(),
                     createCallbackDataForHandler(
                         encodeCallbackData(it, it == cubeValue, member.id, permissions, message.messageId),
                         CaptchaCallbackHandler::class.java

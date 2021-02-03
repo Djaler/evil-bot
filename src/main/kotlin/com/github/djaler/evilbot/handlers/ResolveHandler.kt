@@ -3,7 +3,9 @@ package com.github.djaler.evilbot.handlers
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.types.ExtendedBot
-import dev.inmo.tgbotapi.types.message.CommonMessageImpl
+import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
+import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
+import dev.inmo.tgbotapi.types.message.content.TextContent
 import org.springframework.stereotype.Component
 import kotlin.random.Random
 
@@ -16,7 +18,10 @@ class ResolveHandler(
     command = arrayOf("resolve", "r"),
     commandDescription = "выбрать один из вариантов"
 ) {
-    override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
+    override suspend fun <M> handleCommand(
+        message: M,
+        args: String?
+    ) where M : CommonMessage<TextContent>, M : FromUserMessage {
         if (args === null) {
             requestsExecutor.reply(message, "Ну а где варианты? Пришли варианты, разделенные слэшом (/)")
             return

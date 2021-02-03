@@ -5,7 +5,9 @@ import dev.inmo.tgbotapi.extensions.api.send.media.replyWithSticker
 import dev.inmo.tgbotapi.extensions.api.send.media.sendSticker
 import dev.inmo.tgbotapi.requests.abstracts.FileId
 import dev.inmo.tgbotapi.types.ExtendedBot
-import dev.inmo.tgbotapi.types.message.CommonMessageImpl
+import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
+import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
+import dev.inmo.tgbotapi.types.message.content.TextContent
 import org.springframework.core.io.ClassPathResource
 import org.springframework.stereotype.Component
 
@@ -22,7 +24,10 @@ class PayRespectHandler(
         ClassPathResource("f_stickers.txt").inputStream.reader().readLines()
     }
 
-    override suspend fun handleCommand(message: CommonMessageImpl<*>, args: String?) {
+    override suspend fun <M> handleCommand(
+        message: M,
+        args: String?
+    ) where M : CommonMessage<TextContent>, M : FromUserMessage {
         val sticker = FileId(stickers.random())
 
         val replyTo = message.replyTo

@@ -25,7 +25,7 @@ class CasCheckHandler(
     private val parseMode = HTML
 
     override suspend fun handleMessage(message: Message): Boolean {
-        if (message !is ChatEventMessage) {
+        if (message !is ChatEventMessage<*>) {
             return false
         }
         val chat = message.chat as? PublicChat ?: return false

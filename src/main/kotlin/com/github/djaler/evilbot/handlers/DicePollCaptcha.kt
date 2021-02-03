@@ -19,8 +19,8 @@ import dev.inmo.tgbotapi.types.ChatMember.RestrictedChatMember
 import dev.inmo.tgbotapi.types.User
 import dev.inmo.tgbotapi.types.chat.ChatPermissions
 import dev.inmo.tgbotapi.types.chat.abstracts.GroupChat
+import dev.inmo.tgbotapi.types.dartsCubeAndBowlingDiceResultLimit
 import dev.inmo.tgbotapi.types.dice.CubeDiceAnimationType
-import dev.inmo.tgbotapi.types.diceResultLimit
 import dev.inmo.tgbotapi.types.message.ChatEvents.NewChatMembers
 import dev.inmo.tgbotapi.types.message.abstracts.ChatEventMessage
 import dev.inmo.tgbotapi.types.message.abstracts.Message
@@ -38,7 +38,7 @@ class DicePollCaptchaSendHandler(
 ) : MessageHandler(filter = canRestrictMemberFilter) {
 
     override suspend fun handleMessage(message: Message): Boolean {
-        if (message !is ChatEventMessage) {
+        if (message !is ChatEventMessage<*>) {
             return false
         }
         val chat = message.chat as? GroupChat ?: return false
@@ -72,7 +72,7 @@ class DicePollCaptchaSendHandler(
         captchaService.updateRestriction(previousRestriction, newDiceMessage, newPollMessage)
     }
 
-    private suspend fun createCaptcha(chat: GroupChat, member: User, message: ChatEventMessage) {
+    private suspend fun createCaptcha(chat: GroupChat, member: User, message: ChatEventMessage<*>) {
         val chatMember = requestsExecutor.getChatMember(chat.id, member.id)
 
         val originalPermissions = (chatMember as? RestrictedChatMember)?.chatPermissions ?: fullChatPermissions
@@ -84,7 +84,7 @@ class DicePollCaptchaSendHandler(
 
         val kickTimeoutMinutes = botProperties.captchaKickTimeout.toMinutes()
 
-        val options = diceResultLimit.shuffled()
+        val options = dartsCubeAndBowlingDiceResultLimit.shuffled()
         val correctIndex = options.indexOf(cubeValue)
 
         val pollMessage = requestsExecutor.replyWithRegularPoll(
