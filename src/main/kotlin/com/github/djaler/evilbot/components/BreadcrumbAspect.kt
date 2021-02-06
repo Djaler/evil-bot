@@ -1,7 +1,7 @@
 package com.github.djaler.evilbot.components
 
-import io.sentry.SentryClient
-import io.sentry.event.BreadcrumbBuilder
+import com.github.djaler.evilbot.clients.SentryClient
+import io.sentry.Breadcrumb
 import org.apache.logging.log4j.LogManager
 import org.aspectj.lang.JoinPoint
 import org.aspectj.lang.annotation.Aspect
@@ -31,16 +31,18 @@ class BreadcrumbAspect(
 
             val parameterNames = signature.parameterNames
             val args: Array<Any?> = joinPoint.args
-            val parametersValues = parameterNames.zip(args.map { it.toString() }).toMap()
+            val parametersValues = parameterNames.zip(args.map { it.toString() })
 
-            sentryClient.context.recordBreadcrumb(BreadcrumbBuilder().apply {
-                setMessage(methodName)
-                setData(parametersValues)
-            }.build())
+            sentryClient.addBreadcrumb(
+                Breadcrumb(methodName).also { breadcrumb ->
+                    parametersValues
+                        .forEach { (parameter, value) -> breadcrumb.setData(parameter, value) }
+                }
+            )
         } catch (e: Exception) {
             log.error("Breadcrumb record error", e)
 
-            sentryClient.sendException(e)
+            sentryClient.captureException(e)
         }
     }
 }

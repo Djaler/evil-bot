@@ -1,5 +1,6 @@
 package com.github.djaler.evilbot.handlers
 
+import com.github.djaler.evilbot.clients.SentryClient
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.send.media.*
 import dev.inmo.tgbotapi.extensions.api.send.polls.replyWithQuizPoll
@@ -19,9 +20,9 @@ import dev.inmo.tgbotapi.types.message.content.PollContent
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import dev.inmo.tgbotapi.types.message.content.media.*
 import dev.inmo.tgbotapi.types.polls.*
-import io.sentry.SentryClient
-import io.sentry.event.Event
-import io.sentry.event.EventBuilder
+import io.sentry.SentryEvent
+import io.sentry.SentryLevel
+import io.sentry.protocol.Message
 import org.apache.logging.log4j.LogManager
 import org.springframework.stereotype.Component
 import org.unix4j.Unix4j
@@ -181,13 +182,11 @@ class SedHandler(
             is UnknownPollType -> {
                 log.error("Unknown poll type: $poll")
 
-                sentryClient.context.addExtra("poll", poll)
-                sentryClient.sendEvent(
-                    EventBuilder()
-                        .withMessage("Unknown poll type")
-                        .withLevel(Event.Level.ERROR)
-                        .build()
-                )
+                sentryClient.setExtra("poll", poll.toString())
+                sentryClient.captureEvent(SentryEvent().apply {
+                    message = Message().apply { message = "Unknown poll type" }
+                    level = SentryLevel.ERROR
+                })
             }
         }
     }

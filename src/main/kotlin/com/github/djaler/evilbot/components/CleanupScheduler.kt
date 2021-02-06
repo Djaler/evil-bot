@@ -1,14 +1,14 @@
 package com.github.djaler.evilbot.components
 
+import com.github.djaler.evilbot.clients.SentryClient
 import com.github.djaler.evilbot.config.BotProperties
 import com.github.djaler.evilbot.service.ChatService
 import com.github.djaler.evilbot.service.UserService
-import io.sentry.SentryClient
-import io.sentry.event.Event
-import io.sentry.event.EventBuilder
+import io.sentry.SentryEvent
+import io.sentry.SentryLevel
+import io.sentry.protocol.Message
 import kotlinx.coroutines.runBlocking
 import org.apache.logging.log4j.LogManager
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 
 @Component
@@ -36,11 +36,12 @@ class CleanupScheduler(
 
                 val logMessage = "Deleted $deletedCount statistic entries for chat $it"
                 log.info(logMessage)
-                sentryClient.sendEvent(
-                    EventBuilder()
-                        .withMessage(logMessage)
-                        .withLevel(Event.Level.INFO)
-                        .build()
+                sentryClient.captureEvent(
+                    SentryEvent().apply {
+                        message = Message().apply { message = logMessage }
+                        level = SentryLevel.INFO
+
+                    }
                 )
             }
         } catch (e: Exception) {
@@ -50,7 +51,7 @@ class CleanupScheduler(
                 exceptionsManager.process(e)
             }
 
-            sentryClient.sendException(e)
+            sentryClient.captureException(e)
         }
     }
 }

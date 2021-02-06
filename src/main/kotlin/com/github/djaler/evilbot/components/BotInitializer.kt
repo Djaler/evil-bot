@@ -1,5 +1,6 @@
 package com.github.djaler.evilbot.components
 
+import com.github.djaler.evilbot.clients.SentryClient
 import com.github.djaler.evilbot.config.TelegramProperties
 import com.github.djaler.evilbot.utils.getMD5
 import dev.inmo.tgbotapi.bot.RequestsExecutor
@@ -9,7 +10,6 @@ import dev.inmo.tgbotapi.extensions.utils.updates.retrieving.setWebhookInfoAndSt
 import dev.inmo.tgbotapi.extensions.utils.updates.retrieving.startGettingOfUpdatesByLongPolling
 import dev.inmo.tgbotapi.requests.webhook.SetWebhook
 import io.ktor.server.netty.*
-import io.sentry.SentryClient
 import kotlinx.coroutines.runBlocking
 import org.apache.logging.log4j.LogManager
 import org.springframework.stereotype.Component
@@ -49,7 +49,7 @@ class BotInitializer(
                     }
                 } catch (e: Exception) {
                     log.error("Exception on webhook setup", e)
-                    sentryClient.sendException(e)
+                    sentryClient.captureException(e)
                 }
             }
         } else {
@@ -65,7 +65,7 @@ class BotInitializer(
     }
 
     private fun updateCommandsIfNeeded() {
-        runBlocking {
+        runBlocking<Unit> {
             try {
                 val oldCommands = requestExecutor.getMyCommands()
                 val newCommands = updatesManager.getCommands()
@@ -74,13 +74,13 @@ class BotInitializer(
                 }
             } catch (e: Exception) {
                 log.error("Exception on commands set", e)
-                sentryClient.sendException(e)
+                sentryClient.captureException(e)
             }
         }
     }
 
     private suspend fun handleException(throwable: Throwable) {
         log.error("Exception in update parsing", throwable)
-        sentryClient.sendException(throwable)
+        sentryClient.captureException(throwable)
     }
 }

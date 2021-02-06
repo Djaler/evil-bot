@@ -1,5 +1,6 @@
 package com.github.djaler.evilbot.components
 
+import com.github.djaler.evilbot.clients.SentryClient
 import com.github.djaler.evilbot.service.DicePollCaptchaService
 import com.github.djaler.evilbot.utils.toUserId
 import dev.inmo.tgbotapi.bot.RequestsExecutor
@@ -7,7 +8,6 @@ import dev.inmo.tgbotapi.extensions.api.chat.members.kickChatMember
 import dev.inmo.tgbotapi.extensions.api.deleteMessage
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
 import dev.inmo.tgbotapi.types.toChatId
-import io.sentry.SentryClient
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.apache.logging.log4j.LogManager
@@ -51,8 +51,8 @@ class DicePollCaptchaScheduler(
 
                     exceptionsManager.process(e)
 
-                    sentryClient.context.addExtra("restriction", it)
-                    sentryClient.sendException(e)
+                    sentryClient.setExtra("restriction", it.toString())
+                    sentryClient.captureException(e)
                 }
             }
         }

@@ -1,15 +1,14 @@
 package com.github.djaler.evilbot.components
 
+import com.github.djaler.evilbot.clients.SentryClient
 import com.github.djaler.evilbot.handlers.CommandHandler
 import com.github.djaler.evilbot.handlers.UpdateHandler
 import dev.inmo.tgbotapi.types.BotCommand
 import dev.inmo.tgbotapi.types.update.abstracts.UnknownUpdate
 import dev.inmo.tgbotapi.types.update.abstracts.Update
-import io.sentry.SentryClient
-import io.sentry.event.Breadcrumb
-import io.sentry.event.BreadcrumbBuilder
-import io.sentry.event.Event
-import io.sentry.event.EventBuilder
+import io.sentry.SentryEvent
+import io.sentry.SentryLevel
+import io.sentry.protocol.Message
 import org.apache.logging.log4j.LogManager
 import org.springframework.stereotype.Component
 
@@ -35,24 +34,23 @@ class UpdatesManager(
     }
 
     suspend fun processUpdate(update: Update) {
-        sentryClient.clearContext()
+        sentryClient.clearBreadcrumbs()
+
+        sentryClient.setExtra("update", update.toString())
 
         if (update is UnknownUpdate) {
             log.error("Unknown update type: $update")
 
-            sentryClient.context.addExtra("update", update)
-            sentryClient.sendEvent(
-                EventBuilder()
-                    .withMessage("Unknown update type")
-                    .withLevel(Event.Level.ERROR)
-                    .build()
-            )
+            sentryClient.captureEvent(SentryEvent().apply {
+                message = Message().apply { message = "Unknown update type" }
+                level = SentryLevel.ERROR
+            })
             return
         }
 
         for (handler in handlers) {
             try {
-                sentryClient.context.recordBreadcrumb(createHandlerBreadcrumb(handler))
+                sentryClient.addBreadcrumb(handler::class.java.simpleName)
                 val answered = handler.handleUpdate(update)
                 if (answered) {
                     break
@@ -62,15 +60,8 @@ class UpdatesManager(
 
                 exceptionsManager.process(e)
 
-                sentryClient.context.addExtra("update", update)
-                sentryClient.sendException(e)
+                sentryClient.captureException(e)
             }
         }
     }
-}
-
-private fun createHandlerBreadcrumb(handler: UpdateHandler): Breadcrumb {
-    return BreadcrumbBuilder().apply {
-        setMessage(handler::class.java.simpleName)
-    }.build()
 }
