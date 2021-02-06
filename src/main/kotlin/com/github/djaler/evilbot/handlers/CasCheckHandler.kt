@@ -6,12 +6,12 @@ import com.github.djaler.evilbot.utils.usernameOrName
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.chat.members.kickChatMember
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
+import dev.inmo.tgbotapi.extensions.utils.asChatEventMessage
+import dev.inmo.tgbotapi.extensions.utils.asPublicMessage
 import dev.inmo.tgbotapi.extensions.utils.formatting.link
 import dev.inmo.tgbotapi.types.Bot
 import dev.inmo.tgbotapi.types.ParseMode.HTML
-import dev.inmo.tgbotapi.types.chat.abstracts.PublicChat
 import dev.inmo.tgbotapi.types.message.ChatEvents.NewChatMembers
-import dev.inmo.tgbotapi.types.message.abstracts.ChatEventMessage
 import dev.inmo.tgbotapi.types.message.abstracts.Message
 import org.springframework.stereotype.Component
 
@@ -25,11 +25,8 @@ class CasCheckHandler(
     private val parseMode = HTML
 
     override suspend fun handleMessage(message: Message): Boolean {
-        if (message !is ChatEventMessage<*>) {
-            return false
-        }
-        val chat = message.chat as? PublicChat ?: return false
-        val newMembersEvent = message.chatEvent as? NewChatMembers ?: return false
+        val chat = message.asPublicMessage()?.chat ?: return false
+        val newMembersEvent = message.asChatEventMessage()?.chatEvent as? NewChatMembers ?: return false
 
         var anyBlocked = false
 

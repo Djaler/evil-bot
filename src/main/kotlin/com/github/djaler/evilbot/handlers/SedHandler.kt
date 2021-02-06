@@ -5,6 +5,7 @@ import dev.inmo.tgbotapi.extensions.api.send.media.*
 import dev.inmo.tgbotapi.extensions.api.send.polls.replyWithQuizPoll
 import dev.inmo.tgbotapi.extensions.api.send.polls.replyWithRegularPoll
 import dev.inmo.tgbotapi.extensions.api.send.reply
+import dev.inmo.tgbotapi.extensions.utils.asContentMessage
 import dev.inmo.tgbotapi.requests.abstracts.FileId
 import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.files.AnimationFile
@@ -48,7 +49,7 @@ class SedHandler(
             return
         }
 
-        val replyTo = message.replyTo as? ContentMessage<*> ?: return
+        val replyTo = message.replyTo?.asContentMessage() ?: return
 
         val content = replyTo.content
         try {

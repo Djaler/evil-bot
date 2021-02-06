@@ -13,9 +13,10 @@ import dev.inmo.tgbotapi.extensions.api.forwardMessage
 import dev.inmo.tgbotapi.extensions.api.send.media.sendAnimation
 import dev.inmo.tgbotapi.extensions.api.send.polls.replyWithRegularPoll
 import dev.inmo.tgbotapi.extensions.api.send.sendDice
+import dev.inmo.tgbotapi.extensions.utils.asGroupMessage
+import dev.inmo.tgbotapi.extensions.utils.asRestrictedChatMember
 import dev.inmo.tgbotapi.requests.abstracts.MultipartFile
 import dev.inmo.tgbotapi.types.Bot
-import dev.inmo.tgbotapi.types.ChatMember.RestrictedChatMember
 import dev.inmo.tgbotapi.types.User
 import dev.inmo.tgbotapi.types.chat.ChatPermissions
 import dev.inmo.tgbotapi.types.chat.abstracts.GroupChat
@@ -41,7 +42,7 @@ class DicePollCaptchaSendHandler(
         if (message !is ChatEventMessage<*>) {
             return false
         }
-        val chat = message.chat as? GroupChat ?: return false
+        val chat = message.asGroupMessage()?.chat ?: return false
         val newMembersEvent = message.chatEvent as? NewChatMembers ?: return false
 
         var anyUser = false
@@ -75,7 +76,7 @@ class DicePollCaptchaSendHandler(
     private suspend fun createCaptcha(chat: GroupChat, member: User, message: ChatEventMessage<*>) {
         val chatMember = requestsExecutor.getChatMember(chat.id, member.id)
 
-        val originalPermissions = (chatMember as? RestrictedChatMember)?.chatPermissions ?: fullChatPermissions
+        val originalPermissions = chatMember.asRestrictedChatMember()?.chatPermissions ?: fullChatPermissions
 
         requestsExecutor.restrictChatMember(chat.id, member.id)
 

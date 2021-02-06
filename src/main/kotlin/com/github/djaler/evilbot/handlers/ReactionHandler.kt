@@ -6,13 +6,12 @@ import com.github.djaler.evilbot.model.Reaction
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.send.media.replyWithSticker
 import dev.inmo.tgbotapi.extensions.api.send.reply
+import dev.inmo.tgbotapi.extensions.utils.asTextContent
 import dev.inmo.tgbotapi.requests.abstracts.FileId
 import dev.inmo.tgbotapi.types.ExtendedBot
-import dev.inmo.tgbotapi.types.message.abstracts.ContentMessage
+import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
 import dev.inmo.tgbotapi.types.message.abstracts.Message
-import dev.inmo.tgbotapi.types.message.abstracts.PossiblyReplyMessage
-import dev.inmo.tgbotapi.types.message.content.TextContent
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.stereotype.Component
 import javax.annotation.PostConstruct
@@ -26,7 +25,7 @@ class ReactionHandler(
     private val validator: Validator,
     private val botInfo: ExtendedBot,
     private val requestsExecutor: RequestsExecutor
-) : MessageHandler() {
+) : CommonMessageHandler() {
     companion object {
         private const val STICKER_REACTION_PREFIX = "sticker:"
     }
@@ -56,11 +55,8 @@ class ReactionHandler(
         reactions = loadedReactions
     }
 
-    override suspend fun handleMessage(message: Message): Boolean {
-        if (message !is ContentMessage<*>) {
-            return false
-        }
-        val content = message.content as? TextContent ?: return false
+    override suspend fun handleMessage(message: CommonMessage<*>): Boolean {
+        val content = message.content.asTextContent() ?: return false
 
         val messageReplyToBot = isReplyToBot(message)
 
@@ -97,11 +93,7 @@ class ReactionHandler(
         }
     }
 
-    private fun isReplyToBot(message: Message): Boolean {
-        if (message !is PossiblyReplyMessage) {
-            return false
-        }
-
+    private fun isReplyToBot(message: CommonMessage<*>): Boolean {
         val replyTo = message.replyTo
 
         if (replyTo !is FromUserMessage) {

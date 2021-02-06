@@ -12,6 +12,9 @@ import dev.inmo.tgbotapi.extensions.api.deleteMessage
 import dev.inmo.tgbotapi.extensions.api.edit.text.editMessageText
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
+import dev.inmo.tgbotapi.extensions.utils.asContentMessage
+import dev.inmo.tgbotapi.extensions.utils.asPublicMessage
+import dev.inmo.tgbotapi.extensions.utils.asStickerContent
 import dev.inmo.tgbotapi.extensions.utils.formatting.bold
 import dev.inmo.tgbotapi.types.CallbackQuery.MessageDataCallbackQuery
 import dev.inmo.tgbotapi.types.ExtendedBot
@@ -19,13 +22,9 @@ import dev.inmo.tgbotapi.types.ParseMode.HTML
 import dev.inmo.tgbotapi.types.buttons.InlineKeyboardButtons.CallbackDataInlineKeyboardButton
 import dev.inmo.tgbotapi.types.buttons.InlineKeyboardButtons.InlineKeyboardButton
 import dev.inmo.tgbotapi.types.buttons.InlineKeyboardMarkup
-import dev.inmo.tgbotapi.types.chat.abstracts.PublicChat
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
-import dev.inmo.tgbotapi.types.message.abstracts.ContentMessage
 import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
-import dev.inmo.tgbotapi.types.message.abstracts.Message
 import dev.inmo.tgbotapi.types.message.content.TextContent
-import dev.inmo.tgbotapi.types.message.content.media.StickerContent
 import org.springframework.stereotype.Component
 
 @Component
@@ -47,9 +46,8 @@ class BlockStickerpackHandler(
         message: M,
         args: String?
     ) where M : CommonMessage<TextContent>, M : FromUserMessage {
-        val chat = message.chat as? PublicChat ?: return
-        val replyTo = message.replyTo as? ContentMessage<*> ?: return
-        val stickerContent = replyTo.content as? StickerContent ?: return
+        val chat = message.asPublicMessage()?.chat ?: return
+        val stickerContent = message.replyTo?.asContentMessage()?.content?.asStickerContent() ?: return
 
         val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
 
@@ -95,7 +93,7 @@ class UnblockStickerpackHandler(
         message: M,
         args: String?
     ) where M : CommonMessage<TextContent>, M : FromUserMessage {
-        val chat = message.chat as? PublicChat ?: return
+        val chat = message.asPublicMessage()?.chat ?: return
 
         val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
 
@@ -183,15 +181,12 @@ class StickersWatchDog(
     private val requestsExecutor: RequestsExecutor,
     private val chatService: ChatService,
     private val blockedStickerpackService: BlockedStickerpackService
-) : MessageHandler() {
+) : CommonMessageHandler() {
     override val order = 0
 
-    override suspend fun handleMessage(message: Message): Boolean {
-        if (message !is ContentMessage<*>) {
-            return false
-        }
-        val chat = message.chat as? PublicChat ?: return false
-        val stickerContent = message.content as? StickerContent ?: return false
+    override suspend fun handleMessage(message: CommonMessage<*>): Boolean {
+        val chat = message.asPublicMessage()?.chat ?: return false
+        val stickerContent = message.content.asStickerContent() ?: return false
 
         val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
 

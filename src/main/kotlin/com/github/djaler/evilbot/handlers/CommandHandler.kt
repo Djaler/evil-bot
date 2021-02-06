@@ -3,6 +3,7 @@ package com.github.djaler.evilbot.handlers
 import com.github.djaler.evilbot.filters.message.CommandMessageFilter
 import com.github.djaler.evilbot.filters.message.MessageFilter
 import com.github.djaler.evilbot.filters.message.and
+import dev.inmo.tgbotapi.extensions.utils.withContent
 import dev.inmo.tgbotapi.types.BotCommand
 import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
@@ -24,15 +25,13 @@ abstract class CommandHandler(
     }
 
     override suspend fun handleMessage(message: CommonMessage<*>): Boolean {
-        val content = message.content as? TextContent ?: return false
+        val textMessage = message.withContent<TextContent>()
 
-        @Suppress("UNCHECKED_CAST")
-        val textMessage = message as CommonMessage<TextContent>
         if (textMessage !is FromUserMessage) {
             return false
         }
 
-        val args = content.text.split(spacesRegex, limit = 2).drop(1).firstOrNull()
+        val args = textMessage.content.text.split(spacesRegex, limit = 2).drop(1).firstOrNull()
 
         handleCommand(textMessage, args)
 

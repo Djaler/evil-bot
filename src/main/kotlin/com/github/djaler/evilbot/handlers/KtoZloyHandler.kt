@@ -7,8 +7,8 @@ import com.github.djaler.evilbot.utils.userId
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
+import dev.inmo.tgbotapi.extensions.utils.asPublicMessage
 import dev.inmo.tgbotapi.types.ExtendedBot
-import dev.inmo.tgbotapi.types.chat.abstracts.PublicChat
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
 import dev.inmo.tgbotapi.types.message.content.TextContent
@@ -30,7 +30,7 @@ class KtoZloyHandler(
         message: M,
         args: String?
     ) where M : CommonMessage<TextContent>, M : FromUserMessage {
-        val chat = message.chat as? PublicChat ?: return
+        val chat = message.asPublicMessage()?.chat ?: return
 
         if (Random.nextInt(0, 10) == 0) {
             requestsExecutor.sendMessage(message.chat, "я злой ¯\\_(ツ)_/¯")
