@@ -6,7 +6,7 @@ import com.github.djaler.evilbot.utils.getForm
 import com.github.djaler.evilbot.utils.getFormByGender
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.send.reply
-import dev.inmo.tgbotapi.extensions.utils.asPublicMessage
+import dev.inmo.tgbotapi.extensions.utils.asPublicChat
 import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
@@ -27,7 +27,7 @@ class UpdateStatisticHandler(
             return false
         }
 
-        val chat = message.asPublicMessage()?.chat ?: return false
+        val chat = message.chat.asPublicChat() ?: return false
 
         val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
         val (userEntity, _) = userService.getOrCreateUserFrom(message.user)
@@ -53,7 +53,7 @@ class DisplayStatisticHandler(
         message: M,
         args: String?
     ) where M : CommonMessage<TextContent>, M : FromUserMessage {
-        val chat = message.asPublicMessage()?.chat ?: return
+        val chat = message.chat.asPublicChat() ?: return
 
         val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
         val (userEntity, _) = userService.getOrCreateUserFrom(message.user)
@@ -98,7 +98,7 @@ class DisplayTop10Handler(
         message: M,
         args: String?
     ) where M : CommonMessage<TextContent>, M : FromUserMessage {
-        val chat = message.asPublicMessage()?.chat ?: return
+        val chat = message.chat.asPublicChat() ?: return
 
         val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
 

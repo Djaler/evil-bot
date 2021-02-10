@@ -13,7 +13,7 @@ import dev.inmo.tgbotapi.extensions.api.edit.text.editMessageText
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
 import dev.inmo.tgbotapi.extensions.utils.asContentMessage
-import dev.inmo.tgbotapi.extensions.utils.asPublicMessage
+import dev.inmo.tgbotapi.extensions.utils.asPublicChat
 import dev.inmo.tgbotapi.extensions.utils.asStickerContent
 import dev.inmo.tgbotapi.extensions.utils.formatting.bold
 import dev.inmo.tgbotapi.types.CallbackQuery.MessageDataCallbackQuery
@@ -46,7 +46,7 @@ class BlockStickerpackHandler(
         message: M,
         args: String?
     ) where M : CommonMessage<TextContent>, M : FromUserMessage {
-        val chat = message.asPublicMessage()?.chat ?: return
+        val chat = message.chat.asPublicChat() ?: return
         val stickerContent = message.replyTo?.asContentMessage()?.content?.asStickerContent() ?: return
 
         val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
@@ -93,7 +93,7 @@ class UnblockStickerpackHandler(
         message: M,
         args: String?
     ) where M : CommonMessage<TextContent>, M : FromUserMessage {
-        val chat = message.asPublicMessage()?.chat ?: return
+        val chat = message.chat.asPublicChat() ?: return
 
         val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
 
@@ -185,7 +185,7 @@ class StickersWatchDog(
     override val order = 0
 
     override suspend fun handleMessage(message: CommonMessage<*>): Boolean {
-        val chat = message.asPublicMessage()?.chat ?: return false
+        val chat = message.chat.asPublicChat() ?: return false
         val stickerContent = message.content.asStickerContent() ?: return false
 
         val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)

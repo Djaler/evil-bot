@@ -7,7 +7,7 @@ import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.chat.members.kickChatMember
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
 import dev.inmo.tgbotapi.extensions.utils.asChatEventMessage
-import dev.inmo.tgbotapi.extensions.utils.asPublicMessage
+import dev.inmo.tgbotapi.extensions.utils.asPublicChat
 import dev.inmo.tgbotapi.extensions.utils.formatting.link
 import dev.inmo.tgbotapi.types.Bot
 import dev.inmo.tgbotapi.types.ParseMode.HTML
@@ -25,7 +25,7 @@ class CasCheckHandler(
     private val parseMode = HTML
 
     override suspend fun handleMessage(message: Message): Boolean {
-        val chat = message.asPublicMessage()?.chat ?: return false
+        val chat = message.chat.asPublicChat() ?: return false
         val newMembersEvent = message.asChatEventMessage()?.chatEvent as? NewChatMembers ?: return false
 
         var anyBlocked = false

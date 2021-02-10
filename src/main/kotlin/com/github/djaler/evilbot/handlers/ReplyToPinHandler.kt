@@ -4,7 +4,7 @@ import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.chat.get.getChat
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
-import dev.inmo.tgbotapi.extensions.utils.asPublicMessage
+import dev.inmo.tgbotapi.extensions.utils.asPublicChat
 import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
@@ -25,7 +25,7 @@ class ReplyToPinHandler(
         message: M,
         args: String?
     ) where M : CommonMessage<TextContent>, M : FromUserMessage {
-        val chat = message.asPublicMessage()?.chat ?: return
+        val chat = message.chat.asPublicChat() ?: return
 
         val extendedChat = requestsExecutor.getChat(chat)
         val pinnedMessage: Message? = extendedChat.pinnedMessage

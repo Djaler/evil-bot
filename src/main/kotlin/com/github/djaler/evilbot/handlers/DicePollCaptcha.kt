@@ -13,7 +13,7 @@ import dev.inmo.tgbotapi.extensions.api.forwardMessage
 import dev.inmo.tgbotapi.extensions.api.send.media.sendAnimation
 import dev.inmo.tgbotapi.extensions.api.send.polls.replyWithRegularPoll
 import dev.inmo.tgbotapi.extensions.api.send.sendDice
-import dev.inmo.tgbotapi.extensions.utils.asGroupMessage
+import dev.inmo.tgbotapi.extensions.utils.asGroupChat
 import dev.inmo.tgbotapi.extensions.utils.asRestrictedChatMember
 import dev.inmo.tgbotapi.requests.abstracts.MultipartFile
 import dev.inmo.tgbotapi.types.Bot
@@ -42,7 +42,7 @@ class DicePollCaptchaSendHandler(
         if (message !is ChatEventMessage<*>) {
             return false
         }
-        val chat = message.asGroupMessage()?.chat ?: return false
+        val chat = message.chat.asGroupChat() ?: return false
         val newMembersEvent = message.chatEvent as? NewChatMembers ?: return false
 
         var anyUser = false
