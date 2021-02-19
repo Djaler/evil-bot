@@ -19,6 +19,8 @@ import dev.inmo.tgbotapi.requests.abstracts.MultipartFile
 import dev.inmo.tgbotapi.types.Bot
 import dev.inmo.tgbotapi.types.User
 import dev.inmo.tgbotapi.types.chat.ChatPermissions
+import dev.inmo.tgbotapi.types.chat.LeftRestrictionsChatPermissions
+import dev.inmo.tgbotapi.types.chat.RestrictionsChatPermissions
 import dev.inmo.tgbotapi.types.chat.abstracts.GroupChat
 import dev.inmo.tgbotapi.types.dartsCubeAndBowlingDiceResultLimit
 import dev.inmo.tgbotapi.types.dice.CubeDiceAnimationType
@@ -76,9 +78,10 @@ class DicePollCaptchaSendHandler(
     private suspend fun createCaptcha(chat: GroupChat, member: User, message: ChatEventMessage<*>) {
         val chatMember = requestsExecutor.getChatMember(chat.id, member.id)
 
-        val originalPermissions = chatMember.asRestrictedChatMember()?.chatPermissions ?: fullChatPermissions
+        val originalPermissions =
+            chatMember.asRestrictedChatMember()?.chatPermissions ?: LeftRestrictionsChatPermissions
 
-        requestsExecutor.restrictChatMember(chat.id, member.id)
+        requestsExecutor.restrictChatMember(chat.id, member.id, permissions = RestrictionsChatPermissions)
 
         val diceMessage = requestsExecutor.sendDice(chat.id, CubeDiceAnimationType)
         val cubeValue = diceMessage.content.dice.value
