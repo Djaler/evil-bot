@@ -1,3 +1,4 @@
+import info.solidsoft.gradle.pitest.PitestPluginExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -8,6 +9,7 @@ plugins {
     kotlin("plugin.jpa") version kotlinVersion
     id("org.springframework.boot") version "2.4.2"
     id("io.spring.dependency-management") version "1.0.10.RELEASE"
+    id("info.solidsoft.pitest") version "1.5.1"
 }
 
 group = "com.github.djaler"
@@ -55,8 +57,21 @@ dependencies {
 
     implementation("io.github.resilience4j:resilience4j-kotlin:1.7.0")
     implementation("io.github.resilience4j:resilience4j-ratelimiter:1.7.0")
+
+    testImplementation("io.kotest:kotest-runner-junit5:4.3.1")
+    testImplementation("io.kotest:kotest-assertions-core:4.3.1")
+    testImplementation("io.kotest:kotest-plugins-pitest:4.3.1")
+    testImplementation("io.mockk:mockk:1.10.2")
 }
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+
+configure<PitestPluginExtension> {
+    testPlugin.set("Kotest")
 }
