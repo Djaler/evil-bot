@@ -17,7 +17,8 @@ import java.time.LocalDateTime
 @Service
 class UserService(
     private val userRepository: UserRepository,
-    private val userStatisticRepository: UserStatisticRepository
+    private val userStatisticRepository: UserStatisticRepository,
+    private val timeService: TimeService
 ) {
     @Transactional
     fun getOrCreateUserFrom(telegramUser: dev.inmo.tgbotapi.types.User): GetOrCreateResult<User> {
@@ -53,7 +54,7 @@ class UserService(
             userStatisticRepository.save(
                 statistic.copy(
                     messagesCount = statistic.messagesCount + 1,
-                    lastActivity = LocalDateTime.now()
+                    lastActivity = timeService.getServerTime()
                 )
             )
         } else {
@@ -62,7 +63,7 @@ class UserService(
                     chat.id,
                     user,
                     messagesCount = 1,
-                    lastActivity = LocalDateTime.now()
+                    lastActivity = timeService.getServerTime()
                 )
             )
         }

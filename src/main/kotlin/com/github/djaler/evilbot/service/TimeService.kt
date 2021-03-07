@@ -27,4 +27,8 @@ class TimeService(
 
         return LocalDateTime.now(ZoneOffset.UTC).plusSeconds(locationTimezone.offsetSec)
     }
+
+    fun getServerTime(): LocalDateTime {
+        return LocalDateTime.now()
+    }
 }
