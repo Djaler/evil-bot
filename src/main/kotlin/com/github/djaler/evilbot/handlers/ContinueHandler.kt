@@ -9,6 +9,7 @@ import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
 import dev.inmo.tgbotapi.types.message.content.TextContent
+import dev.inmo.tgbotapi.types.textLength
 import org.springframework.stereotype.Component
 
 @Component
@@ -36,6 +37,6 @@ class ContinueHandler(
 
         val prediction = predictionService.getPrediction(sourceText, leaveSource = false)
 
-        requestsExecutor.reply(message, prediction)
+        prediction.chunked(textLength.last).forEach { requestsExecutor.reply(message, it) }
     }
 }
