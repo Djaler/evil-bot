@@ -49,7 +49,7 @@ class BotInitializer(
                         exceptionsHandler = { handleException(it) }
                     ) {
                         scope.launch {
-                            safelyWithoutExceptions({ it.printStackTrace() }) {
+                            safelyWithoutExceptions({ handleException(it) }) {
                                 updatesManager.processUpdate(it)
                             }
                         }
@@ -65,7 +65,7 @@ class BotInitializer(
                 exceptionsHandler = { handleException(it) }
             ) {
                 scope.launch {
-                    safelyWithoutExceptions({ it.printStackTrace() }) {
+                    safelyWithoutExceptions({ handleException(it) }) {
                         updatesManager.processUpdate(it)
                     }
                 }
