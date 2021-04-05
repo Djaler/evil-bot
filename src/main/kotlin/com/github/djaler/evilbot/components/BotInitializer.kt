@@ -3,12 +3,14 @@ package com.github.djaler.evilbot.components
 import com.github.djaler.evilbot.clients.SentryClient
 import com.github.djaler.evilbot.config.TelegramProperties
 import com.github.djaler.evilbot.utils.getMD5
+import kotlinx.coroutines.*
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.bot.getMyCommands
 import dev.inmo.tgbotapi.extensions.api.bot.setMyCommands
 import dev.inmo.tgbotapi.extensions.utils.updates.retrieving.setWebhookInfoAndStartListenWebhooks
 import dev.inmo.tgbotapi.extensions.utils.updates.retrieving.startGettingOfUpdatesByLongPolling
 import dev.inmo.tgbotapi.requests.webhook.SetWebhook
+import dev.inmo.micro_utils.coroutines.safelyWithoutExceptions
 import io.ktor.server.netty.*
 import kotlinx.coroutines.runBlocking
 import org.apache.logging.log4j.LogManager
@@ -22,6 +24,7 @@ class BotInitializer(
     private val updatesManager: UpdatesManager,
     private val sentryClient: SentryClient
 ) {
+    private val scope = CoroutineScope(Dispatchers.Default)
     companion object {
         private val log = LogManager.getLogger()
     }
@@ -45,7 +48,11 @@ class BotInitializer(
                         listenRoute = path,
                         exceptionsHandler = { handleException(it) }
                     ) {
-                        updatesManager.processUpdate(it)
+                        scope.launch {
+                            safelyWithoutExceptions({ handleException(it) }) {
+                                updatesManager.processUpdate(it)
+                            }
+                        }
                     }
                 } catch (e: Exception) {
                     log.error("Exception on webhook setup", e)
@@ -57,7 +64,11 @@ class BotInitializer(
                 allowedUpdates = updatesManager.getAllowedUpdates(),
                 exceptionsHandler = { handleException(it) }
             ) {
-                updatesManager.processUpdate(it)
+                scope.launch {
+                    safelyWithoutExceptions({ handleException(it) }) {
+                        updatesManager.processUpdate(it)
+                    }
+                }
             }
         }
 
