@@ -35,8 +35,12 @@ class ContinueHandler(
             return
         }
 
-        val prediction = predictionService.getPrediction(sourceText, leaveSource = false)
+        try {
+            val prediction = predictionService.getPrediction(sourceText, leaveSource = false)
 
-        prediction.chunked(textLength.last).forEach { requestsExecutor.reply(message, it) }
+            prediction.chunked(textLength.last).forEach { requestsExecutor.reply(message, it) }
+        } catch (e: Exception) {
+            requestsExecutor.reply(message, "Не получилось, попробуй ещё")
+        }
     }
 }
