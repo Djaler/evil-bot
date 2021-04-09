@@ -4,7 +4,7 @@ import com.github.djaler.evilbot.clients.SentryClient
 import com.github.djaler.evilbot.service.DicePollCaptchaService
 import com.github.djaler.evilbot.utils.toUserId
 import dev.inmo.tgbotapi.bot.RequestsExecutor
-import dev.inmo.tgbotapi.extensions.api.chat.members.kickChatMember
+import dev.inmo.tgbotapi.extensions.api.chat.members.unbanChatMember
 import dev.inmo.tgbotapi.extensions.api.deleteMessage
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
 import dev.inmo.tgbotapi.types.toChatId
@@ -41,7 +41,13 @@ class DicePollCaptchaScheduler(
                         text = "Ты выбирал слишком долго, прощай"
                     )
 
-                    requestsExecutor.kickChatMember(chatId, userId)
+                    /**
+                     * Это используется вместо метода kick, так как он на самом деле не просто исключает из чата,
+                     * а банит (на какой-то срок или навсегда).
+                     * А у метода unban есть интересная особенность. Если человек сейчас в чате, то его просто выкинет,
+                     * что нам и нужно. (https://core.telegram.org/bots/api#unbanchatmember)
+                     */
+                    requestsExecutor.unbanChatMember(chatId, userId)
 
                     captchaService.removeRestriction(it)
                     requestsExecutor.deleteMessage(chatId, it.diceMessageId)
