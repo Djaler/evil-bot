@@ -51,7 +51,7 @@ dependencies {
 
     implementation("io.sentry:sentry-spring-boot-starter:4.2.0")
 
-    implementation("org.unix4j:unix4j-command:0.5")
+    implementation("org.unix4j:unix4j-command:0.6")
 
     implementation("io.github.resilience4j:resilience4j-kotlin:1.7.0")
     implementation("io.github.resilience4j:resilience4j-ratelimiter:1.7.0")
