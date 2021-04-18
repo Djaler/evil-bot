@@ -2,12 +2,14 @@ package com.github.djaler.evilbot.handlers
 
 import com.github.djaler.evilbot.clients.SentryClient
 import com.github.djaler.evilbot.service.PredictionService
+import dev.inmo.tgbotapi.CommonAbstracts.Captioned
+import dev.inmo.tgbotapi.CommonAbstracts.Texted
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.utils.asContentMessage
-import dev.inmo.tgbotapi.extensions.utils.asTextContent
 import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
+import dev.inmo.tgbotapi.types.message.abstracts.ContentMessage
 import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
 import dev.inmo.tgbotapi.types.message.abstracts.Message
 import dev.inmo.tgbotapi.types.message.content.TextContent
@@ -38,7 +40,7 @@ class ContinueHandler(
         var sourceText = args
 
         val replyTo = message.replyTo
-        val replyMessageText = replyTo?.asContentMessage()?.content?.asTextContent()?.text
+        val replyMessageText = replyTo?.asContentMessage()?.let { extractMessageText(it) }
         if (replyMessageText !== null) {
             messageToReply = replyTo
             sourceText = replyMessageText
@@ -57,6 +59,14 @@ class ContinueHandler(
             log.error("Exception in prediction generation", e)
             sentryClient.captureException(e)
             requestsExecutor.reply(messageToReply, "Не получилось, попробуй ещё")
+        }
+    }
+
+    private fun extractMessageText(message: ContentMessage<*>): String? {
+        return when (val content = message.content) {
+            is Texted -> content.text
+            is Captioned -> content.caption
+            else -> null
         }
     }
 }
