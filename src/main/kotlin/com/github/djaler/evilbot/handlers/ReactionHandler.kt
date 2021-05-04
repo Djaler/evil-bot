@@ -9,6 +9,7 @@ import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.utils.asTextContent
 import dev.inmo.tgbotapi.requests.abstracts.FileId
 import dev.inmo.tgbotapi.types.ExtendedBot
+import dev.inmo.tgbotapi.types.ParseMode.HTMLParseMode
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
 import dev.inmo.tgbotapi.types.message.abstracts.Message
@@ -28,6 +29,7 @@ class ReactionHandler(
 ) : CommonMessageHandler() {
     companion object {
         private const val STICKER_REACTION_PREFIX = "sticker:"
+        private const val HTML_REACTION_PREFIX = "html:"
     }
 
     private lateinit var reactions: List<Reaction>
@@ -86,10 +88,12 @@ class ReactionHandler(
     }
 
     private suspend fun react(message: Message, reaction: String) {
-        if (reaction.startsWith(STICKER_REACTION_PREFIX)) {
-            requestsExecutor.replyWithSticker(message, FileId(reaction.removePrefix(STICKER_REACTION_PREFIX)))
-        } else {
-            requestsExecutor.reply(message, reaction)
+        when {
+            reaction.startsWith(STICKER_REACTION_PREFIX) ->
+                requestsExecutor.replyWithSticker(message, FileId(reaction.removePrefix(STICKER_REACTION_PREFIX)))
+            reaction.startsWith(HTML_REACTION_PREFIX) ->
+                requestsExecutor.reply(message, reaction.removePrefix(HTML_REACTION_PREFIX), parseMode = HTMLParseMode)
+            else -> requestsExecutor.reply(message, reaction)
         }
     }
 
