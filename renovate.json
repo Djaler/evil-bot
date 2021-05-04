@@ -7,14 +7,14 @@
   },
   "packageRules": [
     {
-      "packagePatterns": [
+      "matchPackagePatterns": [
         "*"
       ],
       "semanticCommitType": "deps",
       "semanticCommitScope": null
     },
     {
-      "packagePatterns": [
+      "matchPackagePatterns": [
         "gradle"
       ],
       "excludePackageNames": [
@@ -24,7 +24,7 @@
       "semanticCommitScope": "deps"
     },
     {
-      "sourceUrlPrefixes": [
+      "matchSourceUrlPrefixes": [
         "https://github.com/ktorio/ktor"
       ],
       "groupName": "ktor monorepo"
