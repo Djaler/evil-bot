@@ -37,6 +37,12 @@
         "org.jetbrains.kotlin:kotlin-allopen"
       ],
       "groupName": "kotlin"
+    },
+    {
+      "matchPackageNames": [
+        "org.springframework.boot:org.springframework.boot.gradle.plugin"
+      ],
+      "groupName": "spring"
     }
   ]
 }
