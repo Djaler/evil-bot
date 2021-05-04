@@ -28,6 +28,15 @@
         "https://github.com/ktorio/ktor"
       ],
       "groupName": "ktor monorepo"
+    },
+    {
+      "matchPackageNames": [
+        "org.jetbrains.kotlin.jvm:org.jetbrains.kotlin.jvm.gradle.plugin",
+        "org.jetbrains.kotlin.plugin.spring:org.jetbrains.kotlin.plugin.spring.gradle.plugin",
+        "org.jetbrains.kotlin:kotlin-noarg",
+        "org.jetbrains.kotlin:kotlin-allopen"
+      ],
+      "groupName": "kotlin"
     }
   ]
 }
