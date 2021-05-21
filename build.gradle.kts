@@ -47,7 +47,7 @@ dependencies {
     implementation("io.ktor:ktor-client-apache:1.5.4")
     implementation("io.ktor:ktor-client-jackson:1.5.4")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
 
     implementation("io.sentry:sentry-spring-boot-starter:4.2.0")
 
