@@ -1,0 +1,34 @@
+{
+  "name": "Evil Bot",
+  "description": "The best telegram bot!",
+  "repository": "https://github.com/Djaler/evil-bot",
+  "env": {
+    "TELEGRAM_BOT_TOKEN": {
+      "description": "Telegram bot token received from BotFather.",
+      "required": true
+    },
+    "FIXER_API_KEY": {
+      "description": "API key obtained from Fixer.io",
+      "required": true
+    },
+    "LOCATIONIQ_API_KEY": {
+      "description": "API key obtained from LocationiQ.com",
+      "required": true
+    },
+    "TELEGRAM_BOT_WEBHOOK_URL": {
+      "description": "A URL of your Heroku app: \"https://<app-name>.herokuapp.com/\". For example, if your app name is \"my-evil-bot\", the URL should be \"https://my-evil-bot.herokuapp.com/\". You can change it later on the app page under \"Settings\" -> \"Reveal Config Vars\".",
+      "required": true
+    }
+  },
+  "addons": [
+    {
+      "plan": "heroku-postgresql",
+      "options": {
+        "version": "13"
+      }
+    },
+    {
+      "plan": "heroku-redis"
+    }
+  ]
+}
