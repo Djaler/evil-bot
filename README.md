@@ -36,6 +36,29 @@
 >   telegram.bot.webhook.port = 8080
 >```
 ## Запуск своего бота :nerd_face:
+Можно запустить бота напрямую на [Heroku](https://heroku.com/) или самостоятельно!
+### Запуск на Heroku :dancer:
+Нажимаем на кнопку и переходим к настройкам  
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+### Настройка Heroku :mechanic:
+#### Устанавливаем Config Vars
+Ключ API полученный от [Fixer.io](https://fixer.io/)
+>```
+>   FIXER_API_KEY
+>```
+Ключ API полученный от [LocationiQ.com](https://locationiq.com/)
+>```
+>   LOCATIONIQ_API_KEY
+>```
+Токен телеграм бота полученный от [BotFather](https://t.me/BotFather)
+>```
+>   TELEGRAM_BOT_TOKEN
+>```
+Адрес вашего приложения Heroku: «https:// ```app-name``` .herokuapp.com/».
+>```
+>   TELEGRAM_BOT_WEBHOOK_URL
+>```
+### Самостоятельный запуск :man_technologist:
 ### Загрузка :chart_with_upwards_trend:
 Устанавливаем [JDK](https://www.oracle.com/java/technologies/javase-downloads.html) если ее нет, минимальная версия: 8.  
 Клонируем репозиторий с [GitHub](https://github.com/Djaler/evil-bot).
