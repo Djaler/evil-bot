@@ -3,15 +3,17 @@ package com.github.djaler.evilbot.components
 import com.github.djaler.evilbot.clients.SentryClient
 import com.github.djaler.evilbot.config.TelegramProperties
 import com.github.djaler.evilbot.utils.getMD5
-import kotlinx.coroutines.*
+import dev.inmo.micro_utils.coroutines.safelyWithoutExceptions
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.bot.getMyCommands
 import dev.inmo.tgbotapi.extensions.api.bot.setMyCommands
 import dev.inmo.tgbotapi.extensions.utils.updates.retrieving.setWebhookInfoAndStartListenWebhooks
 import dev.inmo.tgbotapi.extensions.utils.updates.retrieving.startGettingOfUpdatesByLongPolling
 import dev.inmo.tgbotapi.requests.webhook.SetWebhook
-import dev.inmo.micro_utils.coroutines.safelyWithoutExceptions
 import io.ktor.server.netty.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.apache.logging.log4j.LogManager
 import org.springframework.stereotype.Component
@@ -90,7 +92,7 @@ class BotInitializer(
         }
     }
 
-    private suspend fun handleException(throwable: Throwable) {
+    private fun handleException(throwable: Throwable) {
         log.error("Exception in update parsing", throwable)
         sentryClient.captureException(throwable)
     }
