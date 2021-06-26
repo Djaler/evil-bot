@@ -81,8 +81,8 @@ class CurrencyConverterHandler(
     }
 
     private fun formatAmount(originalAmount: BigDecimal, currency: String) =
-        "${df.format(originalAmount.roundToSignificantDigitsAfterComma(mc))} ${currency.toUpperCase()}"
+        "${df.format(originalAmount.roundToSignificantDigitsAfterComma(mc))} ${currency.uppercase()}"
 
     private fun formatDiff(diff: BigDecimal, currency: String) =
-        "${diffFormat.format(diff.roundToSignificantDigitsAfterComma(mc))} ${currency.toUpperCase()}"
+        "${diffFormat.format(diff.roundToSignificantDigitsAfterComma(mc))} ${currency.uppercase()}"
 }

@@ -30,8 +30,8 @@ class CurrencyService(
     private suspend fun getRates(from: String, to: String, date: LocalDate? = null): RatesPair {
         val rates = if (date == null) fixerClient.getLatestRates() else fixerClient.getHistoricalRates(date)
 
-        val fromRate = rates[from.toUpperCase()] ?: throw UnknownCurrencyException(from)
-        val toRate = rates[to.toUpperCase()] ?: throw UnknownCurrencyException(to)
+        val fromRate = rates[from.uppercase()] ?: throw UnknownCurrencyException(from)
+        val toRate = rates[to.uppercase()] ?: throw UnknownCurrencyException(to)
         return RatesPair(fromRate, toRate)
     }
 }

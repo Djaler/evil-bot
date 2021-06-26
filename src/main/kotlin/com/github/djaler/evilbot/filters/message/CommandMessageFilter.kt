@@ -23,10 +23,10 @@ class CommandMessageFilter(
         }
 
         val command = content.text.split(" ", limit = 2).first().drop(1).split("@")
-        if (command[0].toLowerCase() !in this.command) {
+        if (command[0].lowercase() !in this.command) {
             return false
         }
-        if (command.size > 1 && "@${command[1].toLowerCase()}" != botUsername.toLowerCase()) {
+        if (command.size > 1 && "@${command[1].lowercase()}" != botUsername.lowercase()) {
             return false
         }
 
