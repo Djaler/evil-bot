@@ -24,7 +24,7 @@ abstract class MessageHandler(private val filter: MessageFilter? = null) : Updat
     protected abstract suspend fun handleMessage(message: Message): Boolean
 }
 
-abstract class CommonMessageHandler(private val filter: MessageFilter? = null) : MessageHandler(filter) {
+abstract class CommonMessageHandler(filter: MessageFilter? = null) : MessageHandler(filter) {
     override suspend fun handleMessage(message: Message): Boolean {
         val commonMessage = message.asCommonMessage() ?: return false
 
