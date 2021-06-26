@@ -59,17 +59,17 @@ class SedHandler(
                     handleText(content.text, args, replyTo)
                 }
                 is PhotoContent -> {
-                    content.caption?.let {
+                    content.text?.let {
                         handlePhoto(content.media.fileId, it, args, replyTo)
                     }
                 }
                 is AnimationContent -> {
-                    content.caption?.let {
+                    content.text?.let {
                         handleAnimation(content.media, it, args, replyTo)
                     }
                 }
                 is VideoContent -> {
-                    content.caption?.let {
+                    content.text?.let {
                         handleVideo(content.media, it, args, replyTo)
                     }
                 }
@@ -77,12 +77,12 @@ class SedHandler(
                     handlePoll(content.poll, args, replyTo)
                 }
                 is VoiceContent -> {
-                    content.caption?.let {
+                    content.text?.let {
                         handleVoice(content.media, it, args, replyTo)
                     }
                 }
                 is AudioContent -> {
-                    content.caption?.let {
+                    content.text?.let {
                         handleAudio(content.media, it, args, replyTo)
                     }
                 }
@@ -175,7 +175,7 @@ class SedHandler(
                 val newPoll = poll.copy(
                     question = newQuestion,
                     options = newOptions,
-                    explanation = poll.explanation?.let { applySed(it, args) }
+                    text = poll.text?.let { applySed(it, args) }
                 )
                 requestsExecutor.replyWithQuizPoll(replyTo, quizPoll = newPoll)
             }

@@ -2,7 +2,6 @@ package com.github.djaler.evilbot.handlers
 
 import com.github.djaler.evilbot.clients.SentryClient
 import com.github.djaler.evilbot.service.PredictionService
-import dev.inmo.tgbotapi.CommonAbstracts.Captioned
 import dev.inmo.tgbotapi.CommonAbstracts.Texted
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.send.reply
@@ -65,7 +64,6 @@ class ContinueHandler(
     private fun extractMessageText(message: ContentMessage<*>): String? {
         return when (val content = message.content) {
             is Texted -> content.text
-            is Captioned -> content.caption
             else -> null
         }
     }

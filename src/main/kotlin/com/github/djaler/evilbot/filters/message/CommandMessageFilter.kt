@@ -18,7 +18,7 @@ class CommandMessageFilter(
         }
         val content = message.content as? TextContent ?: return false
 
-        if (content.textEntities.none { it.source is BotCommandTextSource }) {
+        if (content.textSources.none { it is BotCommandTextSource }) {
             return false
         }
 
