@@ -54,7 +54,7 @@
 >```
 >   TELEGRAM_BOT_TOKEN
 >```
-TELEGRAM_BOT_WEBHOOK_URL - адрес вашего приложения Heroku: «https:// ```app-name``` .herokuapp.com/».
+Адрес вашего приложения Heroku: «https:// ```app-name``` .herokuapp.com/».
 >```
 >   TELEGRAM_BOT_WEBHOOK_URL
 >```
