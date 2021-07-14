@@ -48,7 +48,7 @@ class DicePollCaptchaScheduler(
                     sentryClient.setExtra("restriction", it.toString())
                     sentryClient.captureException(e)
                 }
-                
+
                 try {
                     /**
                      * Это используется вместо метода kick, так как он на самом деле не просто исключает из чата,
@@ -58,7 +58,6 @@ class DicePollCaptchaScheduler(
                      */
                     requestsExecutor.unbanChatMember(chatId, userId)
 
-                    captchaService.removeRestriction(it)
                     requestsExecutor.deleteMessage(chatId, it.diceMessageId)
                     requestsExecutor.deleteMessage(chatId, it.pollMessageId)
                 } catch (e: Exception) {
@@ -68,6 +67,8 @@ class DicePollCaptchaScheduler(
 
                     sentryClient.setExtra("restriction", it.toString())
                     sentryClient.captureException(e)
+                } finally {
+                    captchaService.removeRestriction(it)
                 }
             }
         }
