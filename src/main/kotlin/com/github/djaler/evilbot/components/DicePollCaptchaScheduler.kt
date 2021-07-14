@@ -31,16 +31,25 @@ class DicePollCaptchaScheduler(
 
         overdueRestrictions.forEach {
             GlobalScope.launch {
-                try {
-                    val chatId = it.chat.telegramId.toChatId()
-                    val userId = it.memberTelegramId.toUserId()
+                val chatId = it.chat.telegramId.toChatId()
+                val userId = it.memberTelegramId.toUserId()
 
+                try {
                     requestsExecutor.sendMessage(
                         chatId,
                         replyToMessageId = it.joinMessageId,
                         text = "Ты выбирал слишком долго, прощай"
                     )
+                } catch (e: Exception) {
+                    log.error("Restriction: $it", e)
 
+                    exceptionsManager.process(e)
+
+                    sentryClient.setExtra("restriction", it.toString())
+                    sentryClient.captureException(e)
+                }
+                
+                try {
                     /**
                      * Это используется вместо метода kick, так как он на самом деле не просто исключает из чата,
                      * а банит (на какой-то срок или навсегда).
