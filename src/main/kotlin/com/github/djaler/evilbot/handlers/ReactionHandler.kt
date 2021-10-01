@@ -3,16 +3,20 @@ package com.github.djaler.evilbot.handlers
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.djaler.evilbot.model.Reaction
+import com.github.djaler.evilbot.utils.StorageFile
 import dev.inmo.tgbotapi.bot.RequestsExecutor
+import dev.inmo.tgbotapi.extensions.api.send.media.replyWithAnimation
 import dev.inmo.tgbotapi.extensions.api.send.media.replyWithSticker
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.utils.asTextContent
 import dev.inmo.tgbotapi.requests.abstracts.FileId
+import dev.inmo.tgbotapi.requests.abstracts.MultipartFile
 import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.ParseMode.HTMLParseMode
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
 import dev.inmo.tgbotapi.types.message.abstracts.Message
+import org.springframework.core.io.ClassPathResource
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.stereotype.Component
 import javax.annotation.PostConstruct
@@ -30,6 +34,7 @@ class ReactionHandler(
     companion object {
         private const val STICKER_REACTION_PREFIX = "sticker:"
         private const val HTML_REACTION_PREFIX = "html:"
+        private const val MEDIA_REACTION_PREFIX = "media:"
     }
 
     private lateinit var reactions: List<Reaction>
@@ -93,6 +98,8 @@ class ReactionHandler(
                 requestsExecutor.replyWithSticker(message, FileId(reaction.removePrefix(STICKER_REACTION_PREFIX)))
             reaction.startsWith(HTML_REACTION_PREFIX) ->
                 requestsExecutor.reply(message, reaction.removePrefix(HTML_REACTION_PREFIX), parseMode = HTMLParseMode)
+            reaction.startsWith(MEDIA_REACTION_PREFIX) ->
+                requestsExecutor.replyWithAnimation(message, MultipartFile(StorageFile(ClassPathResource((reaction.removePrefix(MEDIA_REACTION_PREFIX))))))
             else -> requestsExecutor.reply(message, reaction)
         }
     }
