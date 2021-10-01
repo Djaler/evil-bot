@@ -116,17 +116,17 @@
 >   version: '3.8'
 >   services:
 >       evil_bot_db:
->       container_name: evil_bot_db_container
->       image: postgres:13-alpine
->       restart: always
->       environment:
->           POSTGRES_USER: evil_bot
->           POSTGRES_PASSWORD: evil_bot_pass
->           POSTGRES_DB: evil_bot_db
->       ports:
->           - "5432:5432"
->       volumes:
->           - pg_data:/var/lib/postgresql/data/
+>           container_name: evil_bot_db_container
+>           image: postgres:13-alpine
+>           restart: always
+>           environment:
+>               POSTGRES_USER: evil_bot
+>               POSTGRES_PASSWORD: evil_bot_pass
+>               POSTGRES_DB: evil_bot_db
+>           ports:
+>               - "5432:5432"
+>           volumes:
+>               - pg_data:/var/lib/postgresql/data/
 >   volumes:
 >       pg_data:
 > ```
