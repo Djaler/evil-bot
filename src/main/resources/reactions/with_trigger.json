@@ -167,8 +167,7 @@
   },
   {
     "triggers": [
-      "\\bку-ку\\b",
-      "\\bку ку\\b"
+      "\\bку[- ]?ку\\b"
     ],
     "reactions": [
       "media:media/cuckoo.mp4"
