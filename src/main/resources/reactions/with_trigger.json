@@ -179,6 +179,7 @@
     ],
     "reactions": [
       "media:media/loading.mp4"
-    ]
+    ],
+    "chance": 20
   }
 ]
