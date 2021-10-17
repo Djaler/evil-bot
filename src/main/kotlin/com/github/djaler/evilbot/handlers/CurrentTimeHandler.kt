@@ -1,13 +1,11 @@
 package com.github.djaler.evilbot.handlers
 
+import com.github.djaler.evilbot.components.TelegramMediaSender
 import com.github.djaler.evilbot.service.TimeService
-import com.github.djaler.evilbot.utils.StorageFile
 import dev.inmo.tgbotapi.bot.RequestsExecutor
-import dev.inmo.tgbotapi.extensions.api.send.media.replyWithPhoto
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.utils.asContentMessage
 import dev.inmo.tgbotapi.extensions.utils.asLocationContent
-import dev.inmo.tgbotapi.requests.abstracts.MultipartFile
 import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
@@ -21,6 +19,7 @@ import java.time.format.DateTimeFormatter
 class CurrentTimeHandler(
     private val timeService: TimeService,
     private val requestsExecutor: RequestsExecutor,
+    private val telegramMediaSender: TelegramMediaSender,
     botInfo: ExtendedBot
 ) : CommandHandler(
     botInfo,
@@ -30,9 +29,7 @@ class CurrentTimeHandler(
     companion object {
         private val dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
-        private val noonImage by lazy {
-            MultipartFile(StorageFile(ClassPathResource("media/high_noon.jpg")))
-        }
+        private val noonImage = ClassPathResource("media/high_noon.jpg")
     }
 
     override suspend fun <M> handleCommand(
@@ -59,7 +56,7 @@ class CurrentTimeHandler(
         }
 
         if (isNoon(timeForLocation)) {
-            requestsExecutor.replyWithPhoto(message, noonImage)
+            telegramMediaSender.sendPhoto(message.chat.id, noonImage, replyTo = message.messageId)
             return
         }
 

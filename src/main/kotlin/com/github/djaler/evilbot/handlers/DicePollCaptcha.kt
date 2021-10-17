@@ -1,5 +1,6 @@
 package com.github.djaler.evilbot.handlers
 
+import com.github.djaler.evilbot.components.TelegramMediaSender
 import com.github.djaler.evilbot.config.BotProperties
 import com.github.djaler.evilbot.entity.DicePollCaptchaRestriction
 import com.github.djaler.evilbot.filters.message.CanRestrictMemberMessageFilter
@@ -117,12 +118,11 @@ class DicePollCaptchaSendHandler(
 @Component
 class DicePollCaptchaAnswerHandler(
     private val requestsExecutor: RequestsExecutor,
+    private val telegramMediaSender: TelegramMediaSender,
     private val captchaService: DicePollCaptchaService
 ) : PollAnswerHandler() {
     companion object {
-        private val welcomeGif by lazy {
-            MultipartFile(StorageFile(ClassPathResource("media/welcome_to_the_club.mp4")))
-        }
+        private val welcomeGif = ClassPathResource("media/welcome_to_the_club.mp4")
     }
 
     override suspend fun handleAnswer(answer: PollAnswer) {
@@ -151,11 +151,7 @@ class DicePollCaptchaAnswerHandler(
         requestsExecutor.deleteMessage(chatId, restriction.diceMessageId)
         requestsExecutor.deleteMessage(chatId, restriction.pollMessageId)
 
-        requestsExecutor.sendAnimation(
-            chatId,
-            welcomeGif,
-            replyToMessageId = restriction.joinMessageId
-        )
+        telegramMediaSender.sendAnimation(chatId, welcomeGif, replyTo = restriction.joinMessageId)
     }
 }
 

@@ -2,15 +2,13 @@ package com.github.djaler.evilbot.handlers
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.github.djaler.evilbot.components.TelegramMediaSender
 import com.github.djaler.evilbot.model.Reaction
-import com.github.djaler.evilbot.utils.StorageFile
 import dev.inmo.tgbotapi.bot.RequestsExecutor
-import dev.inmo.tgbotapi.extensions.api.send.media.replyWithAnimation
 import dev.inmo.tgbotapi.extensions.api.send.media.replyWithSticker
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.utils.asTextContent
 import dev.inmo.tgbotapi.requests.abstracts.FileId
-import dev.inmo.tgbotapi.requests.abstracts.MultipartFile
 import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.ParseMode.HTMLParseMode
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
@@ -29,7 +27,8 @@ class ReactionHandler(
     private val objectMapper: ObjectMapper,
     private val validator: Validator,
     private val botInfo: ExtendedBot,
-    private val requestsExecutor: RequestsExecutor
+    private val requestsExecutor: RequestsExecutor,
+    private val telegramMediaSender: TelegramMediaSender
 ) : CommonMessageHandler() {
     companion object {
         private const val STICKER_REACTION_PREFIX = "sticker:"
@@ -99,7 +98,11 @@ class ReactionHandler(
             reaction.startsWith(HTML_REACTION_PREFIX) ->
                 requestsExecutor.reply(message, reaction.removePrefix(HTML_REACTION_PREFIX), parseMode = HTMLParseMode)
             reaction.startsWith(MEDIA_REACTION_PREFIX) ->
-                requestsExecutor.replyWithAnimation(message, MultipartFile(StorageFile(ClassPathResource((reaction.removePrefix(MEDIA_REACTION_PREFIX))))))
+                telegramMediaSender.sendAnimation(
+                    message.chat.id,
+                    ClassPathResource((reaction.removePrefix(MEDIA_REACTION_PREFIX))),
+                    replyTo = message.messageId
+                )
             else -> requestsExecutor.reply(message, reaction)
         }
     }
