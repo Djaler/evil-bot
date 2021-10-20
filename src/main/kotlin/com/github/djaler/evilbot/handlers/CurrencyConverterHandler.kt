@@ -7,7 +7,6 @@ import com.github.djaler.evilbot.utils.roundToSignificantDigitsAfterComma
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.types.ExtendedBot
-import dev.inmo.tgbotapi.types.ParseMode.HTML
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
 import dev.inmo.tgbotapi.types.message.content.TextContent
@@ -30,7 +29,6 @@ class CurrencyConverterHandler(
 ) {
     companion object {
         private val WRONG_MESSAGES = "Пришли мне в таком виде: /currency <amount> <from> <to>"
-        private val parseMode = HTML
 
         private val mc = MathContext(2, RoundingMode.HALF_UP)
         private val df = DecimalFormat.getInstance(Locale.US).apply {

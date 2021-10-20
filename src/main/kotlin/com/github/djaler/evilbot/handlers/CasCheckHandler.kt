@@ -8,9 +8,9 @@ import dev.inmo.tgbotapi.extensions.api.chat.members.banChatMember
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
 import dev.inmo.tgbotapi.extensions.utils.asChatEventMessage
 import dev.inmo.tgbotapi.extensions.utils.asPublicChat
+import dev.inmo.tgbotapi.extensions.utils.formatting.buildEntities
 import dev.inmo.tgbotapi.extensions.utils.formatting.link
 import dev.inmo.tgbotapi.types.Bot
-import dev.inmo.tgbotapi.types.ParseMode.HTML
 import dev.inmo.tgbotapi.types.message.ChatEvents.NewChatMembers
 import dev.inmo.tgbotapi.types.message.abstracts.Message
 import org.springframework.stereotype.Component
@@ -21,8 +21,6 @@ class CasCheckHandler(
     private val requestsExecutor: RequestsExecutor
 ) : MessageHandler() {
     override val order = 0
-
-    private val parseMode = HTML
 
     override suspend fun handleMessage(message: Message): Boolean {
         val chat = message.chat.asPublicChat() ?: return false
@@ -40,9 +38,10 @@ class CasCheckHandler(
             if (casInfo.result !== null) {
                 requestsExecutor.sendMessage(
                     chat.id,
-                    "${member.usernameOrName}, пошёл нахер! " +
-                            "Ты забанен в ${("CAS" to "https://cas.chat/query?u=${member.id.userId}").link(parseMode)}",
-                    parseMode = parseMode
+                    buildEntities(separator = "") {
+                        +"${member.usernameOrName}, пошёл нахер!"
+                        +"Ты забанен в" + link("CAS", "https://cas.chat/query?u=${member.id.userId}")
+                    }
                 )
                 requestsExecutor.banChatMember(chat.id, member.id)
 
