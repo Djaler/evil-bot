@@ -12,7 +12,7 @@ val User.usernameOrName: String
         return "$firstName $lastName".trim()
     }
 
-val UserId.userId: Int
-    get() = chatId.toInt()
+val UserId.userId: Long
+    get() = chatId
 
-fun Int.toUserId(): UserId = toChatId()
+fun Long.toUserId(): UserId = toChatId()

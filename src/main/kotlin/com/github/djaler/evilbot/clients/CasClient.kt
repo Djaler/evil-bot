@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component
 class CasClient(
     private val httpClient: HttpClient
 ) {
-    suspend fun getCasInfo(userId: Int): CasInfo {
+    suspend fun getCasInfo(userId: Long): CasInfo {
         return httpClient.get("https://api.cas.chat/check?user_id=$userId")
     }
 }

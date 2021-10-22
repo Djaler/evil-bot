@@ -11,7 +11,7 @@ data class DicePollCaptchaRestriction(
     val chat: Chat,
 
     @Column
-    val memberTelegramId: Int,
+    val memberTelegramId: Long,
 
     @Column
     val dateTime: LocalDateTime,

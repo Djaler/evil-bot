@@ -13,6 +13,6 @@ interface DicePollCaptchaRestrictionRepository : JpaRepository<DicePollCaptchaRe
     @Query("select d from DicePollCaptchaRestriction d where d.chat.telegramId = :chatTelegramId and d.memberTelegramId = :memberTelegramId")
     fun findByChatTelegramIdAndMemberTelegramId(
         chatTelegramId: Long,
-        memberTelegramId: Int
+        memberTelegramId: Long
     ): DicePollCaptchaRestriction?
 }

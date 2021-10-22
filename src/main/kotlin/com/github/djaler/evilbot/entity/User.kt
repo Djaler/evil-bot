@@ -10,7 +10,7 @@ data class User(
     val username: String,
 
     @Column
-    val telegramId: Int,
+    val telegramId: Long,
 
     @Column
     @Enumerated(EnumType.STRING)
