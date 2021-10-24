@@ -3,7 +3,7 @@ package com.github.djaler.evilbot.handlers
 import com.github.djaler.evilbot.clients.CatClient
 import com.github.djaler.evilbot.utils.StorageFile
 import dev.inmo.tgbotapi.bot.RequestsExecutor
-import dev.inmo.tgbotapi.extensions.api.send.media.replyWithPhoto
+import dev.inmo.tgbotapi.extensions.api.send.replyWithPhoto
 import dev.inmo.tgbotapi.requests.abstracts.MultipartFile
 import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage

@@ -4,7 +4,7 @@ import com.github.djaler.evilbot.clients.CasClient
 import com.github.djaler.evilbot.utils.userId
 import com.github.djaler.evilbot.utils.usernameOrName
 import dev.inmo.tgbotapi.bot.RequestsExecutor
-import dev.inmo.tgbotapi.extensions.api.chat.members.kickChatMember
+import dev.inmo.tgbotapi.extensions.api.chat.members.banChatMember
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
 import dev.inmo.tgbotapi.extensions.utils.asChatEventMessage
 import dev.inmo.tgbotapi.extensions.utils.asPublicChat
@@ -44,7 +44,7 @@ class CasCheckHandler(
                             "Ты забанен в ${("CAS" to "https://cas.chat/query?u=${member.id.userId}").link(parseMode)}",
                     parseMode = parseMode
                 )
-                requestsExecutor.kickChatMember(chat.id, member.id)
+                requestsExecutor.banChatMember(chat.id, member.id)
 
                 anyBlocked = true
             }

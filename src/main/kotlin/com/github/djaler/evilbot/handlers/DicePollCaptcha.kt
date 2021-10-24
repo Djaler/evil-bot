@@ -5,18 +5,19 @@ import com.github.djaler.evilbot.config.BotProperties
 import com.github.djaler.evilbot.entity.DicePollCaptchaRestriction
 import com.github.djaler.evilbot.filters.message.CanRestrictMemberMessageFilter
 import com.github.djaler.evilbot.service.DicePollCaptchaService
-import com.github.djaler.evilbot.utils.*
+import com.github.djaler.evilbot.utils.chatPermissions
+import com.github.djaler.evilbot.utils.getForm
+import com.github.djaler.evilbot.utils.toUserId
+import com.github.djaler.evilbot.utils.usernameOrName
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.chat.members.getChatMember
 import dev.inmo.tgbotapi.extensions.api.chat.members.restrictChatMember
 import dev.inmo.tgbotapi.extensions.api.deleteMessage
 import dev.inmo.tgbotapi.extensions.api.forwardMessage
-import dev.inmo.tgbotapi.extensions.api.send.media.sendAnimation
-import dev.inmo.tgbotapi.extensions.api.send.polls.replyWithRegularPoll
+import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.api.send.sendDice
 import dev.inmo.tgbotapi.extensions.utils.asGroupChat
 import dev.inmo.tgbotapi.extensions.utils.asRestrictedChatMember
-import dev.inmo.tgbotapi.requests.abstracts.MultipartFile
 import dev.inmo.tgbotapi.types.Bot
 import dev.inmo.tgbotapi.types.User
 import dev.inmo.tgbotapi.types.chat.ChatPermissions
@@ -92,7 +93,7 @@ class DicePollCaptchaSendHandler(
         val options = dartsCubeAndBowlingDiceResultLimit.shuffled()
         val correctIndex = options.indexOf(cubeValue)
 
-        val pollMessage = requestsExecutor.replyWithRegularPoll(
+        val pollMessage = requestsExecutor.reply(
             diceMessage,
             """
                 Эй, ${member.usernameOrName}! Мы отобрали твою свободу слова, пока ты не тыкнешь число, выпавшее сверху на кубике 👇

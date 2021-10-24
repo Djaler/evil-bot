@@ -2,10 +2,7 @@ package com.github.djaler.evilbot.handlers
 
 import com.github.djaler.evilbot.clients.SentryClient
 import dev.inmo.tgbotapi.bot.RequestsExecutor
-import dev.inmo.tgbotapi.extensions.api.send.media.*
-import dev.inmo.tgbotapi.extensions.api.send.polls.replyWithQuizPoll
-import dev.inmo.tgbotapi.extensions.api.send.polls.replyWithRegularPoll
-import dev.inmo.tgbotapi.extensions.api.send.reply
+import dev.inmo.tgbotapi.extensions.api.send.*
 import dev.inmo.tgbotapi.extensions.utils.asContentMessage
 import dev.inmo.tgbotapi.requests.abstracts.FileId
 import dev.inmo.tgbotapi.types.ExtendedBot
@@ -109,7 +106,7 @@ class SedHandler(
         replyTo: ContentMessage<*>
     ) {
         val result = applySed(text, args)
-        requestsExecutor.replyWithAnimation(replyTo, animationFile, result)
+        requestsExecutor.replyWithAnimation(replyTo, animationFile.fileId, text = result)
     }
 
     private suspend fun handleVideo(
@@ -119,7 +116,7 @@ class SedHandler(
         replyTo: ContentMessage<*>
     ) {
         val result = applySed(text, args)
-        requestsExecutor.replyWithVideo(replyTo, videoFile, result)
+        requestsExecutor.replyWithVideo(replyTo, videoFile.fileId, text = result)
     }
 
     private suspend fun handleAudio(
@@ -129,7 +126,7 @@ class SedHandler(
         replyTo: ContentMessage<*>
     ) {
         val result = applySed(text, args)
-        requestsExecutor.replyWithAudio(replyTo, audioFile, result)
+        requestsExecutor.replyWithAudio(replyTo, audioFile.fileId, text = result)
     }
 
     private suspend fun handleVoice(
@@ -139,7 +136,7 @@ class SedHandler(
         replyTo: ContentMessage<*>
     ) {
         val result = applySed(text, args)
-        requestsExecutor.replyWithVoice(replyTo, voiceFile, result)
+        requestsExecutor.replyWithVoice(replyTo, voiceFile.fileId, text = result)
     }
 
     private suspend fun handleText(
@@ -169,7 +166,7 @@ class SedHandler(
                     question = newQuestion,
                     options = newOptions
                 )
-                requestsExecutor.replyWithRegularPoll(replyTo, newPoll)
+                requestsExecutor.reply(replyTo, newPoll)
             }
             is QuizPoll -> {
                 val newPoll = poll.copy(
@@ -177,7 +174,7 @@ class SedHandler(
                     options = newOptions,
                     text = poll.text?.let { applySed(it, args) }
                 )
-                requestsExecutor.replyWithQuizPoll(replyTo, quizPoll = newPoll)
+                requestsExecutor.reply(replyTo, quizPoll = newPoll)
             }
             is UnknownPollType -> {
                 log.error("Unknown poll type: $poll")
