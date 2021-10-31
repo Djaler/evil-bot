@@ -181,5 +181,23 @@
       "media:media/loading.mp4"
     ],
     "chance": 20
+  },
+  {
+    "triggers": [
+      "\\bс дн[её]м рождения\\b",
+      "\\bс др\\b",
+      "\\bс днюхой\\b"
+    ],
+    "reactions": [
+      "sticker:CAACAgIAAxkBAAEDMmJhfxKzVrXUOZljAbot1pYwNMprKgACbQADwDZPE7mMKCVnSEkbIQQ",
+      "sticker:CAACAgIAAxkBAAEDMmNhfxKzLYFUltW2kNGaS1kKWXdzugAC5QMAAonq5QdZWycptJ5d2iEE",
+      "sticker:CAACAgIAAxkBAAEDMmRhfxKziv4ZPY5lmYnnaPtZvKrpEQAC0QAD9wLID7DVFiL6IbHMIQQ",
+      "sticker:CAACAgIAAxkBAAEDMmVhfxKz1bit9V_9HWXYf35e5T-XYgACwgADq1fEC_sb4OOoQZEzIQQ",
+      "sticker:CAACAgIAAxkBAAEDMmZhfxKzAuUzb9t2A3UaDJPPvgTuaQACGwADwDZPE329ioPLRE1qIQQ",
+      "sticker:CAACAgIAAxkBAAEDMmdhfxKzGp5YdRvrUZrbHtCIOiJ9WAACNQADO2AkFOi0JbQQZiMhIQQ",
+      "sticker:CAACAgIAAxkBAAEDMmhhfxKzqqZq7fTEKZxhPyWyjiyAaQACiwIAAladvQr3tGImDY878yEE",
+      "sticker:CAACAgIAAxkBAAEDMmlhfxKzk_3g1RaighFI0iYrM9coXQACMAEAAqtXxAtP62N9ym6CbyEE",
+      "sticker:CAACAgIAAxkBAAEDMmphfxKz_KvdgC2TvS2CHeqiFGvTWAACaV0AAuCjggfi51NV8GUiRyEE"
+    ]
   }
 ]
