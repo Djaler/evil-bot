@@ -54,8 +54,6 @@ class ContinueHandler(
             val prediction = predictionService.getPrediction(sourceText, leaveSource = false)
 
             prediction.chunked(textLength.last).forEach { requestsExecutor.reply(messageToReply, it) }
-        } catch (e: PredictionService.TooBigTextException) {
-            requestsExecutor.reply(messageToReply, "Слишком большой текст")
         } catch (e: Exception) {
             log.error("Exception in prediction generation", e)
             sentryClient.captureException(e)
