@@ -34,6 +34,7 @@ class ReactionHandler(
         private const val STICKER_REACTION_PREFIX = "sticker:"
         private const val HTML_REACTION_PREFIX = "html:"
         private const val MEDIA_REACTION_PREFIX = "media:"
+        private const val PHOTO_REACTION_PREFIX = "photo:"
     }
 
     private lateinit var reactions: List<Reaction>
@@ -103,6 +104,11 @@ class ReactionHandler(
                     ClassPathResource((reaction.removePrefix(MEDIA_REACTION_PREFIX))),
                     replyTo = message.messageId
                 )
+            reaction.startsWith(PHOTO_REACTION_PREFIX) ->
+                telegramMediaSender.sendPhoto(
+                    message.chat.id,
+                    ClassPathResource((reaction.removePrefix(PHOTO_REACTION_PREFIX))),
+                    replyTo = message.messageId)
             else -> requestsExecutor.reply(message, reaction)
         }
     }
