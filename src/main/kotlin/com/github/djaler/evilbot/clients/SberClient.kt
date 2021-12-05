@@ -23,6 +23,10 @@ class SberClient(
             contentType(ContentType.Application.Json)
             body = PredictRequest(text)
 
+            headers {
+                append(HttpHeaders.Origin, "https://russiannlp.github.io")
+            }
+
             timeout {
                 socketTimeoutMillis = 10 * 60 * 1000
             }
