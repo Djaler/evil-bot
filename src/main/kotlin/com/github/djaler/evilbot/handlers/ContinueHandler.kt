@@ -5,6 +5,7 @@ import com.github.djaler.evilbot.service.PredictionService
 import dev.inmo.tgbotapi.CommonAbstracts.Texted
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.send.reply
+import dev.inmo.tgbotapi.extensions.api.send.withTypingAction
 import dev.inmo.tgbotapi.extensions.utils.asContentMessage
 import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
@@ -50,14 +51,16 @@ class ContinueHandler(
             return
         }
 
-        try {
-            val prediction = predictionService.getPrediction(sourceText, leaveSource = false)
+        requestsExecutor.withTypingAction(message.chat) {
+            try {
+                val prediction = predictionService.getPrediction(sourceText, leaveSource = false)
 
-            prediction.chunked(textLength.last).forEach { requestsExecutor.reply(messageToReply, it) }
-        } catch (e: Exception) {
-            log.error("Exception in prediction generation", e)
-            sentryClient.captureException(e)
-            requestsExecutor.reply(messageToReply, "Не получилось, попробуй ещё")
+                prediction.chunked(textLength.last).forEach { requestsExecutor.reply(messageToReply, it) }
+            } catch (e: Exception) {
+                log.error("Exception in prediction generation", e)
+                sentryClient.captureException(e)
+                requestsExecutor.reply(messageToReply, "Не получилось, попробуй ещё")
+            }
         }
     }
 
