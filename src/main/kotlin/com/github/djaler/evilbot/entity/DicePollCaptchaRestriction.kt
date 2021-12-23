@@ -26,7 +26,13 @@ data class DicePollCaptchaRestriction(
     val pollMessageId: Long,
 
     @Column
+    val kickMessageId: Long?,
+
+    @Column
     val pollId: String,
+
+    @Column
+    val kicked: Boolean,
 
     @Column
     val correctAnswerIndex: Int,

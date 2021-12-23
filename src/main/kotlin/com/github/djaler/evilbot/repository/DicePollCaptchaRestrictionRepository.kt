@@ -15,4 +15,7 @@ interface DicePollCaptchaRestrictionRepository : JpaRepository<DicePollCaptchaRe
         chatTelegramId: Long,
         memberTelegramId: Long
     ): DicePollCaptchaRestriction?
+
+    @Query("select d from DicePollCaptchaRestriction d where d.kicked = true")
+    fun findKicked(): List<DicePollCaptchaRestriction>
 }

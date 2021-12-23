@@ -34,12 +34,14 @@ class DicePollCaptchaScheduler(
                 val chatId = it.chat.telegramId.toChatId()
                 val userId = it.memberTelegramId.toUserId()
 
+                var kickMessageId: Long? = null
                 try {
-                    requestsExecutor.sendMessage(
+                    val kickMessage = requestsExecutor.sendMessage(
                         chatId,
                         replyToMessageId = it.joinMessageId,
                         text = "Ты выбирал слишком долго, прощай"
                     )
+                    kickMessageId = kickMessage.messageId
                 } catch (e: Exception) {
                     log.error("Restriction: $it", e)
 
@@ -60,6 +62,33 @@ class DicePollCaptchaScheduler(
 
                     requestsExecutor.deleteMessage(chatId, it.diceMessageId)
                     requestsExecutor.deleteMessage(chatId, it.pollMessageId)
+                } catch (e: Exception) {
+                    log.error("Restriction: $it", e)
+
+                    exceptionsManager.process(e)
+
+                    sentryClient.setExtra("restriction", it.toString())
+                    sentryClient.captureException(e)
+                } finally {
+                    captchaService.markAsKicked(it, kickMessageId)
+                }
+            }
+        }
+    }
+
+    @Scheduled(initialDelay = 1000 * 15, fixedRate = 1000 * 30)
+    fun clearKickMessages() {
+        val restrictionsForKicked = captchaService.getRestrictionsForKicked()
+
+        restrictionsForKicked.forEach {
+            GlobalScope.launch {
+                val chatId = it.chat.telegramId.toChatId()
+
+                try {
+                    if (it.kickMessageId != null) {
+                        requestsExecutor.deleteMessage(chatId, it.kickMessageId)
+                    }
+                    requestsExecutor.deleteMessage(chatId, it.joinMessageId)
                 } catch (e: Exception) {
                     log.error("Restriction: $it", e)
 

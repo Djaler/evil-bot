@@ -45,7 +45,9 @@ class DicePollCaptchaService(
                     joinMessage.messageId,
                     diceMessage.messageId,
                     pollMessage.messageId,
+                    null,
                     pollMessage.content.poll.id,
+                    false,
                     correctAnswerIndex,
                     canSendMessages = permissions.canSendMessages,
                     canSendMediaMessages = permissions.canSendMediaMessages,
@@ -72,6 +74,10 @@ class DicePollCaptchaService(
         return captchaRestrictionRepository.findByDateTimeBefore(overdueDate)
     }
 
+    fun getRestrictionsForKicked(): List<DicePollCaptchaRestriction> {
+        return captchaRestrictionRepository.findKicked()
+    }
+
     fun getRestriction(chatId: ChatId, memberId: UserId): DicePollCaptchaRestriction? {
         return captchaRestrictionRepository.findByChatTelegramIdAndMemberTelegramId(chatId.chatId, memberId.userId)
     }
@@ -86,6 +92,15 @@ class DicePollCaptchaService(
                 diceMessageId = diceMessage.messageId,
                 pollMessageId = pollMessage.messageId,
                 dateTime = LocalDateTime.now()
+            )
+        )
+    }
+
+    fun markAsKicked(restriction: DicePollCaptchaRestriction, kickMessageId: Long?) {
+        captchaRestrictionRepository.save(
+            restriction.copy(
+                kickMessageId = kickMessageId,
+                kicked = true
             )
         )
     }
