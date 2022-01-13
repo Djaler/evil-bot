@@ -1,6 +1,7 @@
 package com.github.djaler.evilbot.handlers
 
 import com.github.djaler.evilbot.clients.SentryClient
+import com.github.djaler.evilbot.filters.message.ChatAdministratorMessageFilter
 import com.github.djaler.evilbot.service.PredictionService
 import dev.inmo.tgbotapi.CommonAbstracts.Texted
 import dev.inmo.tgbotapi.bot.RequestsExecutor
@@ -22,11 +23,13 @@ class ContinueHandler(
     private val requestsExecutor: RequestsExecutor,
     private val predictionService: PredictionService,
     private val sentryClient: SentryClient,
+    chatAdministratorFilter: ChatAdministratorMessageFilter,
     botInfo: ExtendedBot
 ) : CommandHandler(
     botInfo,
     command = arrayOf("continue"),
-    commandDescription = "продолжить текст"
+    commandDescription = "продолжить текст",
+    filter = chatAdministratorFilter
 ) {
     companion object {
         private val log = LogManager.getLogger()
