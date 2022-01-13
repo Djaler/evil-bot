@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    val kotlinVersion = "1.5.20"
+    val kotlinVersion = "1.6.10"
 
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
@@ -41,13 +41,13 @@ dependencies {
     implementation("org.postgresql:postgresql")
     implementation("org.flywaydb:flyway-core")
 
-    implementation("dev.inmo:tgbotapi:0.36.1")
+    implementation("dev.inmo:tgbotapi:0.38.2")
 
-    implementation("io.ktor:ktor-server-netty:1.6.0")
-    implementation("io.ktor:ktor-client-apache:1.6.0")
-    implementation("io.ktor:ktor-client-jackson:1.6.0")
+    implementation("io.ktor:ktor-server-netty:1.6.7")
+    implementation("io.ktor:ktor-client-apache:1.6.7")
+    implementation("io.ktor:ktor-client-jackson:1.6.7")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
 
     implementation("io.sentry:sentry-spring-boot-starter:4.3.0")
 
