@@ -38,7 +38,7 @@ class CasCheckHandler(
             if (casInfo.result !== null) {
                 requestsExecutor.sendMessage(
                     chat.id,
-                    buildEntities(separator = "") {
+                    buildEntities(separator = " ") {
                         +"${member.usernameOrName}, пошёл нахер!"
                         +"Ты забанен в" + link("CAS", "https://cas.chat/query?u=${member.id.userId}")
                     }
