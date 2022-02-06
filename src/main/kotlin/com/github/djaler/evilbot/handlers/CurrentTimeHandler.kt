@@ -8,7 +8,6 @@ import dev.inmo.tgbotapi.extensions.utils.asContentMessage
 import dev.inmo.tgbotapi.extensions.utils.asLocationContent
 import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
-import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import org.springframework.core.io.ClassPathResource
 import org.springframework.stereotype.Component
@@ -32,10 +31,10 @@ class CurrentTimeHandler(
         private val noonImage = ClassPathResource("media/high_noon.jpg")
     }
 
-    override suspend fun <M> handleCommand(
-        message: M,
+    override suspend fun handleCommand(
+        message: CommonMessage<TextContent>,
         args: String?
-    ) where M : CommonMessage<TextContent>, M : FromUserMessage {
+    ) {
         val locationContent = message.replyTo?.asContentMessage()?.content?.asLocationContent()
 
         var defaultLocationChosen = false

@@ -6,6 +6,7 @@ import com.github.djaler.evilbot.utils.getForm
 import com.github.djaler.evilbot.utils.getFormByGender
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.send.reply
+import dev.inmo.tgbotapi.extensions.utils.asFromUserMessage
 import dev.inmo.tgbotapi.extensions.utils.asPublicChat
 import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
@@ -49,14 +50,15 @@ class DisplayStatisticHandler(
     command = arrayOf("statistic"),
     commandDescription = "сколько сообщений ты написал"
 ) {
-    override suspend fun <M> handleCommand(
-        message: M,
+    override suspend fun handleCommand(
+        message: CommonMessage<TextContent>,
         args: String?
-    ) where M : CommonMessage<TextContent>, M : FromUserMessage {
+    ) {
         val chat = message.chat.asPublicChat() ?: return
+        val user = message.asFromUserMessage()?.user ?: return
 
         val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
-        val (userEntity, _) = userService.getOrCreateUserFrom(message.user)
+        val (userEntity, _) = userService.getOrCreateUserFrom(user)
 
         val statistic = userService.getStatistic(userEntity, chatEntity)
         if (statistic == null) {
@@ -94,10 +96,10 @@ class DisplayTop10Handler(
     command = arrayOf("top10"),
     commandDescription = "кто больше всех пишет"
 ) {
-    override suspend fun <M> handleCommand(
-        message: M,
+    override suspend fun handleCommand(
+        message: CommonMessage<TextContent>,
         args: String?
-    ) where M : CommonMessage<TextContent>, M : FromUserMessage {
+    ) {
         val chat = message.chat.asPublicChat() ?: return
 
         val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)

@@ -24,7 +24,6 @@ import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.buttons.InlineKeyboardButtons.CallbackDataInlineKeyboardButton
 import dev.inmo.tgbotapi.types.buttons.InlineKeyboardMarkup
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
-import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import org.springframework.stereotype.Component
 
@@ -41,10 +40,10 @@ class BlockStickerpackHandler(
     commandDescription = "заблокировать стикерпак",
     filter = chatAdministratorFilter
 ) {
-    override suspend fun <M> handleCommand(
-        message: M,
+    override suspend fun handleCommand(
+        message: CommonMessage<TextContent>,
         args: String?
-    ) where M : CommonMessage<TextContent>, M : FromUserMessage {
+    ) {
         val chat = message.chat.asPublicChat() ?: return
         val stickerContent = message.replyTo?.asContentMessage()?.content?.asStickerContent() ?: return
 
@@ -87,10 +86,10 @@ class UnblockStickerpackHandler(
     commandDescription = "разблокировать стикерпак",
     filter = chatAdministratorFilter
 ) {
-    override suspend fun <M> handleCommand(
-        message: M,
+    override suspend fun handleCommand(
+        message: CommonMessage<TextContent>,
         args: String?
-    ) where M : CommonMessage<TextContent>, M : FromUserMessage {
+    ) {
         val chat = message.chat.asPublicChat() ?: return
 
         val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)

@@ -10,7 +10,6 @@ import dev.inmo.tgbotapi.extensions.utils.asContentMessage
 import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import dev.inmo.tgbotapi.types.message.abstracts.ContentMessage
-import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
 import dev.inmo.tgbotapi.types.message.abstracts.Message
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import dev.inmo.tgbotapi.types.textLength
@@ -32,10 +31,10 @@ class ContinueHandler(
         private val log = LogManager.getLogger()
     }
 
-    override suspend fun <M> handleCommand(
-        message: M,
+    override suspend fun handleCommand(
+        message: CommonMessage<TextContent>,
         args: String?
-    ) where M : CommonMessage<TextContent>, M : FromUserMessage {
+    ) {
         var messageToReply: Message = message
         var sourceText = args
 

@@ -7,7 +7,6 @@ import dev.inmo.tgbotapi.extensions.api.send.sendMessage
 import dev.inmo.tgbotapi.extensions.utils.asPublicChat
 import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
-import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
 import dev.inmo.tgbotapi.types.message.abstracts.Message
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import org.springframework.stereotype.Component
@@ -21,10 +20,10 @@ class ReplyToPinHandler(
     command = arrayOf("pinned"),
     commandDescription = "указать на запиненное сообщение"
 ) {
-    override suspend fun <M> handleCommand(
-        message: M,
+    override suspend fun handleCommand(
+        message: CommonMessage<TextContent>,
         args: String?
-    ) where M : CommonMessage<TextContent>, M : FromUserMessage {
+    ) {
         val chat = message.chat.asPublicChat() ?: return
 
         val extendedChat = requestsExecutor.getChat(chat)

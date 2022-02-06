@@ -7,7 +7,6 @@ import dev.inmo.tgbotapi.extensions.utils.withContent
 import dev.inmo.tgbotapi.types.BotCommand
 import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
-import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
 import dev.inmo.tgbotapi.types.message.content.TextContent
 
 val spacesRegex = Regex("\\s+")
@@ -25,11 +24,7 @@ abstract class CommandHandler(
     }
 
     override suspend fun handleMessage(message: CommonMessage<*>): Boolean {
-        val textMessage = message.withContent<TextContent>()
-
-        if (textMessage !is FromUserMessage) {
-            return false
-        }
+        val textMessage = message.withContent<TextContent>() ?: return false
 
         val args = textMessage.content.text.split(spacesRegex, limit = 2).drop(1).firstOrNull()
 
@@ -38,8 +33,8 @@ abstract class CommandHandler(
         return true
     }
 
-    protected abstract suspend fun <M> handleCommand(
-        message: M,
+    protected abstract suspend fun handleCommand(
+        message: CommonMessage<TextContent>,
         args: String?
-    ) where M : CommonMessage<TextContent>, M : FromUserMessage
+    )
 }

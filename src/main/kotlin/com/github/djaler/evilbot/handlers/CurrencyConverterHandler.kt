@@ -8,7 +8,6 @@ import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
-import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
@@ -42,10 +41,10 @@ class CurrencyConverterHandler(
         }
     }
 
-    override suspend fun <M> handleCommand(
-        message: M,
+    override suspend fun handleCommand(
+        message: CommonMessage<TextContent>,
         args: String?
-    ) where M : CommonMessage<TextContent>, M : FromUserMessage {
+    ) {
         if (args === null) {
             requestsExecutor.reply(message, WRONG_MESSAGES)
             return

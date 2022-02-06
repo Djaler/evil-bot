@@ -12,7 +12,6 @@ import dev.inmo.tgbotapi.types.files.VideoFile
 import dev.inmo.tgbotapi.types.files.VoiceFile
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import dev.inmo.tgbotapi.types.message.abstracts.ContentMessage
-import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
 import dev.inmo.tgbotapi.types.message.content.PollContent
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import dev.inmo.tgbotapi.types.message.content.media.*
@@ -38,10 +37,10 @@ class SedHandler(
         private val log = LogManager.getLogger()
     }
 
-    override suspend fun <M> handleCommand(
-        message: M,
+    override suspend fun handleCommand(
+        message: CommonMessage<TextContent>,
         args: String?
-    ) where M : CommonMessage<TextContent>, M : FromUserMessage {
+    ) {
         if (args === null) {
             requestsExecutor.reply(message, "Ну а где выражение для sed?")
             return

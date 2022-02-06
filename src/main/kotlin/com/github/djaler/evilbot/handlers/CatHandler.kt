@@ -7,7 +7,6 @@ import dev.inmo.tgbotapi.extensions.api.send.replyWithPhoto
 import dev.inmo.tgbotapi.requests.abstracts.MultipartFile
 import dev.inmo.tgbotapi.types.ExtendedBot
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
-import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import org.springframework.stereotype.Component
 
@@ -21,10 +20,10 @@ class CatHandler(
     command = arrayOf("cat"),
     commandDescription = "сгенерировать котика"
 ) {
-    override suspend fun <M> handleCommand(
-        message: M,
+    override suspend fun handleCommand(
+        message: CommonMessage<TextContent>,
         args: String?
-    ) where M : CommonMessage<TextContent>, M : FromUserMessage {
+    ) {
         val catResponse = catClient.getCat()
 
         requestsExecutor.replyWithPhoto(
