@@ -11,7 +11,6 @@ import javax.validation.constraints.NotBlank
 @ConstructorBinding
 @Validated
 data class LocationiqApiProperties(
-    @field:NotBlank
     val key: String
 )
 

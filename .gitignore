@@ -4,3 +4,4 @@ out/
 build/
 *-dev.properties
 *-dev.yaml
+bot.env
