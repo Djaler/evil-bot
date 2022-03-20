@@ -94,6 +94,19 @@
 >```bash
 >   export LOCATIONIQ_API_KEY=
 >```
+
+#### Ключ сервиса для распознавания речи
+Бот поддерживает распознавание голосовых сообщений(используется VK Cloud solutions в качестве сервиса распознавания).
+Ключ получаем на [VK Cloud Solutions](https://mcs.mail.ru). Идем в раздел "Машинное обучение"->"Cloud Voice" и генерируем сервисный токен.
+>application.properties:
+>```properties
+>   vk.api.key =
+>```
+>Окружение:
+>```bash
+>   export VK_API_KEY=
+>```
+
 #### Запуск бота с помощью docker-compose
 Бота и БД можно запустить в контейнерах с помощью Docker и docker-compose. Для этого необходимо заполнить файл `bot.env`.
 (см пример в `sample_bot.env`):
@@ -102,7 +115,8 @@
 > TELEGRAM_BOT_WEBHOOK_URL:
 > TELEGRAM_BOT_WEBHOOK_PORT:
 > FIXER_API_KEY:
-> LOCATIONQ_API_KEY:
+> LOCATIONIQ_API_KEY:
+> VK_API_KEY:
 > SENTRY_DSN:
 > SPRING_DATASOURCE_URL: jdbc:postgresql://db/evil_db
 > SPRING_DATASOURCE_USERNAME: postgres
