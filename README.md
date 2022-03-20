@@ -94,7 +94,24 @@
 >```bash
 >   export LOCATIONIQ_API_KEY=
 >```
-#### Настройка базы данных :feelsgood:
+#### Запуск бота с помощью docker-compose
+Бота и БД можно запустить в контейнерах с помощью Docker и docker-compose. Для этого необходимо заполнить файл `bot.env`.
+(см пример в `sample_bot.env`):
+>  ```properties
+> TELEGRAM_BOT_TOKEN: %токен_бота%
+> TELEGRAM_BOT_WEBHOOK_URL:
+> TELEGRAM_BOT_WEBHOOK_PORT:
+> FIXER_API_KEY:
+> LOCATIONQ_API_KEY:
+> SENTRY_DSN:
+> SPRING_DATASOURCE_URL: jdbc:postgresql://db/evil_db
+> SPRING_DATASOURCE_USERNAME: postgres
+> SPRING_DATASOURCE_PASSWORD: evil_password
+> ```
+
+После этого стартуем бота с помощью `docker-compose up -d`
+
+#### Настройка базы данных (отдельно) :feelsgood:
 Настройка базы данных, используется СУБД [PostgreSQL](https://www.postgresql.org/)
 >application.properties:
 >```properties

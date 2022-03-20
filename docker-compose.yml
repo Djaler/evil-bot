@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  bot:
+    build: .
+    restart: always
+    ports:
+      - 8080:8080
+    env_file:
+      - bot.env
+    links:
+      - "db:db"
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: evil_db
+      POSTGRES_PASSWORD: evil_password
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - evil-data:/var/lib/postgresql/data
+
+volumes:
+  evil-data:
