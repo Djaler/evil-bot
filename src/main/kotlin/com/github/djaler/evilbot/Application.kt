@@ -17,7 +17,8 @@ import org.springframework.scheduling.annotation.EnableScheduling
     TelegramProperties::class,
     BotProperties::class,
     FixerApiProperties::class,
-    LocationiqApiProperties::class
+    LocationiqApiProperties::class,
+    VKCloudApiProperties::class
 )
 class Application
 
