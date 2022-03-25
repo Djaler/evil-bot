@@ -7,7 +7,7 @@ import dev.inmo.tgbotapi.types.toChatId
 
 val User.usernameOrName: String
     get() {
-        username?.run { return username.trimStart('@') }
+        username?.run { return usernameWithoutAt }
 
         return "$firstName $lastName".trim()
     }
