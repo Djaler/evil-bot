@@ -1,7 +1,7 @@
 package com.github.djaler.evilbot.handlers.sed
 
 import dev.inmo.tgbotapi.bot.RequestsExecutor
-import dev.inmo.tgbotapi.extensions.api.send.replyWithPhoto
+import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.types.message.abstracts.Message
 import dev.inmo.tgbotapi.types.message.content.media.PhotoContent
 import org.springframework.stereotype.Component
@@ -15,7 +15,7 @@ class SedPhotoTransformer(
     override suspend fun transformAndReply(content: PhotoContent, args: String, replyTo: Message) {
         content.text?.let {
             val result = applySed(it, args)
-            requestsExecutor.replyWithPhoto(replyTo, content.media.fileId, result)
+            requestsExecutor.reply(replyTo, content.media, result)
         }
     }
 }
