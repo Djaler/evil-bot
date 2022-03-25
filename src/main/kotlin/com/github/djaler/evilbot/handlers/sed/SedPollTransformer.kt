@@ -30,8 +30,7 @@ class SedPollTransformer(
         val newQuestion = applySed(poll.question, args)
         val newOptions = poll.options.map {
             SimplePollOption(
-                text = applySed(it.text, args),
-                votes = 0 // not really used
+                text = applySed(it.text, args)
             )
         }
         when (poll) {
