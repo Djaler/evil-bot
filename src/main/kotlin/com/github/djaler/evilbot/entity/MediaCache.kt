@@ -1,6 +1,5 @@
 package com.github.djaler.evilbot.entity
 
-import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
