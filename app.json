@@ -15,6 +15,10 @@
       "description": "API key obtained from LocationiQ.com",
       "required": true
     },
+    "VK_API_KEY": {
+      "description": "API key for voice message recognition, used by VK Cloud solutions. \"https://mcs.mail.ru/\" Go to the \"Machine learning\"->\"Cloud Voice\" section and generate a service token.",
+      "required": true
+    },
     "TELEGRAM_BOT_WEBHOOK_URL": {
       "description": "A URL of your Heroku app: \"https://<app-name>.herokuapp.com/\". For example, if your app name is \"my-evil-bot\", the URL should be \"https://my-evil-bot.herokuapp.com/\". You can change it later on the app page under \"Settings\" -> \"Reveal Config Vars\".",
       "required": true
