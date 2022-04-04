@@ -10,6 +10,10 @@
 
 В бот встроена капча для новых юзеров в чате и приветственное сообщение.  
 Также проверяется есть ли юзер в списке [CAS](https://cas.chat/). :cop:
+
+### Распознавание речи :speaking_head:
+С помощью [VK Cloud Solutions](https://mcs.mail.ru). Бот может распознавать голосовые сообщения.
+
 ### Команды :monocle_face:
 * */statistic* - статистика сообщений юзера в чате;
 * */top10* - топ 10 спамеров в чате;
@@ -41,6 +45,9 @@
 Нажимаем на кнопку и переходим к настройкам  
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 ### Настройка Heroku :mechanic:
+<details>
+<summary>Подробнее</summary>
+
 #### Устанавливаем Config Vars
 Ключ API полученный от [Fixer.io](https://fixer.io/)
 >```
@@ -54,14 +61,30 @@
 >```
 >   TELEGRAM_BOT_TOKEN
 >```
+API полученный от [VK Cloud Solutions](https://mcs.mail.ru).
+>```
+>   VK_API_KEY
+>```
 Адрес вашего приложения Heroku: «https:// ```app-name``` .herokuapp.com/».
 >```
 >   TELEGRAM_BOT_WEBHOOK_URL
 >```
+### Вот и всё ваш бот готов!
+</details>
+
 ### Самостоятельный запуск :man_technologist:
+<details>
+<summary>Подробнее</summary>
+
 ### Загрузка :chart_with_upwards_trend:
 Устанавливаем [JDK](https://www.oracle.com/java/technologies/javase-downloads.html) если ее нет, минимальная версия: 8.  
 Клонируем репозиторий с [GitHub](https://github.com/Djaler/evil-bot).
+
+### Запуск бота с помощью docker-compose :godmode:
+Бота и БД можно запустить в контейнерах с помощью Docker и docker-compose. Для этого необходимо заполнить файл `bot.env`. (см пример в `sample_bot.env`, описание полей ниже)
+
+После этого стартуем бота с помощью `docker-compose up -d`
+
 ### Настройка :suspect:
 Для запуска необходимо заполнить следующие поля в *application.properties* или задать переменные окружения:
 #### Токен телеграм бота :rage1:
@@ -95,9 +118,10 @@
 >   export LOCATIONIQ_API_KEY=
 >```
 
-#### Ключ сервиса для распознавания речи
-Бот поддерживает распознавание голосовых сообщений(используется VK Cloud solutions в качестве сервиса распознавания).
-Ключ получаем на [VK Cloud Solutions](https://mcs.mail.ru). Идем в раздел "Машинное обучение"->"Cloud Voice" и генерируем сервисный токен.
+#### Ключ сервиса для распознавания речи :feelsgood:
+Ключ API полученный от [VK Cloud Solutions](https://mcs.mail.ru).
+
+В разделе "Машинное обучение"->"Cloud Voice" и генерируем сервисный токен.
 >application.properties:
 >```properties
 >   vk.api.key =
@@ -107,25 +131,11 @@
 >   export VK_API_KEY=
 >```
 
-#### Запуск бота с помощью docker-compose
-Бота и БД можно запустить в контейнерах с помощью Docker и docker-compose. Для этого необходимо заполнить файл `bot.env`.
-(см пример в `sample_bot.env`):
->  ```properties
-> TELEGRAM_BOT_TOKEN: %токен_бота%
-> TELEGRAM_BOT_WEBHOOK_URL:
-> TELEGRAM_BOT_WEBHOOK_PORT:
-> FIXER_API_KEY:
-> LOCATIONIQ_API_KEY:
-> VK_API_KEY:
-> SENTRY_DSN:
-> SPRING_DATASOURCE_URL: jdbc:postgresql://db/evil_db
-> SPRING_DATASOURCE_USERNAME: postgres
-> SPRING_DATASOURCE_PASSWORD: evil_password
-> ```
+#### Настройка базы данных :hurtrealbad:
+Данную операцию можно пропустить если производить запуск с помощью docker-compose.
+<details>
+<summary>Подробнее</summary>
 
-После этого стартуем бота с помощью `docker-compose up -d`
-
-#### Настройка базы данных (отдельно) :feelsgood:
 Настройка базы данных, используется СУБД [PostgreSQL](https://www.postgresql.org/)
 >application.properties:
 >```properties
@@ -173,8 +183,11 @@
 >   export SPRING_DATASOURCE_USERNAME=evil_bot
 >   export SPRING_DATASOURCE_PASSWORD=evil_bot_pass
 >```
+</details>
+
 ### Запуск :rocket:
-После всех настроек приступим к запуску!  
+После всех настроек приступим к запуску!
+
 #### Тестовый запуск :snail:
 > для Unix
 > ```bash
@@ -204,6 +217,7 @@
 >   cd ./build/libs
 >   java.exe -jar evil-bot-1.0-SNAPSHOT.jar
 > ```
+</details>
 
 ## Лицензия :speech_balloon:
 MIT License
