@@ -49,7 +49,7 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
 
-    implementation("io.sentry:sentry-spring-boot-starter:4.3.0")
+    implementation("io.sentry:sentry-spring-boot-starter:5.7.4")
 
     implementation("org.unix4j:unix4j-command:0.6")
 
