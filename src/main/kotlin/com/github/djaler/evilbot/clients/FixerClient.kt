@@ -2,9 +2,11 @@ package com.github.djaler.evilbot.clients
 
 import com.github.djaler.evilbot.components.RecordBreadcrumb
 import com.github.djaler.evilbot.config.FixerApiProperties
+import com.github.djaler.evilbot.utils.cached
+import com.github.djaler.evilbot.utils.getCacheOrThrow
 import io.ktor.client.*
 import io.ktor.client.request.*
-import org.springframework.cache.annotation.Cacheable
+import org.springframework.cache.CacheManager
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -13,20 +15,27 @@ import java.time.LocalDate
 @RecordBreadcrumb
 class FixerClient(
     private val httpClient: HttpClient,
-    private val fixerApiProperties: FixerApiProperties
+    private val fixerApiProperties: FixerApiProperties,
+    private val cacheManager: CacheManager
 ) {
-    @Cacheable("fixerLatestRates")
     suspend fun getLatestRates(): Map<String, BigDecimal> {
-        return httpClient.get<LatestRates>("http://data.fixer.io/api/latest") {
-            parameter("access_key", fixerApiProperties.key)
-        }.rates
+        val cache = cacheManager.getCacheOrThrow("fixerLatestRates")
+
+        return cached(cache, "rates") {
+            httpClient.get<LatestRates>("http://data.fixer.io/api/latest") {
+                parameter("access_key", fixerApiProperties.key)
+            }.rates
+        }
     }
 
-    @Cacheable("fixerHistoricalRates")
     suspend fun getHistoricalRates(date: LocalDate): Map<String, BigDecimal> {
-        return httpClient.get<HistoricalRates>("http://data.fixer.io/api/$date") {
-            parameter("access_key", fixerApiProperties.key)
-        }.rates
+        val cache = cacheManager.getCacheOrThrow("fixerHistoricalRates")
+
+        return cached(cache, date) {
+            httpClient.get<HistoricalRates>("http://data.fixer.io/api/$date") {
+                parameter("access_key", fixerApiProperties.key)
+            }.rates
+        }
     }
 }
 

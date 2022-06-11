@@ -4,12 +4,14 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 import com.github.djaler.evilbot.components.RecordBreadcrumb
 import com.github.djaler.evilbot.config.LocationiqApiProperties
+import com.github.djaler.evilbot.utils.cached
+import com.github.djaler.evilbot.utils.getCacheOrThrow
 import io.github.resilience4j.kotlin.ratelimiter.RateLimiterConfig
 import io.github.resilience4j.kotlin.ratelimiter.executeSuspendFunction
 import io.github.resilience4j.ratelimiter.RateLimiter
 import io.ktor.client.*
 import io.ktor.client.request.*
-import org.springframework.cache.annotation.Cacheable
+import org.springframework.cache.CacheManager
 import org.springframework.stereotype.Component
 import java.io.Serializable
 import java.time.Duration
@@ -18,7 +20,8 @@ import java.time.Duration
 @RecordBreadcrumb
 class LocationiqClient(
     private val httpClient: HttpClient,
-    private val locationiqApiProperties: LocationiqApiProperties
+    private val locationiqApiProperties: LocationiqApiProperties,
+    private val cacheManager: CacheManager
 ) {
     companion object {
         private const val baseUrl = "https://eu1.locationiq.com"
@@ -32,14 +35,17 @@ class LocationiqClient(
     @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
     data class Location(val displayName: String, val lat: Double, val lon: Double) : Serializable
 
-    @Cacheable("locations")
     suspend fun getLocation(query: String): List<Location> {
-        return rateLimiter.executeSuspendFunction {
-            httpClient.get("$baseUrl/v1/search.php") {
-                parameter("key", locationiqApiProperties.key)
-                parameter("format", "json")
-                parameter("accept-language", "ru")
-                parameter("q", query)
+        val cache = cacheManager.getCacheOrThrow("locations")
+
+        return cached(cache, query) {
+            rateLimiter.executeSuspendFunction {
+                httpClient.get("$baseUrl/v1/search.php") {
+                    parameter("key", locationiqApiProperties.key)
+                    parameter("format", "json")
+                    parameter("accept-language", "ru")
+                    parameter("q", query)
+                }
             }
         }
     }
@@ -49,14 +55,17 @@ class LocationiqClient(
     @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
     data class Timezone(val name: String, val shortName: String, val offsetSec: Long) : Serializable
 
-    @Cacheable("locationTimezones")
     suspend fun getTimezone(latitude: Double, longitude: Double): Timezone {
-        return rateLimiter.executeSuspendFunction {
-            httpClient.get<TimezoneResponse>("$baseUrl/v1/timezone.php") {
-                parameter("key", locationiqApiProperties.key)
-                parameter("lat", latitude)
-                parameter("lon", longitude)
-            }.timezone
+        val cache = cacheManager.getCacheOrThrow("locationTimezones")
+
+        return cached(cache, listOf(latitude, longitude)) {
+            rateLimiter.executeSuspendFunction {
+                httpClient.get<TimezoneResponse>("$baseUrl/v1/timezone.php") {
+                    parameter("key", locationiqApiProperties.key)
+                    parameter("lat", latitude)
+                    parameter("lon", longitude)
+                }.timezone
+            }
         }
     }
 }
