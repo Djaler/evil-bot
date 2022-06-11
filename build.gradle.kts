@@ -16,7 +16,6 @@ version = "1.0-SNAPSHOT"
 repositories {
     jcenter()
     mavenCentral()
-    maven("https://dl.bintray.com/konrad-kaminski/maven")
 }
 
 configurations {
@@ -35,8 +34,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-
-    implementation("org.springframework.kotlin:spring-kotlin-coroutine:0.3.7")
 
     implementation("org.postgresql:postgresql")
     implementation("org.flywaydb:flyway-core")
