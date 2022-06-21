@@ -1,8 +1,8 @@
 package com.github.djaler.evilbot.errors
 
 import com.github.djaler.evilbot.clients.SentryClient
-import io.ktor.client.call.*
-import io.ktor.client.features.*
+import io.ktor.client.plugins.*
+import io.ktor.client.statement.*
 import org.springframework.stereotype.Component
 
 @Component
@@ -14,7 +14,7 @@ class ServerResponseExceptionHandler(
             return
         }
 
-        val response: String = e.response.receive()
+        val response: String = e.response.bodyAsText()
         sentryClient.setExtra("response", response)
     }
 }

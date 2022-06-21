@@ -10,7 +10,7 @@ import dev.inmo.tgbotapi.extensions.utils.asChatEventMessage
 import dev.inmo.tgbotapi.extensions.utils.asPublicChat
 import dev.inmo.tgbotapi.extensions.utils.formatting.buildEntities
 import dev.inmo.tgbotapi.extensions.utils.formatting.link
-import dev.inmo.tgbotapi.types.Bot
+import dev.inmo.tgbotapi.types.chat.Bot
 import dev.inmo.tgbotapi.types.message.ChatEvents.NewChatMembers
 import dev.inmo.tgbotapi.types.message.abstracts.Message
 import org.springframework.stereotype.Component

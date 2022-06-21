@@ -1,10 +1,10 @@
 package com.github.djaler.evilbot.filters.message
 
-import dev.inmo.tgbotapi.types.ExtendedBot
-import dev.inmo.tgbotapi.types.MessageEntity.textsources.BotCommandTextSource
+import dev.inmo.tgbotapi.types.chat.ExtendedBot
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import dev.inmo.tgbotapi.types.message.abstracts.Message
 import dev.inmo.tgbotapi.types.message.content.TextContent
+import dev.inmo.tgbotapi.types.message.textsources.BotCommandTextSource
 
 class CommandMessageFilter(
     private val command: Array<String>,

@@ -6,7 +6,7 @@ import com.github.djaler.evilbot.model.GetOrCreateResult
 import com.github.djaler.evilbot.repository.ChatHistoryRepository
 import com.github.djaler.evilbot.repository.ChatRepository
 import dev.inmo.tgbotapi.types.ChatId
-import dev.inmo.tgbotapi.types.chat.abstracts.PublicChat
+import dev.inmo.tgbotapi.types.chat.PublicChat
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Duration

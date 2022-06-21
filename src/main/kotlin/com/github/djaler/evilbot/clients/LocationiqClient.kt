@@ -10,6 +10,7 @@ import io.github.resilience4j.kotlin.ratelimiter.RateLimiterConfig
 import io.github.resilience4j.kotlin.ratelimiter.executeSuspendFunction
 import io.github.resilience4j.ratelimiter.RateLimiter
 import io.ktor.client.*
+import io.ktor.client.call.*
 import io.ktor.client.request.*
 import org.springframework.cache.CacheManager
 import org.springframework.stereotype.Component
@@ -45,7 +46,7 @@ class LocationiqClient(
                     parameter("format", "json")
                     parameter("accept-language", "ru")
                     parameter("q", query)
-                }
+                }.body()
             }
         }
     }
@@ -60,11 +61,11 @@ class LocationiqClient(
 
         return cached(cache, listOf(latitude, longitude)) {
             rateLimiter.executeSuspendFunction {
-                httpClient.get<TimezoneResponse>("$baseUrl/v1/timezone.php") {
+                httpClient.get("$baseUrl/v1/timezone.php") {
                     parameter("key", locationiqApiProperties.key)
                     parameter("lat", latitude)
                     parameter("lon", longitude)
-                }.timezone
+                }.body<TimezoneResponse>().timezone
             }
         }
     }

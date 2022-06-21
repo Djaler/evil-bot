@@ -5,6 +5,7 @@ import com.github.djaler.evilbot.config.FixerApiProperties
 import com.github.djaler.evilbot.utils.cached
 import com.github.djaler.evilbot.utils.getCacheOrThrow
 import io.ktor.client.*
+import io.ktor.client.call.*
 import io.ktor.client.request.*
 import org.springframework.cache.CacheManager
 import org.springframework.stereotype.Component
@@ -22,9 +23,9 @@ class FixerClient(
         val cache = cacheManager.getCacheOrThrow("fixerLatestRates")
 
         return cached(cache, "rates") {
-            httpClient.get<LatestRates>("http://data.fixer.io/api/latest") {
+            httpClient.get("http://data.fixer.io/api/latest") {
                 parameter("access_key", fixerApiProperties.key)
-            }.rates
+            }.body<LatestRates>().rates
         }
     }
 
@@ -32,9 +33,9 @@ class FixerClient(
         val cache = cacheManager.getCacheOrThrow("fixerHistoricalRates")
 
         return cached(cache, date) {
-            httpClient.get<HistoricalRates>("http://data.fixer.io/api/$date") {
+            httpClient.get("http://data.fixer.io/api/$date") {
                 parameter("access_key", fixerApiProperties.key)
-            }.rates
+            }.body<HistoricalRates>().rates
         }
     }
 }

@@ -18,12 +18,7 @@ import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.api.send.sendDice
 import dev.inmo.tgbotapi.extensions.utils.asGroupChat
 import dev.inmo.tgbotapi.extensions.utils.asRestrictedChatMember
-import dev.inmo.tgbotapi.types.Bot
-import dev.inmo.tgbotapi.types.User
-import dev.inmo.tgbotapi.types.chat.ChatPermissions
-import dev.inmo.tgbotapi.types.chat.LeftRestrictionsChatPermissions
-import dev.inmo.tgbotapi.types.chat.RestrictionsChatPermissions
-import dev.inmo.tgbotapi.types.chat.abstracts.GroupChat
+import dev.inmo.tgbotapi.types.chat.*
 import dev.inmo.tgbotapi.types.dartsCubeAndBowlingDiceResultLimit
 import dev.inmo.tgbotapi.types.dice.CubeDiceAnimationType
 import dev.inmo.tgbotapi.types.message.ChatEvents.NewChatMembers

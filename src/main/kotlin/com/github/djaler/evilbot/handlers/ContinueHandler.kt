@@ -2,12 +2,12 @@ package com.github.djaler.evilbot.handlers
 
 import com.github.djaler.evilbot.clients.SentryClient
 import com.github.djaler.evilbot.service.PredictionService
-import dev.inmo.tgbotapi.CommonAbstracts.Texted
+import dev.inmo.tgbotapi.abstracts.Texted
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.api.send.withTypingAction
 import dev.inmo.tgbotapi.extensions.utils.asContentMessage
-import dev.inmo.tgbotapi.types.ExtendedBot
+import dev.inmo.tgbotapi.types.chat.ExtendedBot
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import dev.inmo.tgbotapi.types.message.abstracts.ContentMessage
 import dev.inmo.tgbotapi.types.message.abstracts.Message

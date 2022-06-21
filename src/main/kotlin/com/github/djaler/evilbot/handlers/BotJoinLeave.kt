@@ -3,7 +3,7 @@ package com.github.djaler.evilbot.handlers
 import com.github.djaler.evilbot.service.ChatService
 import dev.inmo.tgbotapi.extensions.utils.asChatEventMessage
 import dev.inmo.tgbotapi.extensions.utils.asPublicChat
-import dev.inmo.tgbotapi.types.ExtendedBot
+import dev.inmo.tgbotapi.types.chat.ExtendedBot
 import dev.inmo.tgbotapi.types.message.ChatEvents.LeftChatMember
 import dev.inmo.tgbotapi.types.message.ChatEvents.NewChatMembers
 import dev.inmo.tgbotapi.types.message.abstracts.Message

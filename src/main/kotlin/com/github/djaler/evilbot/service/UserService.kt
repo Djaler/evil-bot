@@ -20,7 +20,7 @@ class UserService(
     private val userStatisticRepository: UserStatisticRepository
 ) {
     @Transactional
-    fun getOrCreateUserFrom(telegramUser: dev.inmo.tgbotapi.types.User): GetOrCreateResult<User> {
+    fun getOrCreateUserFrom(telegramUser: dev.inmo.tgbotapi.types.chat.User): GetOrCreateResult<User> {
         val user = userRepository.findByTelegramId(telegramUser.id.userId)
 
         return if (user != null) {

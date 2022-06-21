@@ -1,6 +1,6 @@
 package com.github.djaler.evilbot.filters.query
 
-import dev.inmo.tgbotapi.types.CallbackQuery.MessageCallbackQuery
+import dev.inmo.tgbotapi.types.queries.callback.MessageCallbackQuery
 
 interface CallbackQueryFilter {
     suspend fun filter(query: MessageCallbackQuery): Boolean

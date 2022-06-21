@@ -2,6 +2,7 @@ package com.github.djaler.evilbot.clients
 
 import com.github.djaler.evilbot.components.RecordBreadcrumb
 import io.ktor.client.*
+import io.ktor.client.call.*
 import io.ktor.client.request.*
 import org.springframework.stereotype.Component
 
@@ -11,7 +12,7 @@ class CasClient(
     private val httpClient: HttpClient
 ) {
     suspend fun getCasInfo(userId: Long): CasInfo {
-        return httpClient.get("https://api.cas.chat/check?user_id=$userId")
+        return httpClient.get("https://api.cas.chat/check?user_id=$userId").body()
     }
 }
 

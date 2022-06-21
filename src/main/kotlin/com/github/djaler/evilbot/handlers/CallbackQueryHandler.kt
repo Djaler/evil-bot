@@ -5,8 +5,8 @@ import com.github.djaler.evilbot.utils.decodeCallbackData
 import com.github.djaler.evilbot.utils.isCallbackForHandler
 import dev.inmo.tgbotapi.extensions.utils.asCallbackQueryUpdate
 import dev.inmo.tgbotapi.extensions.utils.asMessageDataCallbackQuery
-import dev.inmo.tgbotapi.types.CallbackQuery.MessageDataCallbackQuery
 import dev.inmo.tgbotapi.types.UPDATE_CALLBACK_QUERY
+import dev.inmo.tgbotapi.types.queries.callback.MessageDataCallbackQuery
 import dev.inmo.tgbotapi.types.update.abstracts.Update
 
 abstract class CallbackQueryHandler(private val filter: CallbackQueryFilter? = null) : UpdateHandler {

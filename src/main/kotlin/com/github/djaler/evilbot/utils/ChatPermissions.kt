@@ -1,7 +1,7 @@
 package com.github.djaler.evilbot.utils
 
-import dev.inmo.tgbotapi.types.ChatMember.RestrictedChatMember
 import dev.inmo.tgbotapi.types.chat.ChatPermissions
+import dev.inmo.tgbotapi.types.chat.member.RestrictedChatMember
 
 val fullChatPermissions = ChatPermissions(
     canSendMessages = true,

@@ -1,7 +1,7 @@
 package com.github.djaler.evilbot.service
 
 import com.github.djaler.evilbot.clients.LocationiqClient
-import io.ktor.client.features.*
+import io.ktor.client.plugins.*
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.time.ZoneOffset

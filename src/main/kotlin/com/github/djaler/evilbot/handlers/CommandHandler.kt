@@ -5,7 +5,7 @@ import com.github.djaler.evilbot.filters.message.MessageFilter
 import com.github.djaler.evilbot.filters.message.and
 import dev.inmo.tgbotapi.extensions.utils.withContent
 import dev.inmo.tgbotapi.types.BotCommand
-import dev.inmo.tgbotapi.types.ExtendedBot
+import dev.inmo.tgbotapi.types.chat.ExtendedBot
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import dev.inmo.tgbotapi.types.message.content.TextContent
 

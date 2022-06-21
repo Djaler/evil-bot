@@ -3,7 +3,7 @@ package com.github.djaler.evilbot.handlers.sed
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.types.message.abstracts.Message
-import dev.inmo.tgbotapi.types.message.content.media.AnimationContent
+import dev.inmo.tgbotapi.types.message.content.AnimationContent
 import org.springframework.stereotype.Component
 
 @Component

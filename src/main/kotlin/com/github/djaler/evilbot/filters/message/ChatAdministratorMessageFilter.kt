@@ -2,8 +2,8 @@ package com.github.djaler.evilbot.filters.message
 
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.chat.members.getChatMember
-import dev.inmo.tgbotapi.types.ChatMember.abstracts.AdministratorChatMember
-import dev.inmo.tgbotapi.types.chat.abstracts.PublicChat
+import dev.inmo.tgbotapi.types.chat.PublicChat
+import dev.inmo.tgbotapi.types.chat.member.AdministratorChatMember
 import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
 import dev.inmo.tgbotapi.types.message.abstracts.Message
 import org.springframework.stereotype.Component

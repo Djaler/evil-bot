@@ -3,17 +3,16 @@ package com.github.djaler.evilbot.components
 import com.github.djaler.evilbot.entity.MediaCache
 import com.github.djaler.evilbot.repository.MediaCacheRepository
 import com.github.djaler.evilbot.service.DigestService
-import com.github.djaler.evilbot.utils.StorageFile
+import com.github.djaler.evilbot.utils.asMultipartFile
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.send.media.sendAnimation
 import dev.inmo.tgbotapi.extensions.api.send.media.sendPhoto
 import dev.inmo.tgbotapi.requests.abstracts.InputFile
-import dev.inmo.tgbotapi.requests.abstracts.MultipartFile
 import dev.inmo.tgbotapi.requests.abstracts.toInputFile
 import dev.inmo.tgbotapi.types.ChatIdentifier
 import dev.inmo.tgbotapi.types.MessageIdentifier
 import dev.inmo.tgbotapi.types.message.abstracts.ContentMessage
-import dev.inmo.tgbotapi.types.message.content.abstracts.MediaContent
+import dev.inmo.tgbotapi.types.message.content.MediaContent
 import org.springframework.core.io.ClassPathResource
 import org.springframework.stereotype.Component
 
@@ -54,11 +53,11 @@ class TelegramMediaSender(
             try {
                 fileSender(cache.fileId.toInputFile())
             } catch (e: Exception) {
-                val message = fileSender(MultipartFile(StorageFile(resource)))
+                val message = fileSender(resource.asMultipartFile())
                 saveMediaCache(digest, message.content)
             }
         } else {
-            val message = fileSender(MultipartFile(StorageFile(resource)))
+            val message = fileSender(resource.asMultipartFile())
             saveMediaCache(digest, message.content)
         }
     }

@@ -1,7 +1,7 @@
 package com.github.djaler.evilbot.handlers.sed
 
 import dev.inmo.tgbotapi.types.message.abstracts.Message
-import dev.inmo.tgbotapi.types.message.content.abstracts.MessageContent
+import dev.inmo.tgbotapi.types.message.content.MessageContent
 import org.unix4j.Unix4j
 import kotlin.reflect.KClass
 
