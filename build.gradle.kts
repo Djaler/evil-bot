@@ -44,7 +44,7 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:2.0.2")
     implementation("io.ktor:ktor-serialization-jackson:2.0.2")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.3")
 
     implementation("io.sentry:sentry-spring-boot-starter:4.3.0")
 
