@@ -37,7 +37,7 @@ dependencies {
     implementation("org.postgresql:postgresql")
     implementation("org.flywaydb:flyway-core")
 
-    implementation("dev.inmo:tgbotapi:2.0.3")
+    implementation("dev.inmo:tgbotapi:2.1.2")
 
     implementation("io.ktor:ktor-server-netty:2.0.2")
     implementation("io.ktor:ktor-client-apache:2.0.2")
