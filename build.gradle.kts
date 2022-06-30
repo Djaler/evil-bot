@@ -39,10 +39,10 @@ dependencies {
 
     implementation("dev.inmo:tgbotapi:2.1.2")
 
-    implementation("io.ktor:ktor-server-netty:2.0.2")
-    implementation("io.ktor:ktor-client-apache:2.0.2")
-    implementation("io.ktor:ktor-client-content-negotiation:2.0.2")
-    implementation("io.ktor:ktor-serialization-jackson:2.0.2")
+    implementation("io.ktor:ktor-server-netty:2.0.3")
+    implementation("io.ktor:ktor-client-apache:2.0.3")
+    implementation("io.ktor:ktor-client-content-negotiation:2.0.3")
+    implementation("io.ktor:ktor-serialization-jackson:2.0.3")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
 
