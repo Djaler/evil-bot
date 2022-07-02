@@ -1,4 +1,4 @@
-package com.github.djaler.evilbot.handlers
+package com.github.djaler.evilbot.handlers.base
 
 import dev.inmo.tgbotapi.types.update.abstracts.Update
 

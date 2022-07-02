@@ -1,4 +1,4 @@
-package com.github.djaler.evilbot.handlers
+package com.github.djaler.evilbot.handlers.base
 
 import com.github.djaler.evilbot.filters.query.CallbackQueryFilter
 import com.github.djaler.evilbot.utils.decodeCallbackData

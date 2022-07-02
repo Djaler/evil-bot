@@ -4,6 +4,8 @@ import com.github.djaler.evilbot.components.TelegramMediaSender
 import com.github.djaler.evilbot.config.BotProperties
 import com.github.djaler.evilbot.entity.DicePollCaptchaRestriction
 import com.github.djaler.evilbot.filters.message.CanRestrictMemberMessageFilter
+import com.github.djaler.evilbot.handlers.base.MessageHandler
+import com.github.djaler.evilbot.handlers.base.PollAnswerHandler
 import com.github.djaler.evilbot.service.DicePollCaptchaService
 import com.github.djaler.evilbot.utils.chatPermissions
 import com.github.djaler.evilbot.utils.getForm

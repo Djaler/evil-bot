@@ -1,6 +1,7 @@
 package com.github.djaler.evilbot.handlers
 
 import com.github.djaler.evilbot.clients.SentryClient
+import com.github.djaler.evilbot.handlers.base.MessageHandler
 import com.github.djaler.evilbot.service.ChatService
 import com.github.djaler.evilbot.service.UserService
 import com.github.djaler.evilbot.utils.usernameOrName

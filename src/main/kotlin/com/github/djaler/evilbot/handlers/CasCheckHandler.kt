@@ -1,6 +1,7 @@
 package com.github.djaler.evilbot.handlers
 
 import com.github.djaler.evilbot.clients.CasClient
+import com.github.djaler.evilbot.handlers.base.MessageHandler
 import com.github.djaler.evilbot.utils.userId
 import com.github.djaler.evilbot.utils.usernameOrName
 import dev.inmo.tgbotapi.bot.RequestsExecutor

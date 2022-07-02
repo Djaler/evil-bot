@@ -1,5 +1,6 @@
 package com.github.djaler.evilbot.handlers
 
+import com.github.djaler.evilbot.handlers.base.MessageHandler
 import com.github.djaler.evilbot.service.ChatService
 import dev.inmo.tgbotapi.extensions.utils.asChatEventMessage
 import dev.inmo.tgbotapi.extensions.utils.asPublicChat

@@ -1,6 +1,6 @@
 package com.github.djaler.evilbot.utils
 
-import com.github.djaler.evilbot.handlers.CallbackQueryHandler
+import com.github.djaler.evilbot.handlers.base.CallbackQueryHandler
 
 fun <T : CallbackQueryHandler> createCallbackDataForHandler(callbackData: String, handlerClass: Class<T>): String {
     return encodeHandlerClass(handlerClass) + callbackData

@@ -2,6 +2,9 @@ package com.github.djaler.evilbot.handlers
 
 import com.github.djaler.evilbot.filters.message.ChatAdministratorMessageFilter
 import com.github.djaler.evilbot.filters.query.ChatAdministratorCallbackQueryFilter
+import com.github.djaler.evilbot.handlers.base.CallbackQueryHandler
+import com.github.djaler.evilbot.handlers.base.CommandHandler
+import com.github.djaler.evilbot.handlers.base.CommonMessageHandler
 import com.github.djaler.evilbot.service.BlockedStickerpackService
 import com.github.djaler.evilbot.service.ChatService
 import com.github.djaler.evilbot.utils.createCallbackDataForHandler

@@ -1,6 +1,7 @@
 package com.github.djaler.evilbot.handlers
 
 import com.github.djaler.evilbot.clients.SentryClient
+import com.github.djaler.evilbot.handlers.base.CommandHandler
 import com.github.djaler.evilbot.service.PredictionService
 import dev.inmo.tgbotapi.abstracts.Texted
 import dev.inmo.tgbotapi.bot.RequestsExecutor

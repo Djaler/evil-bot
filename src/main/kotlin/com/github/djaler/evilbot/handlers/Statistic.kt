@@ -1,5 +1,7 @@
 package com.github.djaler.evilbot.handlers
 
+import com.github.djaler.evilbot.handlers.base.CommandHandler
+import com.github.djaler.evilbot.handlers.base.CommonMessageHandler
 import com.github.djaler.evilbot.service.ChatService
 import com.github.djaler.evilbot.service.UserService
 import com.github.djaler.evilbot.utils.getForm

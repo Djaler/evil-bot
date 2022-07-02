@@ -1,8 +1,8 @@
 package com.github.djaler.evilbot.components
 
 import com.github.djaler.evilbot.clients.SentryClient
-import com.github.djaler.evilbot.handlers.CommandHandler
-import com.github.djaler.evilbot.handlers.UpdateHandler
+import com.github.djaler.evilbot.handlers.base.CommandHandler
+import com.github.djaler.evilbot.handlers.base.UpdateHandler
 import dev.inmo.tgbotapi.types.BotCommand
 import dev.inmo.tgbotapi.types.update.abstracts.UnknownUpdate
 import dev.inmo.tgbotapi.types.update.abstracts.Update

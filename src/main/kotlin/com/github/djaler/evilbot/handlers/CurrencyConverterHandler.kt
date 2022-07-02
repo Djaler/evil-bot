@@ -1,5 +1,7 @@
 package com.github.djaler.evilbot.handlers
 
+import com.github.djaler.evilbot.handlers.base.CommandHandler
+import com.github.djaler.evilbot.handlers.base.spacesRegex
 import com.github.djaler.evilbot.service.CurrencyService
 import com.github.djaler.evilbot.service.UnknownCurrencyException
 import com.github.djaler.evilbot.utils.calculateIncreasePercentage

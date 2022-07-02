@@ -1,6 +1,7 @@
 package com.github.djaler.evilbot.handlers
 
 import com.github.djaler.evilbot.components.TelegramMediaSender
+import com.github.djaler.evilbot.handlers.base.CommandHandler
 import com.github.djaler.evilbot.service.TimeService
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.send.reply

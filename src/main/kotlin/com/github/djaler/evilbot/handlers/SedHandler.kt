@@ -1,5 +1,6 @@
 package com.github.djaler.evilbot.handlers
 
+import com.github.djaler.evilbot.handlers.base.CommandHandler
 import com.github.djaler.evilbot.handlers.sed.SedTransformerFactory
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.send.reply

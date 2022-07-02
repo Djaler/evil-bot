@@ -1,4 +1,4 @@
-package com.github.djaler.evilbot.handlers
+package com.github.djaler.evilbot.handlers.base
 
 import com.github.djaler.evilbot.filters.message.MessageFilter
 import dev.inmo.tgbotapi.extensions.utils.asCommonMessage

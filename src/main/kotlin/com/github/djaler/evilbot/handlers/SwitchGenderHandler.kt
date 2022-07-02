@@ -1,6 +1,7 @@
 package com.github.djaler.evilbot.handlers
 
 import com.github.djaler.evilbot.enums.UserGender
+import com.github.djaler.evilbot.handlers.base.CommandHandler
 import com.github.djaler.evilbot.service.UserService
 import com.github.djaler.evilbot.utils.getFormByGender
 import dev.inmo.tgbotapi.bot.RequestsExecutor
