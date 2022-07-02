@@ -1,7 +1,6 @@
-package com.github.djaler.evilbot.handlers
+package com.github.djaler.evilbot.handlers.commands
 
 import com.github.djaler.evilbot.handlers.base.CommandHandler
-import com.github.djaler.evilbot.handlers.base.CommonMessageHandler
 import com.github.djaler.evilbot.service.ChatService
 import com.github.djaler.evilbot.service.UserService
 import com.github.djaler.evilbot.utils.getForm
@@ -12,34 +11,8 @@ import dev.inmo.tgbotapi.extensions.utils.asFromUserMessage
 import dev.inmo.tgbotapi.extensions.utils.asPublicChat
 import dev.inmo.tgbotapi.types.chat.ExtendedBot
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
-import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
-
-@Component
-class UpdateStatisticHandler(
-    private val chatService: ChatService,
-    private val userService: UserService
-) : CommonMessageHandler() {
-    override val order = 0
-
-    @Transactional
-    override suspend fun handleMessage(message: CommonMessage<*>): Boolean {
-        if (message !is FromUserMessage) {
-            return false
-        }
-
-        val chat = message.chat.asPublicChat() ?: return false
-
-        val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
-        val (userEntity, _) = userService.getOrCreateUserFrom(message.user)
-
-        userService.registerMessageInStatistic(userEntity, chatEntity)
-
-        return false
-    }
-}
 
 @Component
 class DisplayStatisticHandler(
@@ -83,39 +56,5 @@ class DisplayStatisticHandler(
                 )
             }"
         )
-    }
-}
-
-
-@Component
-class DisplayTop10Handler(
-    botInfo: ExtendedBot,
-    private val chatService: ChatService,
-    private val userService: UserService,
-    private val requestsExecutor: RequestsExecutor
-) : CommandHandler(
-    botInfo,
-    command = arrayOf("top10"),
-    commandDescription = "кто больше всех пишет"
-) {
-    override suspend fun handleCommand(
-        message: CommonMessage<TextContent>,
-        args: String?
-    ) {
-        val chat = message.chat.asPublicChat() ?: return
-
-        val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
-
-        val top = userService.getTop(chatEntity, limit = 10)
-
-        if (top.isEmpty()) {
-            return
-        }
-
-        val text = top
-            .mapIndexed { index, statistic -> "${(index + 1)}. ${statistic.user.username} - ${statistic.messagesCount}" }
-            .joinToString("\n")
-
-        requestsExecutor.reply(message, text, disableNotification = true)
     }
 }

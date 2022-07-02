@@ -1,4 +1,4 @@
-package com.github.djaler.evilbot.handlers
+package com.github.djaler.evilbot.handlers.commands
 
 import com.github.djaler.evilbot.handlers.base.CommandHandler
 import dev.inmo.tgbotapi.bot.RequestsExecutor

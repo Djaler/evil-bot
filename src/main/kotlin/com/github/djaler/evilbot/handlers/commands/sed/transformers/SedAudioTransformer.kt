@@ -1,18 +1,18 @@
-package com.github.djaler.evilbot.handlers.sed
+package com.github.djaler.evilbot.handlers.commands.sed.transformers
 
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.types.message.abstracts.Message
-import dev.inmo.tgbotapi.types.message.content.PhotoContent
+import dev.inmo.tgbotapi.types.message.content.AudioContent
 import org.springframework.stereotype.Component
 
 @Component
-class SedPhotoTransformer(
+class SedAudioTransformer(
     private val requestsExecutor: RequestsExecutor
-) : SedTransformer<PhotoContent> {
-    override val contentClass = PhotoContent::class
+) : SedTransformer<AudioContent> {
+    override val contentClass = AudioContent::class
 
-    override suspend fun transformAndReply(content: PhotoContent, args: String, replyTo: Message) {
+    override suspend fun transformAndReply(content: AudioContent, args: String, replyTo: Message) {
         content.text?.let {
             val result = applySed(it, args)
             requestsExecutor.reply(replyTo, content.media, result)

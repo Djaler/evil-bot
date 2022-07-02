@@ -1,4 +1,4 @@
-package com.github.djaler.evilbot.handlers.sed
+package com.github.djaler.evilbot.handlers.commands.sed.transformers
 
 import com.github.djaler.evilbot.clients.SentryClient
 import dev.inmo.tgbotapi.bot.RequestsExecutor

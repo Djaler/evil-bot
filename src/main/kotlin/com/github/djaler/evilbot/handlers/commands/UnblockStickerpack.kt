@@ -1,23 +1,19 @@
-package com.github.djaler.evilbot.handlers
+package com.github.djaler.evilbot.handlers.commands
 
 import com.github.djaler.evilbot.filters.message.ChatAdministratorMessageFilter
 import com.github.djaler.evilbot.filters.query.ChatAdministratorCallbackQueryFilter
 import com.github.djaler.evilbot.handlers.base.CallbackQueryHandler
 import com.github.djaler.evilbot.handlers.base.CommandHandler
-import com.github.djaler.evilbot.handlers.base.CommonMessageHandler
 import com.github.djaler.evilbot.service.BlockedStickerpackService
 import com.github.djaler.evilbot.service.ChatService
 import com.github.djaler.evilbot.utils.createCallbackDataForHandler
 import com.github.djaler.evilbot.utils.stickerpackLink
 import com.github.djaler.evilbot.utils.usernameOrName
 import dev.inmo.tgbotapi.bot.RequestsExecutor
-import dev.inmo.tgbotapi.extensions.api.deleteMessage
 import dev.inmo.tgbotapi.extensions.api.edit.text.editMessageText
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
-import dev.inmo.tgbotapi.extensions.utils.asContentMessage
 import dev.inmo.tgbotapi.extensions.utils.asPublicChat
-import dev.inmo.tgbotapi.extensions.utils.asStickerContent
 import dev.inmo.tgbotapi.extensions.utils.formatting.bold
 import dev.inmo.tgbotapi.extensions.utils.formatting.boldln
 import dev.inmo.tgbotapi.extensions.utils.formatting.buildEntities
@@ -29,52 +25,6 @@ import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import dev.inmo.tgbotapi.types.queries.callback.MessageDataCallbackQuery
 import org.springframework.stereotype.Component
-
-@Component
-class BlockStickerpackHandler(
-    botInfo: ExtendedBot,
-    private val requestsExecutor: RequestsExecutor,
-    private val chatService: ChatService,
-    private val blockedStickerpackService: BlockedStickerpackService,
-    chatAdministratorFilter: ChatAdministratorMessageFilter
-) : CommandHandler(
-    botInfo,
-    command = arrayOf("block_stickerpack"),
-    commandDescription = "заблокировать стикерпак",
-    filter = chatAdministratorFilter
-) {
-    override suspend fun handleCommand(
-        message: CommonMessage<TextContent>,
-        args: String?
-    ) {
-        val chat = message.chat.asPublicChat() ?: return
-        val stickerContent = message.replyTo?.asContentMessage()?.content?.asStickerContent() ?: return
-
-        val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
-
-        val stickerSetName = stickerContent.media.stickerSetName
-        if (stickerSetName == null) {
-            requestsExecutor.sendMessage(chat.id, "Стикерпак недоступен")
-            return
-        }
-
-        val (stickerpack, created) = blockedStickerpackService.getOrCreate(
-            stickerSetName,
-            chatEntity.id
-        )
-
-        val responseText = buildEntities(separator = " ") {
-            +"Стикерпак" + stickerpackLink(stickerpack.name)
-            if (created) {
-                +"успешно" + bold("заблокирован")
-            } else {
-                bold("уже заблокирован")
-            }
-        }
-
-        requestsExecutor.sendMessage(chat.id, responseText)
-    }
-}
 
 @Component
 class UnblockStickerpackHandler(
@@ -166,29 +116,5 @@ class UnblockStickerpackCallbackHandler(
                 +"администратором " + bold(userWhoClicked)
             }
         )
-    }
-}
-
-@Component
-class StickersWatchDog(
-    private val requestsExecutor: RequestsExecutor,
-    private val chatService: ChatService,
-    private val blockedStickerpackService: BlockedStickerpackService
-) : CommonMessageHandler() {
-    override val order = 0
-
-    override suspend fun handleMessage(message: CommonMessage<*>): Boolean {
-        val chat = message.chat.asPublicChat() ?: return false
-        val stickerContent = message.content.asStickerContent() ?: return false
-
-        val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
-
-        val stickerSetName = stickerContent.media.stickerSetName ?: return true
-
-        if (blockedStickerpackService.isBlocked(stickerSetName, chatEntity)) {
-            requestsExecutor.deleteMessage(message)
-        }
-
-        return true
     }
 }

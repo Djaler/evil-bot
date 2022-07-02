@@ -1,7 +1,7 @@
-package com.github.djaler.evilbot.handlers
+package com.github.djaler.evilbot.handlers.commands.sed
 
 import com.github.djaler.evilbot.handlers.base.CommandHandler
-import com.github.djaler.evilbot.handlers.sed.SedTransformerFactory
+import com.github.djaler.evilbot.handlers.commands.sed.transformers.SedTransformerFactory
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.utils.asContentMessage

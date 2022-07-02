@@ -1,4 +1,4 @@
-package com.github.djaler.evilbot.handlers
+package com.github.djaler.evilbot.handlers.commands
 
 import com.github.djaler.evilbot.enums.UserGender
 import com.github.djaler.evilbot.handlers.base.CommandHandler

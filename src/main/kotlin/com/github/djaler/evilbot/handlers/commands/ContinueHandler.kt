@@ -1,4 +1,4 @@
-package com.github.djaler.evilbot.handlers
+package com.github.djaler.evilbot.handlers.commands
 
 import com.github.djaler.evilbot.clients.SentryClient
 import com.github.djaler.evilbot.handlers.base.CommandHandler

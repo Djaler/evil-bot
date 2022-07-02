@@ -1,4 +1,4 @@
-package com.github.djaler.evilbot.handlers.sed
+package com.github.djaler.evilbot.handlers.commands.sed.transformers
 
 import dev.inmo.tgbotapi.types.message.content.MessageContent
 import org.springframework.stereotype.Component
