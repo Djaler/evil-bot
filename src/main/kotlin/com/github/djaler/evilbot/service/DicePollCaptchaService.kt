@@ -10,7 +10,6 @@ import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.types.chat.ChatPermissions
 import dev.inmo.tgbotapi.types.chat.PublicChat
 import dev.inmo.tgbotapi.types.chat.User
-import dev.inmo.tgbotapi.types.message.abstracts.ChatEventMessage
 import dev.inmo.tgbotapi.types.message.abstracts.ContentMessage
 import dev.inmo.tgbotapi.types.message.abstracts.Message
 import dev.inmo.tgbotapi.types.message.content.DiceContent
@@ -28,7 +27,7 @@ class DicePollCaptchaService(
     fun fixRestriction(
         chat: PublicChat,
         member: User,
-        joinMessage: ChatEventMessage<*>,
+        joinMessage: Message,
         diceMessage: ContentMessage<DiceContent>,
         pollMessage: ContentMessage<PollContent>,
         correctAnswerIndex: Int,

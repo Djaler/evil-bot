@@ -4,7 +4,7 @@ import com.github.djaler.evilbot.components.TelegramMediaSender
 import com.github.djaler.evilbot.config.BotProperties
 import com.github.djaler.evilbot.entity.DicePollCaptchaRestriction
 import com.github.djaler.evilbot.filters.message.CanRestrictMemberMessageFilter
-import com.github.djaler.evilbot.handlers.base.MessageHandler
+import com.github.djaler.evilbot.handlers.base.NewMemberHandler
 import com.github.djaler.evilbot.handlers.base.PollAnswerHandler
 import com.github.djaler.evilbot.service.DicePollCaptchaService
 import com.github.djaler.evilbot.utils.chatPermissions
@@ -23,8 +23,6 @@ import dev.inmo.tgbotapi.extensions.utils.asRestrictedChatMember
 import dev.inmo.tgbotapi.types.chat.*
 import dev.inmo.tgbotapi.types.dartsCubeAndBowlingDiceResultLimit
 import dev.inmo.tgbotapi.types.dice.CubeDiceAnimationType
-import dev.inmo.tgbotapi.types.message.ChatEvents.NewChatMembers
-import dev.inmo.tgbotapi.types.message.abstracts.ChatEventMessage
 import dev.inmo.tgbotapi.types.message.abstracts.Message
 import dev.inmo.tgbotapi.types.polls.PollAnswer
 import dev.inmo.tgbotapi.types.toChatId
@@ -37,30 +35,15 @@ class DicePollCaptchaSendHandler(
     private val captchaService: DicePollCaptchaService,
     private val botProperties: BotProperties,
     canRestrictMemberFilter: CanRestrictMemberMessageFilter
-) : MessageHandler(filter = canRestrictMemberFilter) {
-
-    override suspend fun handleMessage(message: Message): Boolean {
-        if (message !is ChatEventMessage<*>) {
-            return false
-        }
+) : NewMemberHandler(allowBots = false, filter = canRestrictMemberFilter) {
+    override suspend fun handleNewMember(newMember: User, message: Message): Boolean {
         val chat = message.chat.asGroupChat() ?: return false
-        val newMembersEvent = message.chatEvent as? NewChatMembers ?: return false
 
-        var anyUser = false
-
-        val newMembers = newMembersEvent.members.filter { it !is Bot }
-
-        if (newMembers.isEmpty()) {
-            return false
-        }
-
-        newMembers.forEach { member ->
-            val previousRestriction = captchaService.getRestriction(chat.id, member.id)
-            if (previousRestriction != null) {
-                forwardPreviousCaptcha(chat, previousRestriction)
-            } else {
-                createCaptcha(chat, member, message)
-            }
+        val previousRestriction = captchaService.getRestriction(chat.id, newMember.id)
+        if (previousRestriction != null) {
+            forwardPreviousCaptcha(chat, previousRestriction)
+        } else {
+            createCaptcha(chat, newMember, message)
         }
 
         return true
@@ -74,7 +57,7 @@ class DicePollCaptchaSendHandler(
         captchaService.updateRestriction(previousRestriction, newDiceMessage, newPollMessage)
     }
 
-    private suspend fun createCaptcha(chat: GroupChat, member: User, message: ChatEventMessage<*>) {
+    private suspend fun createCaptcha(chat: GroupChat, member: User, message: Message) {
         val chatMember = requestsExecutor.getChatMember(chat.id, member.id)
 
         val originalPermissions =
