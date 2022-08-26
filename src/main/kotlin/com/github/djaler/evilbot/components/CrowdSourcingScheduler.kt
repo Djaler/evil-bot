@@ -24,12 +24,13 @@ class CrowdSourcingScheduler(
     private val crowdSourcingRepository: CrowdSourcingRepository
 ) {
     companion object {
-        private const val MESSAGE =
-            """Привет, это автор Злого бота. 
-                |Недавно появилась информация, что Heroku, где хостится бот, скоро закроет бесплатные тарифы https://habr.com/ru/news/t/684720/
-                |Было принято решение переехать на другое облачное решение или VPS.
-                |Для этого открываю сбор средств на оплату https://www.tinkoff.ru/cf/A69Q6QMartK
-                |Спасибо каждому, кто впишется"""
+        private val MESSAGE = """
+                Привет, это автор Злого бота. 
+                Недавно появилась информация, что Heroku, где хостится бот, скоро закроет бесплатные тарифы https://habr.com/ru/news/t/684720/
+                Было принято решение переехать на другое облачное решение или VPS.
+                Для этого открываю сбор средств на оплату https://www.tinkoff.ru/cf/A69Q6QMartK
+                Спасибо каждому, кто впишется
+                """.trimIndent()
 
         private val log = LogManager.getLogger()
     }
