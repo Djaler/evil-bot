@@ -13,10 +13,9 @@ import kotlinx.coroutines.launch
 import org.apache.logging.log4j.LogManager
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.scheduling.annotation.Scheduled
-import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
-@Component
+//@Component
 class CrowdSourcingScheduler(
     private val requestsExecutor: RequestsExecutor,
     private val sentryClient: SentryClient,
