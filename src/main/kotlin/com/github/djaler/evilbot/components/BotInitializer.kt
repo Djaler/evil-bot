@@ -2,6 +2,7 @@ package com.github.djaler.evilbot.components
 
 import com.github.djaler.evilbot.clients.SentryClient
 import com.github.djaler.evilbot.config.TelegramProperties
+import com.github.djaler.evilbot.service.CommandService
 import com.github.djaler.evilbot.utils.getMD5
 import dev.inmo.micro_utils.coroutines.safelyWithoutExceptions
 import dev.inmo.tgbotapi.bot.RequestsExecutor
@@ -23,7 +24,8 @@ class BotInitializer(
     private val requestExecutor: RequestsExecutor,
     private val telegramProperties: TelegramProperties,
     private val updatesManager: UpdatesManager,
-    private val sentryClient: SentryClient
+    private val sentryClient: SentryClient,
+    private val commandService: CommandService,
 ) {
     private val scope = CoroutineScope(Dispatchers.Default)
     companion object {
@@ -78,7 +80,7 @@ class BotInitializer(
 
     private fun updateCommands() {
         runBlocking<Unit> {
-            val commandsPerScope = updatesManager.getCommands()
+            val commandsPerScope = commandService.normalizeCommands(updatesManager.getCommands())
             try {
                 commandsPerScope.forEach { (scope, commands) ->
                     requestExecutor.setMyCommands(commands, scope)
