@@ -4,6 +4,7 @@ import com.github.djaler.evilbot.clients.SentryClient
 import com.github.djaler.evilbot.handlers.base.CommandHandler
 import com.github.djaler.evilbot.handlers.base.UpdateHandler
 import dev.inmo.tgbotapi.types.BotCommand
+import dev.inmo.tgbotapi.types.commands.BotCommandScope
 import dev.inmo.tgbotapi.types.update.abstracts.UnknownUpdate
 import dev.inmo.tgbotapi.types.update.abstracts.Update
 import io.sentry.SentryEvent
@@ -28,9 +29,9 @@ class UpdatesManager(
         return handlers.map { it.updateType }.distinct()
     }
 
-    fun getCommands(): List<BotCommand> {
+    fun getCommands(): Map<BotCommandScope, List<BotCommand>> {
         return handlers.filterIsInstance(CommandHandler::class.java)
-            .map { it.getCommandInfo() }
+            .groupBy({ it.commandScope }, { it.commandInfo })
     }
 
     suspend fun processUpdate(update: Update) {

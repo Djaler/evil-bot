@@ -13,6 +13,7 @@ import dev.inmo.tgbotapi.extensions.utils.asStickerContent
 import dev.inmo.tgbotapi.extensions.utils.formatting.bold
 import dev.inmo.tgbotapi.extensions.utils.formatting.buildEntities
 import dev.inmo.tgbotapi.types.chat.ExtendedBot
+import dev.inmo.tgbotapi.types.commands.BotCommandScope
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import org.springframework.stereotype.Component
@@ -28,6 +29,7 @@ class BlockStickerpackHandler(
     botInfo,
     command = arrayOf("block_stickerpack"),
     commandDescription = "заблокировать стикерпак",
+    commandScope = BotCommandScope.AllChatAdministrators,
     filter = chatAdministratorFilter
 ) {
     override suspend fun handleCommand(

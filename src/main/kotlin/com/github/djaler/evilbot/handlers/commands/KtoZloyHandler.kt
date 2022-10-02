@@ -11,6 +11,7 @@ import dev.inmo.tgbotapi.extensions.api.send.sendMessage
 import dev.inmo.tgbotapi.extensions.utils.asFromUserMessage
 import dev.inmo.tgbotapi.extensions.utils.asPublicChat
 import dev.inmo.tgbotapi.types.chat.ExtendedBot
+import dev.inmo.tgbotapi.types.commands.BotCommandScope
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import org.springframework.stereotype.Component
@@ -25,7 +26,8 @@ class KtoZloyHandler(
 ) : CommandHandler(
     botInfo,
     command = arrayOf("ktozloy"),
-    commandDescription = "выясняет, кто злой"
+    commandDescription = "выясняет, кто злой",
+    commandScope = BotCommandScope.AllGroupChats,
 ) {
     override suspend fun handleCommand(
         message: CommonMessage<TextContent>,

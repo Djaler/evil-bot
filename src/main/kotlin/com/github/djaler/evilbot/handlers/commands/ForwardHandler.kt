@@ -8,6 +8,7 @@ import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
 import dev.inmo.tgbotapi.extensions.utils.asFromUserMessage
 import dev.inmo.tgbotapi.types.chat.ExtendedBot
+import dev.inmo.tgbotapi.types.commands.BotCommandScope
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import org.springframework.stereotype.Component
@@ -19,7 +20,8 @@ class ForwardHandler(
 ) : CommandHandler(
     botInfo,
     command = arrayOf("me"),
-    commandDescription = "отправить сообщение от имени бота"
+    commandDescription = "отправить сообщение от имени бота",
+    commandScope = BotCommandScope.AllGroupChats,
 ) {
     override suspend fun handleCommand(
         message: CommonMessage<TextContent>,
