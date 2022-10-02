@@ -10,6 +10,7 @@ import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.utils.asFromUserMessage
 import dev.inmo.tgbotapi.extensions.utils.asPublicChat
 import dev.inmo.tgbotapi.types.chat.ExtendedBot
+import dev.inmo.tgbotapi.types.commands.BotCommandScope
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import org.springframework.stereotype.Component
@@ -23,7 +24,8 @@ class DisplayStatisticHandler(
 ) : CommandHandler(
     botInfo,
     command = arrayOf("statistic"),
-    commandDescription = "сколько сообщений ты написал"
+    commandDescription = "сколько сообщений ты написал",
+    commandScope = BotCommandScope.AllGroupChats,
 ) {
     override suspend fun handleCommand(
         message: CommonMessage<TextContent>,

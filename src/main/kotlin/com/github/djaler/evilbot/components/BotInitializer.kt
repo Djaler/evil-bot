@@ -5,7 +5,6 @@ import com.github.djaler.evilbot.config.TelegramProperties
 import com.github.djaler.evilbot.utils.getMD5
 import dev.inmo.micro_utils.coroutines.safelyWithoutExceptions
 import dev.inmo.tgbotapi.bot.RequestsExecutor
-import dev.inmo.tgbotapi.extensions.api.bot.getMyCommands
 import dev.inmo.tgbotapi.extensions.api.bot.setMyCommands
 import dev.inmo.tgbotapi.extensions.utils.updates.retrieving.setWebhookInfoAndStartListenWebhooks
 import dev.inmo.tgbotapi.extensions.utils.updates.retrieving.startGettingOfUpdatesByLongPolling
@@ -74,16 +73,15 @@ class BotInitializer(
             }
         }
 
-        updateCommandsIfNeeded()
+        updateCommands()
     }
 
-    private fun updateCommandsIfNeeded() {
+    private fun updateCommands() {
         runBlocking<Unit> {
+            val commandsPerScope = updatesManager.getCommands()
             try {
-                val oldCommands = requestExecutor.getMyCommands()
-                val newCommands = updatesManager.getCommands()
-                if (oldCommands != newCommands) {
-                    requestExecutor.setMyCommands(newCommands)
+                commandsPerScope.forEach { (scope, commands) ->
+                    requestExecutor.setMyCommands(commands, scope)
                 }
             } catch (e: Exception) {
                 log.error("Exception on commands set", e)

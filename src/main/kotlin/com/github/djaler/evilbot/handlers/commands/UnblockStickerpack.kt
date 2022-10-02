@@ -21,6 +21,7 @@ import dev.inmo.tgbotapi.extensions.utils.formatting.newLine
 import dev.inmo.tgbotapi.types.buttons.InlineKeyboardButtons.CallbackDataInlineKeyboardButton
 import dev.inmo.tgbotapi.types.buttons.InlineKeyboardMarkup
 import dev.inmo.tgbotapi.types.chat.ExtendedBot
+import dev.inmo.tgbotapi.types.commands.BotCommandScope
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import dev.inmo.tgbotapi.types.queries.callback.MessageDataCallbackQuery
@@ -37,6 +38,7 @@ class UnblockStickerpackHandler(
     botInfo,
     command = arrayOf("unblock_stickerpack"),
     commandDescription = "разблокировать стикерпак",
+    commandScope = BotCommandScope.AllChatAdministrators,
     filter = chatAdministratorFilter
 ) {
     override suspend fun handleCommand(

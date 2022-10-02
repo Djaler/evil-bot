@@ -7,6 +7,7 @@ import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
 import dev.inmo.tgbotapi.extensions.utils.asPublicChat
 import dev.inmo.tgbotapi.types.chat.ExtendedBot
+import dev.inmo.tgbotapi.types.commands.BotCommandScope
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import dev.inmo.tgbotapi.types.message.abstracts.Message
 import dev.inmo.tgbotapi.types.message.content.TextContent
@@ -19,7 +20,8 @@ class ReplyToPinHandler(
 ) : CommandHandler(
     botInfo,
     command = arrayOf("pinned"),
-    commandDescription = "указать на запиненное сообщение"
+    commandDescription = "указать на запиненное сообщение",
+    commandScope = BotCommandScope.AllGroupChats,
 ) {
     override suspend fun handleCommand(
         message: CommonMessage<TextContent>,

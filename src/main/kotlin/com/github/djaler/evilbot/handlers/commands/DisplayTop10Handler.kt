@@ -7,6 +7,7 @@ import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.utils.asPublicChat
 import dev.inmo.tgbotapi.types.chat.ExtendedBot
+import dev.inmo.tgbotapi.types.commands.BotCommandScope
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import org.springframework.stereotype.Component
@@ -20,7 +21,8 @@ class DisplayTop10Handler(
 ) : CommandHandler(
     botInfo,
     command = arrayOf("top10"),
-    commandDescription = "кто больше всех пишет"
+    commandDescription = "кто больше всех пишет",
+    commandScope = BotCommandScope.AllGroupChats,
 ) {
     override suspend fun handleCommand(
         message: CommonMessage<TextContent>,
