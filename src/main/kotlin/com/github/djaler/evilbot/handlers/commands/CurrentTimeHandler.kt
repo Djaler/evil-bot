@@ -1,6 +1,7 @@
 package com.github.djaler.evilbot.handlers.commands
 
 import com.github.djaler.evilbot.components.TelegramMediaSender
+import com.github.djaler.evilbot.config.locationiq.LocationiqApiCondition
 import com.github.djaler.evilbot.handlers.base.CommandHandler
 import com.github.djaler.evilbot.service.TimeService
 import dev.inmo.tgbotapi.bot.RequestsExecutor
@@ -10,12 +11,14 @@ import dev.inmo.tgbotapi.extensions.utils.asLocationContent
 import dev.inmo.tgbotapi.types.chat.ExtendedBot
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import dev.inmo.tgbotapi.types.message.content.TextContent
+import org.springframework.context.annotation.Conditional
 import org.springframework.core.io.ClassPathResource
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Component
+@Conditional(LocationiqApiCondition::class)
 class CurrentTimeHandler(
     private val timeService: TimeService,
     private val requestsExecutor: RequestsExecutor,

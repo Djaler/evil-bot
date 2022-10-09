@@ -1,5 +1,6 @@
 package com.github.djaler.evilbot.handlers.commands
 
+import com.github.djaler.evilbot.config.fixer.FixerApiCondition
 import com.github.djaler.evilbot.handlers.base.CommandHandler
 import com.github.djaler.evilbot.handlers.base.spacesRegex
 import com.github.djaler.evilbot.service.CurrencyService
@@ -11,6 +12,7 @@ import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.types.chat.ExtendedBot
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import dev.inmo.tgbotapi.types.message.content.TextContent
+import org.springframework.context.annotation.Conditional
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 import java.math.MathContext
@@ -19,6 +21,7 @@ import java.text.DecimalFormat
 import java.util.*
 
 @Component
+@Conditional(FixerApiCondition::class)
 class CurrencyConverterHandler(
     private val currencyService: CurrencyService,
     private val requestsExecutor: RequestsExecutor,

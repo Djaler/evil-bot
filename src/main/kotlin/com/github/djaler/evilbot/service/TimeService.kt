@@ -1,12 +1,15 @@
 package com.github.djaler.evilbot.service
 
 import com.github.djaler.evilbot.clients.LocationiqClient
+import com.github.djaler.evilbot.config.locationiq.LocationiqApiCondition
 import io.ktor.client.plugins.*
+import org.springframework.context.annotation.Conditional
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 @Service
+@Conditional(LocationiqApiCondition::class)
 class TimeService(
     private val locationiqClient: LocationiqClient
 ) {

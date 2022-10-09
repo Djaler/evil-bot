@@ -1,6 +1,11 @@
 package com.github.djaler.evilbot
 
-import com.github.djaler.evilbot.config.*
+import com.github.djaler.evilbot.config.BotProperties
+import com.github.djaler.evilbot.config.CacheProperties
+import com.github.djaler.evilbot.config.TelegramProperties
+import com.github.djaler.evilbot.config.fixer.FixerApiProperties
+import com.github.djaler.evilbot.config.locationiq.LocationiqApiProperties
+import com.github.djaler.evilbot.config.vkcloud.VKCloudApiProperties
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.runApplication

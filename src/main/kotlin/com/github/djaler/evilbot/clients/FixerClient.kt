@@ -1,18 +1,21 @@
 package com.github.djaler.evilbot.clients
 
 import com.github.djaler.evilbot.components.RecordBreadcrumb
-import com.github.djaler.evilbot.config.FixerApiProperties
+import com.github.djaler.evilbot.config.fixer.FixerApiCondition
+import com.github.djaler.evilbot.config.fixer.FixerApiProperties
 import com.github.djaler.evilbot.utils.cached
 import com.github.djaler.evilbot.utils.getCacheOrThrow
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import org.springframework.cache.CacheManager
+import org.springframework.context.annotation.Conditional
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 import java.time.LocalDate
 
 @Component
+@Conditional(FixerApiCondition::class)
 @RecordBreadcrumb
 class FixerClient(
     private val httpClient: HttpClient,

@@ -2,16 +2,19 @@ package com.github.djaler.evilbot.clients
 
 import com.fasterxml.jackson.annotation.JsonAlias
 import com.github.djaler.evilbot.components.RecordBreadcrumb
-import com.github.djaler.evilbot.config.VKCloudApiProperties
+import com.github.djaler.evilbot.config.vkcloud.VKCloudApiCondition
+import com.github.djaler.evilbot.config.vkcloud.VKCloudApiProperties
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.http.content.*
+import org.springframework.context.annotation.Conditional
 import org.springframework.stereotype.Component
 
 @Component
+@Conditional(VKCloudApiCondition::class)
 @RecordBreadcrumb
 class VoiceClient(
     private val httpClient: HttpClient,
