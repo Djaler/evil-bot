@@ -3,7 +3,8 @@ package com.github.djaler.evilbot.clients
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 import com.github.djaler.evilbot.components.RecordBreadcrumb
-import com.github.djaler.evilbot.config.LocationiqApiProperties
+import com.github.djaler.evilbot.config.locationiq.LocationiqApiCondition
+import com.github.djaler.evilbot.config.locationiq.LocationiqApiProperties
 import com.github.djaler.evilbot.utils.cached
 import com.github.djaler.evilbot.utils.getCacheOrThrow
 import io.github.resilience4j.kotlin.ratelimiter.RateLimiterConfig
@@ -13,11 +14,13 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import org.springframework.cache.CacheManager
+import org.springframework.context.annotation.Conditional
 import org.springframework.stereotype.Component
 import java.io.Serializable
 import java.time.Duration
 
 @Component
+@Conditional(LocationiqApiCondition::class)
 @RecordBreadcrumb
 class LocationiqClient(
     private val httpClient: HttpClient,

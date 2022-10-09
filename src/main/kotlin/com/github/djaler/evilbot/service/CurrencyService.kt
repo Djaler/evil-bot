@@ -1,6 +1,8 @@
 package com.github.djaler.evilbot.service
 
 import com.github.djaler.evilbot.clients.FixerClient
+import com.github.djaler.evilbot.config.fixer.FixerApiCondition
+import org.springframework.context.annotation.Conditional
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -8,6 +10,7 @@ import java.time.LocalDate
 import java.time.ZoneOffset
 
 @Service
+@Conditional(FixerApiCondition::class)
 class CurrencyService(
     private val fixerClient: FixerClient
 ) {
