@@ -43,7 +43,7 @@ class KtoZloyHandler(
 
         val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
 
-        val randomUser = userService.getLatest(chatEntity, 10).random().user
+        val randomUser = userService.getLatest(chatEntity, 5).random().user
 
         val username = if (randomUser.telegramId == user?.id?.userId) "ты" else randomUser.username
 
