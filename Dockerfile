@@ -3,8 +3,11 @@ FROM openjdk:11-jdk-slim-bullseye as base
 
 WORKDIR /app
 
+RUN apt-get update && apt-get install -y dos2unix && rm -rf /var/lib/apt/lists/*
+
 COPY gradle ./gradle
 COPY ["build.gradle.kts", "gradle.properties",  "gradlew", "settings.gradle", "./"]
+RUN dos2unix ./gradlew && chmod +x ./gradlew
 
 RUN --mount=type=cache,target=/root/.gradle/caches \
     --mount=type=cache,target=/root/.gradle/wrapper \
