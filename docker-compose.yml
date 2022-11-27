@@ -14,10 +14,8 @@ services:
   db:
     image: postgres
     restart: always
-    environment:
-      POSTGRES_DB: evil_db
-      POSTGRES_PASSWORD: evil_password
-      PGDATA: /var/lib/postgresql/data/pgdata
+    env_file:
+      - db.env
     volumes:
       - evil-data:/var/lib/postgresql/data
 

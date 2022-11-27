@@ -5,3 +5,4 @@ build/
 *-dev.properties
 *-dev.yaml
 bot.env
+db.env
