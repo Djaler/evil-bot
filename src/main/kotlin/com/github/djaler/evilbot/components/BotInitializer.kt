@@ -7,6 +7,7 @@ import com.github.djaler.evilbot.utils.getMD5
 import dev.inmo.micro_utils.coroutines.safelyWithoutExceptions
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.bot.setMyCommands
+import dev.inmo.tgbotapi.extensions.api.webhook.deleteWebhook
 import dev.inmo.tgbotapi.extensions.utils.updates.retrieving.setWebhookInfoAndStartListenWebhooks
 import dev.inmo.tgbotapi.extensions.utils.updates.retrieving.startGettingOfUpdatesByLongPolling
 import dev.inmo.tgbotapi.requests.webhook.SetWebhook
@@ -63,6 +64,9 @@ class BotInitializer(
                 }
             }
         } else {
+            runBlocking {
+                requestExecutor.deleteWebhook()
+            }
             requestExecutor.startGettingOfUpdatesByLongPolling(
                 allowedUpdates = updatesManager.getAllowedUpdates(),
                 exceptionsHandler = { handleException(it) }
