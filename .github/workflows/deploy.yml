@@ -1,0 +1,27 @@
+name: Server Build & Push
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v3
+
+      - name: Deploy
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            cd ${{ secrets.SSH_PATH }}
+            git fetch --all
+            git reset --hard origin/master
+            echo "${{ secrets.BOT_ENV }}" > bot.env
+            echo "${{ secrets.DB_ENV }}" > db.env
+            docker compose up -d
