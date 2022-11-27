@@ -25,4 +25,4 @@ jobs:
             git reset --hard origin/master
             echo "${{ secrets.BOT_ENV }}" > bot.env
             echo "${{ secrets.DB_ENV }}" > db.env
-            docker compose up -d
+            docker compose up --build -d
