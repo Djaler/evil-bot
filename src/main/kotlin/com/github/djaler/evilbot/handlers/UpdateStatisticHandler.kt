@@ -1,33 +1,37 @@
 package com.github.djaler.evilbot.handlers
 
-import com.github.djaler.evilbot.handlers.base.CommonMessageHandler
+import com.github.djaler.evilbot.handlers.base.MessageHandler
 import com.github.djaler.evilbot.service.ChatService
 import com.github.djaler.evilbot.service.UserService
+import dev.inmo.tgbotapi.extensions.utils.asChatEventMessage
 import dev.inmo.tgbotapi.extensions.utils.asPublicChat
-import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
+import dev.inmo.tgbotapi.types.message.ChatEvents.MigratedToSupergroup
 import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
+import dev.inmo.tgbotapi.types.message.abstracts.Message
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 
 @Component
 class UpdateStatisticHandler(
     private val chatService: ChatService,
     private val userService: UserService
-) : CommonMessageHandler() {
+) : MessageHandler() {
+
     override val order = 0
 
-    @Transactional
-    override suspend fun handleMessage(message: CommonMessage<*>): Boolean {
-        if (message !is FromUserMessage) {
-            return false
-        }
-
+    override suspend fun handleMessage(message: Message): Boolean {
         val chat = message.chat.asPublicChat() ?: return false
 
-        val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
-        val (userEntity, _) = userService.getOrCreateUserFrom(message.user)
+        val migratedToSupergroup = message.asChatEventMessage()?.chatEvent as? MigratedToSupergroup
+        if (migratedToSupergroup != null) {
+            chatService.updateChatId(chat.id, migratedToSupergroup.migratedFrom)
+        }
 
-        userService.registerMessageInStatistic(userEntity, chatEntity)
+        if (message is FromUserMessage) {
+            val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
+            val (userEntity, _) = userService.getOrCreateUserFrom(message.user)
+
+            userService.registerMessageInStatistic(userEntity, chatEntity)
+        }
 
         return false
     }

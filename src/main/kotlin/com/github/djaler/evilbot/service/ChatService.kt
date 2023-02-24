@@ -52,4 +52,8 @@ class ChatService(
     fun getChatsLeftFor(duration: Duration): List<Short> {
         return chatHistoryRepository.findChatsLeftBefore(LocalDateTime.now().minus(duration))
     }
+
+    fun updateChatId(oldChatId: ChatId, newChatId: ChatId) {
+        chatRepository.updateChatId(oldChatId.chatId, newChatId.chatId)
+    }
 }

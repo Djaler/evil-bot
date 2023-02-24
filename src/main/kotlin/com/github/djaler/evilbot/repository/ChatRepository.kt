@@ -1,8 +1,11 @@
 package com.github.djaler.evilbot.repository
 
 import com.github.djaler.evilbot.entity.Chat
+import dev.inmo.tgbotapi.types.Identifier
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
+import org.springframework.transaction.annotation.Transactional
 
 interface ChatRepository : JpaRepository<Chat, Short> {
     fun findByTelegramId(telegramId: Long): Chat?
@@ -18,4 +21,9 @@ interface ChatRepository : JpaRepository<Chat, Short> {
       """, nativeQuery = true
     )
     fun findChatsForCrowdSourcing(): List<Chat>
+
+    @Query("update Chat c set c.telegramId=:newChatId where c.telegramId=:oldChatId")
+    @Modifying
+    @Transactional
+    fun updateChatId(oldChatId: Identifier, newChatId: Identifier)
 }
