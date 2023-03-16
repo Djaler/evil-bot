@@ -1,5 +1,5 @@
 # syntax = docker/dockerfile:1.3
-FROM openjdk:11-jdk-slim-bullseye as base
+FROM openjdk:11.0.16-jdk-slim-bullseye as base
 
 WORKDIR /app
 
@@ -23,7 +23,7 @@ RUN --mount=type=cache,target=/root/.gradle/caches \
 
 RUN jar xf build/libs/*.jar BOOT-INF META-INF
 
-FROM openjdk:11-jre-slim-bullseye
+FROM openjdk:11.0.16-jre-slim-bullseye
 
 COPY --from=build /app/BOOT-INF/lib ./lib
 COPY --from=build /app/META-INF ./META-INF
