@@ -146,24 +146,6 @@
   },
   {
     "triggers": [
-      "\\bнет$"
-    ],
-    "reactions": [
-      "пидора ответ"
-    ],
-    "chance": 10
-  },
-  {
-    "triggers": [
-      "\\bда$"
-    ],
-    "reactions": [
-      "Пизда"
-    ],
-    "chance": 10
-  },
-  {
-    "triggers": [
       "/ban",
       "\\bban$"
     ],
