@@ -4,7 +4,7 @@ import com.github.djaler.evilbot.config.BotProperties
 import com.github.djaler.evilbot.entity.DicePollCaptchaRestriction
 import com.github.djaler.evilbot.repository.DicePollCaptchaRestrictionRepository
 import com.github.djaler.evilbot.utils.userId
-import dev.inmo.tgbotapi.types.ChatId
+import dev.inmo.tgbotapi.types.IdChatIdentifier
 import dev.inmo.tgbotapi.types.PollIdentifier
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.types.chat.ChatPermissions
@@ -77,7 +77,7 @@ class DicePollCaptchaService(
         return captchaRestrictionRepository.findKicked()
     }
 
-    fun getRestriction(chatId: ChatId, memberId: UserId): DicePollCaptchaRestriction? {
+    fun getRestriction(chatId: IdChatIdentifier, memberId: UserId): DicePollCaptchaRestriction? {
         return captchaRestrictionRepository.findByChatTelegramIdAndMemberTelegramId(chatId.chatId, memberId.userId)
     }
 

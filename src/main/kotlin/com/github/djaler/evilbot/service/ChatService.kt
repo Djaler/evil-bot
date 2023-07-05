@@ -5,7 +5,7 @@ import com.github.djaler.evilbot.entity.ChatHistory
 import com.github.djaler.evilbot.model.GetOrCreateResult
 import com.github.djaler.evilbot.repository.ChatHistoryRepository
 import com.github.djaler.evilbot.repository.ChatRepository
-import dev.inmo.tgbotapi.types.ChatId
+import dev.inmo.tgbotapi.types.IdChatIdentifier
 import dev.inmo.tgbotapi.types.chat.PublicChat
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -28,7 +28,7 @@ class ChatService(
         }
     }
 
-    fun getChat(chatId: ChatId): Chat? {
+    fun getChat(chatId: IdChatIdentifier): Chat? {
         return chatRepository.findByTelegramId(chatId.chatId)
     }
 
@@ -53,7 +53,7 @@ class ChatService(
         return chatHistoryRepository.findChatsLeftBefore(LocalDateTime.now().minus(duration))
     }
 
-    fun updateChatId(oldChatId: ChatId, newChatId: ChatId) {
+    fun updateChatId(oldChatId: IdChatIdentifier, newChatId: IdChatIdentifier) {
         chatRepository.updateChatId(oldChatId.chatId, newChatId.chatId)
     }
 }
