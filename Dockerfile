@@ -1,5 +1,5 @@
 # syntax = docker/dockerfile:1.3
-FROM openjdk:11-jdk-slim-bullseye as base
+FROM openjdk:17.0.2-jdk-slim-bullseye as base
 
 WORKDIR /app
 
