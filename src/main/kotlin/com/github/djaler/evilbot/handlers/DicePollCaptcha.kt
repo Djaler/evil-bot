@@ -7,7 +7,6 @@ import com.github.djaler.evilbot.filters.message.CanRestrictMemberMessageFilter
 import com.github.djaler.evilbot.handlers.base.NewMemberHandler
 import com.github.djaler.evilbot.handlers.base.PollAnswerHandler
 import com.github.djaler.evilbot.service.DicePollCaptchaService
-import com.github.djaler.evilbot.utils.chatPermissions
 import com.github.djaler.evilbot.utils.getForm
 import com.github.djaler.evilbot.utils.toUserId
 import com.github.djaler.evilbot.utils.usernameOrName
@@ -61,7 +60,7 @@ class DicePollCaptchaSendHandler(
         val chatMember = requestsExecutor.getChatMember(chat.id, member.id)
 
         val originalPermissions =
-            chatMember.asRestrictedChatMember()?.chatPermissions ?: LeftRestrictionsChatPermissions
+            chatMember.asRestrictedChatMember() ?: LeftRestrictionsChatPermissions
 
         requestsExecutor.restrictChatMember(chat.id, member.id, permissions = RestrictionsChatPermissions)
 
@@ -139,7 +138,12 @@ class DicePollCaptchaAnswerHandler(
 private val DicePollCaptchaRestriction.chatPermissions: ChatPermissions
     get() = ChatPermissions(
         canSendMessages = canSendMessages,
-        canSendMediaMessages = canSendMediaMessages,
+        canSendAudios = canSendAudios,
+        canSendDocuments = canSendDocuments,
+        canSendPhotos = canSendPhotos,
+        canSendVideos = canSendVideos,
+        canSendVideoNotes = canSendVideoNotes,
+        canSendVoiceNotes = canSendVoiceNotes,
         canSendPolls = canSendPolls,
         canSendOtherMessages = canSendOtherMessages,
         canAddWebPagePreviews = canAddWebPagePreviews,

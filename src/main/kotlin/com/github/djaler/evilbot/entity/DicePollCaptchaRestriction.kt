@@ -38,28 +38,43 @@ data class DicePollCaptchaRestriction(
     val correctAnswerIndex: Int,
 
     @Column
-    val canSendMessages: Boolean,
+    val canSendMessages: Boolean?,
 
     @Column
-    val canSendMediaMessages: Boolean,
+    val canSendAudios: Boolean?,
 
     @Column
-    val canSendPolls: Boolean,
+    val canSendDocuments: Boolean?,
 
     @Column
-    val canSendOtherMessages: Boolean,
+    val canSendPhotos: Boolean?,
 
     @Column
-    val canAddWebPagePreviews: Boolean,
+    val canSendVideos: Boolean?,
 
     @Column
-    val canChangeInfo: Boolean,
+    val canSendVideoNotes: Boolean?,
 
     @Column
-    val canInviteUsers: Boolean,
+    val canSendVoiceNotes: Boolean?,
 
     @Column
-    val canPinMessages: Boolean,
+    val canSendPolls: Boolean?,
+
+    @Column
+    val canSendOtherMessages: Boolean?,
+
+    @Column
+    val canAddWebPagePreviews: Boolean?,
+
+    @Column
+    val canChangeInfo: Boolean?,
+
+    @Column
+    val canInviteUsers: Boolean?,
+
+    @Column
+    val canPinMessages: Boolean?,
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
