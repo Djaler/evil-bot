@@ -4,8 +4,7 @@ import com.github.djaler.evilbot.handlers.base.CommandHandler
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.types.chat.ExtendedBot
-import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
-import dev.inmo.tgbotapi.types.message.content.TextContent
+import dev.inmo.tgbotapi.types.message.content.TextMessage
 import org.springframework.stereotype.Component
 import kotlin.random.Random
 
@@ -19,7 +18,7 @@ class ResolveHandler(
     commandDescription = "выбрать один из вариантов"
 ) {
     override suspend fun handleCommand(
-        message: CommonMessage<TextContent>,
+        message: TextMessage,
         args: String?
     ) {
         if (args === null) {

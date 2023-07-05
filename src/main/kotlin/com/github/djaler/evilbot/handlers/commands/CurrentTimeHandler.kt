@@ -9,8 +9,7 @@ import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.utils.asContentMessage
 import dev.inmo.tgbotapi.extensions.utils.asLocationContent
 import dev.inmo.tgbotapi.types.chat.ExtendedBot
-import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
-import dev.inmo.tgbotapi.types.message.content.TextContent
+import dev.inmo.tgbotapi.types.message.content.TextMessage
 import org.springframework.context.annotation.Conditional
 import org.springframework.core.io.ClassPathResource
 import org.springframework.stereotype.Component
@@ -36,7 +35,7 @@ class CurrentTimeHandler(
     }
 
     override suspend fun handleCommand(
-        message: CommonMessage<TextContent>,
+        message: TextMessage,
         args: String?
     ) {
         val locationContent = message.replyTo?.asContentMessage()?.content?.asLocationContent()

@@ -22,8 +22,7 @@ import dev.inmo.tgbotapi.types.buttons.InlineKeyboardButtons.CallbackDataInlineK
 import dev.inmo.tgbotapi.types.buttons.InlineKeyboardMarkup
 import dev.inmo.tgbotapi.types.chat.ExtendedBot
 import dev.inmo.tgbotapi.types.commands.BotCommandScope
-import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
-import dev.inmo.tgbotapi.types.message.content.TextContent
+import dev.inmo.tgbotapi.types.message.content.TextMessage
 import dev.inmo.tgbotapi.types.queries.callback.MessageDataCallbackQuery
 import org.springframework.stereotype.Component
 
@@ -42,7 +41,7 @@ class UnblockStickerpackHandler(
     filter = chatAdministratorFilter
 ) {
     override suspend fun handleCommand(
-        message: CommonMessage<TextContent>,
+        message: TextMessage,
         args: String?
     ) {
         val chat = message.chat.asPublicChat() ?: return

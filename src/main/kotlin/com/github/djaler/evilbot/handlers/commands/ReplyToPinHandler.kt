@@ -8,9 +8,8 @@ import dev.inmo.tgbotapi.extensions.api.send.sendMessage
 import dev.inmo.tgbotapi.extensions.utils.asPublicChat
 import dev.inmo.tgbotapi.types.chat.ExtendedBot
 import dev.inmo.tgbotapi.types.commands.BotCommandScope
-import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import dev.inmo.tgbotapi.types.message.abstracts.Message
-import dev.inmo.tgbotapi.types.message.content.TextContent
+import dev.inmo.tgbotapi.types.message.content.TextMessage
 import org.springframework.stereotype.Component
 
 @Component
@@ -24,7 +23,7 @@ class ReplyToPinHandler(
     commandScope = BotCommandScope.AllGroupChats,
 ) {
     override suspend fun handleCommand(
-        message: CommonMessage<TextContent>,
+        message: TextMessage,
         args: String?
     ) {
         val chat = message.chat.asPublicChat() ?: return

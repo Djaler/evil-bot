@@ -14,8 +14,7 @@ import dev.inmo.tgbotapi.extensions.utils.types.buttons.InlineKeyboardMarkup
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.types.buttons.InlineKeyboardButtons.CallbackDataInlineKeyboardButton
 import dev.inmo.tgbotapi.types.chat.ExtendedBot
-import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
-import dev.inmo.tgbotapi.types.message.content.TextContent
+import dev.inmo.tgbotapi.types.message.content.TextMessage
 import dev.inmo.tgbotapi.types.queries.callback.MessageDataCallbackQuery
 import org.springframework.stereotype.Component
 
@@ -29,7 +28,7 @@ class SwitchGenderHandler(
     commandDescription = "сменить гендер"
 ) {
     override suspend fun handleCommand(
-        message: CommonMessage<TextContent>,
+        message: TextMessage,
         args: String?
     ) {
         val user = message.asFromUserMessage()?.user ?: return

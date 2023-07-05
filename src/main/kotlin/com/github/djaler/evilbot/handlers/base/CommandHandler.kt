@@ -9,6 +9,7 @@ import dev.inmo.tgbotapi.types.chat.ExtendedBot
 import dev.inmo.tgbotapi.types.commands.BotCommandScope
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import dev.inmo.tgbotapi.types.message.content.TextContent
+import dev.inmo.tgbotapi.types.message.content.TextMessage
 
 val spacesRegex = Regex("\\s+")
 
@@ -37,7 +38,7 @@ abstract class CommandHandler(
     }
 
     protected abstract suspend fun handleCommand(
-        message: CommonMessage<TextContent>,
+        message: TextMessage,
         args: String?
     )
 }
