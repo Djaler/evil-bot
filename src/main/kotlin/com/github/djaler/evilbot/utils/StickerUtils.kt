@@ -1,7 +1,7 @@
 package com.github.djaler.evilbot.utils
 
-import dev.inmo.tgbotapi.extensions.utils.formatting.EntitiesBuilder
-import dev.inmo.tgbotapi.extensions.utils.formatting.link
+import dev.inmo.tgbotapi.utils.EntitiesBuilder
+import dev.inmo.tgbotapi.utils.link
 
 fun EntitiesBuilder.stickerpackLink(stickerPackName: String): EntitiesBuilder {
     return link(stickerPackName, createStickerpackUrl(stickerPackName))

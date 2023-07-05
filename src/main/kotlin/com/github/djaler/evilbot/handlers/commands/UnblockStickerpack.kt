@@ -14,16 +14,16 @@ import dev.inmo.tgbotapi.extensions.api.edit.text.editMessageText
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
 import dev.inmo.tgbotapi.extensions.utils.asPublicChat
-import dev.inmo.tgbotapi.extensions.utils.formatting.bold
-import dev.inmo.tgbotapi.extensions.utils.formatting.boldln
-import dev.inmo.tgbotapi.extensions.utils.formatting.buildEntities
-import dev.inmo.tgbotapi.extensions.utils.formatting.newLine
 import dev.inmo.tgbotapi.types.buttons.InlineKeyboardButtons.CallbackDataInlineKeyboardButton
 import dev.inmo.tgbotapi.types.buttons.InlineKeyboardMarkup
 import dev.inmo.tgbotapi.types.chat.ExtendedBot
 import dev.inmo.tgbotapi.types.commands.BotCommandScope
 import dev.inmo.tgbotapi.types.message.content.TextMessage
 import dev.inmo.tgbotapi.types.queries.callback.MessageDataCallbackQuery
+import dev.inmo.tgbotapi.utils.bold
+import dev.inmo.tgbotapi.utils.boldln
+import dev.inmo.tgbotapi.utils.buildEntities
+import dev.inmo.tgbotapi.utils.newLine
 import org.springframework.stereotype.Component
 
 @Component

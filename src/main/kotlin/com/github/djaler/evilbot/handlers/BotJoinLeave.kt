@@ -5,7 +5,7 @@ import com.github.djaler.evilbot.service.ChatService
 import dev.inmo.tgbotapi.extensions.utils.asChatEventMessage
 import dev.inmo.tgbotapi.extensions.utils.asPublicChat
 import dev.inmo.tgbotapi.types.chat.ExtendedBot
-import dev.inmo.tgbotapi.types.message.ChatEvents.LeftChatMember
+import dev.inmo.tgbotapi.types.message.ChatEvents.LeftChatMemberEvent
 import dev.inmo.tgbotapi.types.message.ChatEvents.NewChatMembers
 import dev.inmo.tgbotapi.types.message.abstracts.Message
 import org.springframework.stereotype.Component
@@ -39,7 +39,7 @@ class BotLeaveHandler(
 
     override suspend fun handleMessage(message: Message): Boolean {
         val chat = message.chat.asPublicChat() ?: return false
-        val leftMemberEvent = message.asChatEventMessage()?.chatEvent as? LeftChatMember ?: return false
+        val leftMemberEvent = message.asChatEventMessage()?.chatEvent as? LeftChatMemberEvent ?: return false
 
         if (leftMemberEvent.user.id == botInfo.id) {
             val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)

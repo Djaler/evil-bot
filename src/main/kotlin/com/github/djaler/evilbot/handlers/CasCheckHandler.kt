@@ -7,10 +7,10 @@ import com.github.djaler.evilbot.utils.usernameOrName
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.chat.members.banChatMember
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
-import dev.inmo.tgbotapi.extensions.utils.formatting.buildEntities
-import dev.inmo.tgbotapi.extensions.utils.formatting.link
 import dev.inmo.tgbotapi.types.chat.User
 import dev.inmo.tgbotapi.types.message.abstracts.Message
+import dev.inmo.tgbotapi.utils.buildEntities
+import dev.inmo.tgbotapi.utils.link
 import org.springframework.stereotype.Component
 
 @Component

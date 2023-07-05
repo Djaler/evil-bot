@@ -10,11 +10,11 @@ import dev.inmo.tgbotapi.extensions.api.send.sendMessage
 import dev.inmo.tgbotapi.extensions.utils.asContentMessage
 import dev.inmo.tgbotapi.extensions.utils.asPublicChat
 import dev.inmo.tgbotapi.extensions.utils.asStickerContent
-import dev.inmo.tgbotapi.extensions.utils.formatting.bold
-import dev.inmo.tgbotapi.extensions.utils.formatting.buildEntities
 import dev.inmo.tgbotapi.types.chat.ExtendedBot
 import dev.inmo.tgbotapi.types.commands.BotCommandScope
 import dev.inmo.tgbotapi.types.message.content.TextMessage
+import dev.inmo.tgbotapi.utils.bold
+import dev.inmo.tgbotapi.utils.buildEntities
 import org.springframework.stereotype.Component
 
 @Component
