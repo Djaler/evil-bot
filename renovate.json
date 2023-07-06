@@ -1,18 +1,11 @@
 {
   "extends": [
-    "config:base"
+    "github>djaler/renovate-config"
   ],
   "gradle": {
     "enabled": true
   },
   "packageRules": [
-    {
-      "matchPackagePatterns": [
-        "*"
-      ],
-      "semanticCommitType": "deps",
-      "semanticCommitScope": null
-    },
     {
       "matchPackagePatterns": [
         "gradle"
