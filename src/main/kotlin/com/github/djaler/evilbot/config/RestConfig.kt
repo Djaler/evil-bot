@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.client.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.logging.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import org.springframework.context.annotation.Bean
@@ -19,6 +20,10 @@ class RestConfig {
             }
 
             install(HttpTimeout)
+
+            install(Logging) {
+                level = LogLevel.ALL
+            }
         }
     }
 }
