@@ -15,7 +15,7 @@ services:
       - "redis:redis"
 
   db:
-    image: postgres
+    image: postgres:15-alpine
     restart: always
     ports:
       - "5432:5432"
