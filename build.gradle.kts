@@ -45,7 +45,7 @@ dependencies {
     implementation("io.ktor:ktor-client-logging:2.3.2")
     implementation("io.ktor:ktor-serialization-jackson:2.3.2")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
     implementation("io.sentry:sentry-spring-boot-starter:4.3.0")
 
