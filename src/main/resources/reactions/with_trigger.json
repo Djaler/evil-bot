@@ -146,7 +146,7 @@
   },
   {
     "triggers": [
-      "/ban",
+      "/ban$",
       "\\bban$"
     ],
     "reactions": [
