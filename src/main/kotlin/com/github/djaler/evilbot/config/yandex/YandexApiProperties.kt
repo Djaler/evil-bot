@@ -6,5 +6,6 @@ import org.springframework.boot.context.properties.ConstructorBinding
 @ConfigurationProperties(prefix = "yandex.api")
 @ConstructorBinding
 data class YandexApiProperties(
-    val token: String = ""
+    val token: String = "",
+    val cookie: String = "",
 )
