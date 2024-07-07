@@ -16,10 +16,12 @@ import dev.inmo.tgbotapi.types.message.content.TextContent
 import dev.inmo.tgbotapi.types.message.content.TextMessage
 import dev.inmo.tgbotapi.utils.boldln
 import dev.inmo.tgbotapi.utils.buildEntities
+import dev.inmo.tgbotapi.utils.regular
 import dev.inmo.tgbotapi.utils.regularln
 import org.apache.logging.log4j.LogManager
 import org.springframework.context.annotation.Conditional
 import org.springframework.stereotype.Component
+import java.time.Duration
 
 @Component
 @Conditional(YandexApiCondition::class)
@@ -90,13 +92,26 @@ class TlDrHandler(
             messageToReply,
             buildEntities {
                 for (keypoint in videoKeypoints) {
-                    boldln(keypoint.content)
+                    regular(buildTimeCode(keypoint.startTime))
+                    boldln(" ${keypoint.content}")
                     for (thesis in keypoint.theses) {
                         regularln("• ${thesis.content}")
                     }
                 }
             }
         )
+    }
+
+    private fun buildTimeCode(startTime: Long): String {
+        val duration = Duration.ofSeconds(startTime)
+        val seconds = duration.toSecondsPart()
+        val minutes = duration.toMinutesPart()
+        val hours = duration.toHoursPart()
+        return if (hours != 0) {
+            String.format("%02d:%02d:%02d", hours, minutes, seconds);
+        } else {
+            String.format("%02d:%02d", minutes, seconds);
+        }
     }
 
     private suspend fun replyWithArticleThesis(link: String, messageToReply: Message) {

@@ -90,8 +90,10 @@ data class VideoSummaryResult(
     val keypoints: List<Keypoint>?
 )
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 data class Keypoint(
     val content: String,
+    val startTime: Long,
     val theses: List<Thesis>,
 )
 
