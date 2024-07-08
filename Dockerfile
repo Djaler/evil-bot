@@ -1,5 +1,5 @@
 # syntax = docker/dockerfile:1.3
-FROM openjdk:11-jdk-slim-bullseye as base
+FROM openjdk:11-jdk-slim-bullseye as build
 
 WORKDIR /app
 
@@ -15,18 +15,16 @@ RUN --mount=type=cache,target=/root/.gradle/caches \
 
 COPY src/main ./src/main
 
-FROM base as build
-
 RUN --mount=type=cache,target=/root/.gradle/caches \
     --mount=type=cache,target=/root/.gradle/wrapper \
     ./gradlew build
-
-RUN jar xf build/libs/*.jar BOOT-INF META-INF
+RUN java -Djarmode=layertools -jar build/libs/evil-bot-1.0.jar extract
 
 FROM openjdk:11-jre-slim-bullseye
 
-COPY --from=build /app/BOOT-INF/lib ./lib
-COPY --from=build /app/META-INF ./META-INF
-COPY --from=build /app/BOOT-INF/classes ./
+COPY --from=build /app/dependencies/ ./
+COPY --from=build /app/spring-boot-loader/ ./
+COPY --from=build /app/snapshot-dependencies/ ./
+COPY --from=build /app/application/ ./
 
-ENTRYPOINT exec java -cp .:./lib/* com.github.djaler.evilbot.ApplicationKt
+ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
