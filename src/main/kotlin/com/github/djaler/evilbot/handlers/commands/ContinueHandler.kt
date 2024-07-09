@@ -58,7 +58,7 @@ class ContinueHandler(
             } catch (e: Exception) {
                 log.error("Exception in prediction generation", e)
                 sentryClient.captureException(e)
-                requestsExecutor.reply(messageToReply, "Не получилось, попробуй ещё")
+                requestsExecutor.reply(messageToReply, "Чёт у меня не получилось")
             }
         }
     }
