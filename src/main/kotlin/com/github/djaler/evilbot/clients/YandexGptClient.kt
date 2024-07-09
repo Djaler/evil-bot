@@ -85,7 +85,7 @@ data class VideoSummaryResult(
     val statusCode: Int,
     val errorCode: Int?,
     val message: String?,
-    val sessionId: String,
+    val sessionId: String?,
     val pollIntervalMs: Long,
     val keypoints: List<Keypoint>?
 )
