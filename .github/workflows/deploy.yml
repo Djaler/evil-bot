@@ -13,6 +13,15 @@ jobs:
       - name: Checkout the repo
         uses: actions/checkout@v3
 
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: eviltelegrambot
+          SENTRY_PROJECT: eviltelegrambot
+        with:
+          environment: production
+
       - name: Deploy
         uses: appleboy/ssh-action@v0.1.5
         with:
