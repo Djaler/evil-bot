@@ -14,6 +14,7 @@ import dev.inmo.tgbotapi.types.message.abstracts.ContentMessage
 import dev.inmo.tgbotapi.types.message.abstracts.Message
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import dev.inmo.tgbotapi.types.message.content.TextMessage
+import dev.inmo.tgbotapi.types.message.textsources.splitForText
 import dev.inmo.tgbotapi.utils.boldln
 import dev.inmo.tgbotapi.utils.buildEntities
 import dev.inmo.tgbotapi.utils.regular
@@ -26,14 +27,14 @@ import java.time.Duration
 @Component
 @Conditional(YandexApiCondition::class)
 class TlDrHandler(
-    private val requestsExecutor: RequestsExecutor,
-    private val yandexGptService: YandexGptService,
-    private val sentryClient: SentryClient,
-    botInfo: ExtendedBot
+        private val requestsExecutor: RequestsExecutor,
+        private val yandexGptService: YandexGptService,
+        private val sentryClient: SentryClient,
+        botInfo: ExtendedBot
 ) : CommandHandler(
-    botInfo,
-    command = arrayOf("tldr"),
-    commandDescription = "пересказать содержимое по ссылке"
+        botInfo,
+        command = arrayOf("tldr"),
+        commandDescription = "пересказать содержимое по ссылке"
 ) {
     companion object {
         private val log = LogManager.getLogger()
@@ -41,8 +42,8 @@ class TlDrHandler(
     }
 
     override suspend fun handleCommand(
-        message: TextMessage,
-        args: String?
+            message: TextMessage,
+            args: String?
     ) {
         val messageToReply: Message
         val link: String?
@@ -88,18 +89,22 @@ class TlDrHandler(
             return
         }
 
-        requestsExecutor.reply(
-            messageToReply,
-            buildEntities {
-                for (keypoint in videoKeypoints) {
-                    regular(buildTimeCode(keypoint.startTime))
-                    boldln(" ${keypoint.content}")
-                    for (thesis in keypoint.theses) {
-                        regularln("• ${thesis.content}")
-                    }
+        val messageContent = buildEntities {
+            for (keypoint in videoKeypoints) {
+                regular(buildTimeCode(keypoint.startTime))
+                boldln(" ${keypoint.content}")
+                for (thesis in keypoint.theses) {
+                    regularln("• ${thesis.content}")
                 }
             }
-        )
+        }
+
+        messageContent.splitForText().forEach { part ->
+            requestsExecutor.reply(
+                    messageToReply,
+                    part
+            )
+        }
     }
 
     private fun buildTimeCode(startTime: Long): String {
