@@ -4,10 +4,13 @@ import com.github.djaler.evilbot.clients.Keypoint
 import com.github.djaler.evilbot.clients.ResponseStatus
 import com.github.djaler.evilbot.clients.VideoSummaryResult
 import com.github.djaler.evilbot.clients.YandexGptClient
+import com.github.djaler.evilbot.config.yandex.YandexApiCondition
 import kotlinx.coroutines.delay
+import org.springframework.context.annotation.Conditional
 import org.springframework.stereotype.Service
 
 @Service
+@Conditional(YandexApiCondition::class)
 class YandexGptService(
     private val yandexGptClient: YandexGptClient
 ) {
