@@ -12,6 +12,9 @@ jobs:
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v3
+        with:
+          # for Sentry releases
+          fetch-depth: 0
 
       - name: Create Sentry release
         uses: getsentry/action-release@v1
