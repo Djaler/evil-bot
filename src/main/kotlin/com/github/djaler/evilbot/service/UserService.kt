@@ -72,8 +72,12 @@ class UserService(
         return userStatisticRepository.findByChatAndUser(chat.id, user.id)
     }
 
-    fun getTop(chat: Chat, limit: Short): List<UserChatStatistic> {
-        return userStatisticRepository.findTopByMessagesCount(chat.id, limit)
+    fun getTop(chat: Chat, limit: Short?): List<UserChatStatistic> {
+        if (limit != null) {
+            return userStatisticRepository.findTopByMessagesCount(chat.id, limit)
+        } else {
+            return userStatisticRepository.findTopByMessagesCount(chat.id)
+        }
     }
 
     fun getLatest(chat: Chat, limit: Short): List<UserChatStatistic> {

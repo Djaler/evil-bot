@@ -16,6 +16,12 @@ interface UserStatisticRepository : JpaRepository<UserChatStatistic, Int> {
     fun findTopByMessagesCount(chatId: Short, limit: Short): List<UserChatStatistic>
 
     @Query(
+        "SELECT * FROM user_chat_statistics WHERE chat_id = :chatId ORDER BY messages_count DESC",
+        nativeQuery = true
+    )
+    fun findTopByMessagesCount(chatId: Short): List<UserChatStatistic>
+
+    @Query(
         "SELECT * FROM user_chat_statistics WHERE chat_id = :chatId ORDER BY last_activity DESC LIMIT :limit",
         nativeQuery = true
     )

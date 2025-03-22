@@ -20,7 +20,7 @@ class DisplayTop10Handler(
 ) : CommandHandler(
     botInfo,
     command = arrayOf("top10"),
-    commandDescription = "кто больше всех пишет",
+    commandDescription = "кто больше всех пишет (топ 10)",
     commandScope = BotCommandScope.AllGroupChats,
 ) {
     override suspend fun handleCommand(
@@ -32,6 +32,40 @@ class DisplayTop10Handler(
         val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
 
         val top = userService.getTop(chatEntity, limit = 10)
+
+        if (top.isEmpty()) {
+            return
+        }
+
+        val text = top
+            .mapIndexed { index, statistic -> "${(index + 1)}. ${statistic.user.username} - ${statistic.messagesCount}" }
+            .joinToString("\n")
+
+        requestsExecutor.reply(message, text, disableNotification = true)
+    }
+}
+
+@Component
+class DisplayTopHandler(
+    botInfo: ExtendedBot,
+    private val chatService: ChatService,
+    private val userService: UserService,
+    private val requestsExecutor: RequestsExecutor
+) : CommandHandler(
+    botInfo,
+    command = arrayOf("top"),
+    commandDescription = "кто больше всех пишет",
+    commandScope = BotCommandScope.AllGroupChats,
+) {
+    override suspend fun handleCommand(
+        message: TextMessage,
+        args: String?
+    ) {
+        val chat = message.chat.asPublicChat() ?: return
+
+        val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
+
+        val top = userService.getTop(chatEntity, limit = null)
 
         if (top.isEmpty()) {
             return
