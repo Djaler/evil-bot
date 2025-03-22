@@ -16,7 +16,7 @@ import dev.inmo.tgbotapi.types.textLength
 import org.apache.logging.log4j.LogManager
 import org.springframework.stereotype.Component
 
-@Component
+// @Component
 class ContinueHandler(
     private val requestsExecutor: RequestsExecutor,
     private val predictionService: PredictionService,
