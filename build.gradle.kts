@@ -53,8 +53,6 @@ dependencies {
 
     implementation("io.github.resilience4j:resilience4j-kotlin:1.7.1")
     implementation("io.github.resilience4j:resilience4j-ratelimiter:1.7.1")
-
-    implementation("ws.schild:jave-all-deps:3.4.0")
 }
 
 tasks.withType<KotlinCompile> {
