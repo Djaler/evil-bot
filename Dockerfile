@@ -22,6 +22,16 @@ RUN java -Djarmode=layertools -jar build/libs/evil-bot-1.0.jar extract
 
 FROM openjdk:11-jre-slim-bullseye
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ffmpeg \
+    ca-certificates \
+    python3 \
+    python3-pip \
+ && python3 -m pip install --no-cache-dir --upgrade pip setuptools wheel \
+ && python3 -m pip install --no-cache-dir yt-dlp \
+ && rm -rf /root/.cache/pip \
+ && rm -rf /var/lib/apt/lists/*
+
 COPY --from=build /app/dependencies/ ./
 COPY --from=build /app/spring-boot-loader/ ./
 COPY --from=build /app/snapshot-dependencies/ ./

@@ -7,6 +7,7 @@ import com.github.djaler.evilbot.config.fixer.FixerApiProperties
 import com.github.djaler.evilbot.config.locationiq.LocationiqApiProperties
 import com.github.djaler.evilbot.config.vkcloud.VKCloudApiProperties
 import com.github.djaler.evilbot.config.yandex.YandexApiProperties
+import com.github.djaler.evilbot.config.VideoDownloadProperties
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.runApplication
@@ -24,6 +25,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
     LocationiqApiProperties::class,
     VKCloudApiProperties::class,
     YandexApiProperties::class,
+    VideoDownloadProperties::class,
 )
 class Application
 
