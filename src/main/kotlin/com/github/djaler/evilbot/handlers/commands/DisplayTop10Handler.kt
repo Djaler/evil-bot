@@ -9,6 +9,7 @@ import dev.inmo.tgbotapi.extensions.utils.asPublicChat
 import dev.inmo.tgbotapi.types.chat.ExtendedBot
 import dev.inmo.tgbotapi.types.commands.BotCommandScope
 import dev.inmo.tgbotapi.types.message.content.TextMessage
+import dev.inmo.tgbotapi.types.textLength
 import org.springframework.stereotype.Component
 
 @Component
@@ -75,6 +76,6 @@ class DisplayTopHandler(
             .mapIndexed { index, statistic -> "${(index + 1)}. ${statistic.user.username} - ${statistic.messagesCount}" }
             .joinToString("\n")
 
-        requestsExecutor.reply(message, text, disableNotification = true)
+        text.chunked(textLength.last).forEach { requestsExecutor.reply(message, it, disableNotification = true) }
     }
 }
