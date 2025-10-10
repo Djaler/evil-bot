@@ -9,7 +9,6 @@ import dev.inmo.tgbotapi.extensions.utils.asPublicChat
 import dev.inmo.tgbotapi.types.chat.ExtendedBot
 import dev.inmo.tgbotapi.types.commands.BotCommandScope
 import dev.inmo.tgbotapi.types.message.content.TextMessage
-import dev.inmo.tgbotapi.types.textLength
 import org.springframework.stereotype.Component
 
 @Component
@@ -47,15 +46,15 @@ class DisplayTop10Handler(
 }
 
 @Component
-class DisplayTopHandler(
+class DisplayTop100Handler(
     botInfo: ExtendedBot,
     private val chatService: ChatService,
     private val userService: UserService,
     private val requestsExecutor: RequestsExecutor
 ) : CommandHandler(
     botInfo,
-    command = arrayOf("top"),
-    commandDescription = "кто больше всех пишет",
+    command = arrayOf("top100"),
+    commandDescription = "кто больше всех пишет (топ 100)",
     commandScope = BotCommandScope.AllGroupChats,
 ) {
     override suspend fun handleCommand(
@@ -66,7 +65,7 @@ class DisplayTopHandler(
 
         val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
 
-        val top = userService.getTop(chatEntity, limit = null)
+        val top = userService.getTop(chatEntity, limit = 100)
 
         if (top.isEmpty()) {
             return
@@ -76,6 +75,6 @@ class DisplayTopHandler(
             .mapIndexed { index, statistic -> "${(index + 1)}. ${statistic.user.username} - ${statistic.messagesCount}" }
             .joinToString("\n")
 
-        text.chunked(textLength.last).forEach { requestsExecutor.reply(message, it, disableNotification = true) }
+        requestsExecutor.reply(message, text, disableNotification = true)
     }
 }
