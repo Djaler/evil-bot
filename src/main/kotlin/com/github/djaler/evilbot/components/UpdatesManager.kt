@@ -3,6 +3,9 @@ package com.github.djaler.evilbot.components
 import com.github.djaler.evilbot.clients.SentryClient
 import com.github.djaler.evilbot.handlers.base.CommandHandler
 import com.github.djaler.evilbot.handlers.base.UpdateHandler
+import dev.inmo.tgbotapi.extensions.utils.asCommonMessage
+import dev.inmo.tgbotapi.extensions.utils.asMessageUpdate
+import dev.inmo.tgbotapi.extensions.utils.asTextContent
 import dev.inmo.tgbotapi.types.BotCommand
 import dev.inmo.tgbotapi.types.commands.BotCommandScope
 import dev.inmo.tgbotapi.types.update.abstracts.UnknownUpdate
@@ -35,7 +38,10 @@ class UpdatesManager(
     }
 
     suspend fun processUpdate(update: Update) {
-        log.info("Processing update: $update")
+        val textContent = update.asMessageUpdate()?.data?.asCommonMessage()?.content.asTextContent()
+        if (textContent == null) {
+            log.info("Processing update: $update")
+        }
 
         sentryClient.clearBreadcrumbs()
 
@@ -53,11 +59,15 @@ class UpdatesManager(
 
         for (handler in handlers) {
             try {
-                log.info("Trying handler ${handler::class.java.simpleName}")
+                if (textContent == null) {
+                    log.info("Trying handler ${handler::class.java.simpleName}")
+                }
                 sentryClient.addBreadcrumb(handler::class.java.simpleName)
                 val answered = handler.handleUpdate(update)
                 if (answered) {
-                    log.info("Answered by handler ${handler::class.java.simpleName}, stop processing")
+                    if (textContent == null) {
+                        log.info("Answered by handler ${handler::class.java.simpleName}, stop processing")
+                    }
                     break
                 }
             } catch (e: Exception) {
