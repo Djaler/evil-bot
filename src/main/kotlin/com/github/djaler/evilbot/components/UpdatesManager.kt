@@ -38,7 +38,7 @@ class UpdatesManager(
     }
 
     suspend fun processUpdate(update: Update) {
-        val textContent = update.asMessageUpdate()?.data?.asCommonMessage()?.content.asTextContent()
+        val textContent = update.asMessageUpdate()?.data?.asCommonMessage()?.content?.asTextContent()
         if (textContent == null) {
             log.info("Processing update: $update")
         }
