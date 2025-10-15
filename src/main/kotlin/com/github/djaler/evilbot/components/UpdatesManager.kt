@@ -35,6 +35,8 @@ class UpdatesManager(
     }
 
     suspend fun processUpdate(update: Update) {
+        log.info("Processing update: $update")
+
         sentryClient.clearBreadcrumbs()
 
         sentryClient.setExtra("update", update.toString())
@@ -51,9 +53,11 @@ class UpdatesManager(
 
         for (handler in handlers) {
             try {
+                log.info("Trying handler ${handler::class.java.simpleName}")
                 sentryClient.addBreadcrumb(handler::class.java.simpleName)
                 val answered = handler.handleUpdate(update)
                 if (answered) {
+                    log.info("Answered by handler ${handler::class.java.simpleName}, stop processing")
                     break
                 }
             } catch (e: Exception) {
