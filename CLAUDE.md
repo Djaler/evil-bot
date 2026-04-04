@@ -32,6 +32,14 @@ All Telegram updates flow through `UpdatesManager`, which iterates over a sorted
 
 **Adding a new command**: extend `CommandHandler`, provide command name(s), description, and scope. Implement `handleCommand(message, args)`.
 
+**Command scopes** control where the command appears in Telegram's command menu. Set via `commandScope` parameter in `CommandHandler` constructor:
+- `BotCommandScope.Default` — visible everywhere (default)
+- `BotCommandScope.AllGroupChats` — only in groups
+- `BotCommandScope.AllChatAdministrators` — only for group admins
+- `BotCommandScopeChat(chatId)` — only in a specific chat (e.g. private chat with a specific user)
+
+Commands are registered in `BotInitializer.updateCommands()` via `setMyCommands()` per scope. `CommandService.normalizeCommands()` handles scope inheritance (`AllChatAdministrators` inherits from `AllGroupChats`, which inherits from `Default`).
+
 ### Layers
 
 - `handlers/` — Telegram update handlers (commands in `handlers/commands/`)
@@ -40,7 +48,7 @@ All Telegram updates flow through `UpdatesManager`, which iterates over a sorted
 - `entity/` — JPA entities
 - `clients/` — external API clients (Fixer currency, LocationIQ, VK Cloud voice, Yandex GPT, CAS anti-spam)
 - `filters/` — message/query filter predicates composable with `and`/`or`
-- `components/` — Spring components (`UpdatesManager`, `BotInitializer`, `ExceptionsManager`)
+- `components/` — Spring components (`UpdatesManager`, `BotInitializer`, `ExceptionsManager`, schedulers)
 
 ### Database
 
@@ -48,7 +56,11 @@ PostgreSQL with Flyway migrations in `src/main/resources/db/migration/`. Redis f
 
 ### Configuration
 
-All config via `application.properties` + environment variables. Key properties: `telegram.bot.token`, `fixer.api.key`, `locationiq.api.key`, `vk.api.key`, `yandex.api.token`, `video.download.enabled`.
+All config via `application.properties` + environment variables. Custom properties use `@ConfigurationProperties` + `@ConstructorBinding` data classes (registered in `@EnableConfigurationProperties` in `Application.kt`). Key properties: `telegram.bot.token`, `backup.admin-telegram-id`, `backup.cron`, `fixer.api.key`, `locationiq.api.key`, `vk.api.key`, `yandex.api.token`, `video.download.enabled`.
+
+### Scheduled Tasks
+
+`@EnableScheduling` is active. Schedulers in `components/` use `@Scheduled` with `GlobalScope.launch` for coroutine support. External processes (ffmpeg, yt-dlp) are run via `ProcessBuilder`.
 
 ### Deployment
 
