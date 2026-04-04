@@ -1,5 +1,5 @@
 # syntax = docker/dockerfile:1.3
-FROM openjdk:11-jdk-slim-bullseye as build
+FROM eclipse-temurin:11-jdk as build
 
 WORKDIR /app
 
@@ -20,7 +20,7 @@ RUN --mount=type=cache,target=/root/.gradle/caches \
     ./gradlew build
 RUN java -Djarmode=layertools -jar build/libs/evil-bot-1.0.jar extract
 
-FROM openjdk:11-jre-slim-bullseye
+FROM eclipse-temurin:11-jre
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
