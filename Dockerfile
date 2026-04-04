@@ -27,7 +27,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     python3 \
     python3-pip \
- && python3 -m pip install --no-cache-dir --break-system-packages --upgrade pip setuptools wheel \
  && python3 -m pip install --no-cache-dir --break-system-packages yt-dlp \
  && rm -rf /root/.cache/pip \
  && rm -rf /var/lib/apt/lists/*
