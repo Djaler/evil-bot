@@ -1,5 +1,6 @@
 package com.github.djaler.evilbot
 
+import com.github.djaler.evilbot.config.BackupProperties
 import com.github.djaler.evilbot.config.BotProperties
 import com.github.djaler.evilbot.config.CacheProperties
 import com.github.djaler.evilbot.config.TelegramProperties
@@ -18,6 +19,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
 @EnableScheduling
 @EnableCaching
 @EnableConfigurationProperties(
+    BackupProperties::class,
     CacheProperties::class,
     TelegramProperties::class,
     BotProperties::class,
