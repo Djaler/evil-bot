@@ -8,6 +8,7 @@ import dev.inmo.tgbotapi.extensions.api.send.media.sendVideo
 import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.api.send.withUploadVideoAction
 import dev.inmo.tgbotapi.extensions.utils.asTextContent
+import dev.inmo.tgbotapi.types.ReplyParameters
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import org.springframework.stereotype.Component
 import dev.inmo.tgbotapi.requests.abstracts.asMultipartFile
@@ -57,7 +58,7 @@ class VideoLinkDownloadHandler(
                     message.chat,
                     video = dv.file.asMultipartFile(),
                     text = "Вот твоё тупое видео",
-                    replyToMessageId = message.messageId
+                    replyParameters = ReplyParameters(message)
                 )
             }
         }

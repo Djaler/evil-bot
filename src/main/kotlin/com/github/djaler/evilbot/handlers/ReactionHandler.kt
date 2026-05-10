@@ -12,15 +12,16 @@ import dev.inmo.tgbotapi.extensions.utils.asTextContent
 import dev.inmo.tgbotapi.requests.abstracts.FileId
 import dev.inmo.tgbotapi.types.chat.ExtendedBot
 import dev.inmo.tgbotapi.types.message.HTMLParseMode
+import dev.inmo.tgbotapi.types.message.abstracts.AccessibleMessage
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
 import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
 import dev.inmo.tgbotapi.types.message.abstracts.Message
 import org.springframework.core.io.ClassPathResource
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.stereotype.Component
-import javax.annotation.PostConstruct
-import javax.validation.ConstraintViolationException
-import javax.validation.Validator
+import jakarta.annotation.PostConstruct
+import jakarta.validation.ConstraintViolationException
+import jakarta.validation.Validator
 import kotlin.random.Random
 
 @Component
@@ -93,7 +94,7 @@ class ReactionHandler(
         return false
     }
 
-    private suspend fun react(message: Message, reaction: String) {
+    private suspend fun react(message: AccessibleMessage, reaction: String) {
         when {
             reaction.startsWith(STICKER_REACTION_PREFIX) ->
                 requestsExecutor.replyWithSticker(message, FileId(reaction.removePrefix(STICKER_REACTION_PREFIX)))

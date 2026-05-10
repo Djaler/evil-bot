@@ -6,6 +6,7 @@ import dev.inmo.tgbotapi.extensions.api.send.media.sendSticker
 import dev.inmo.tgbotapi.extensions.api.send.replyWithSticker
 import dev.inmo.tgbotapi.requests.abstracts.FileId
 import dev.inmo.tgbotapi.types.chat.ExtendedBot
+import dev.inmo.tgbotapi.types.message.abstracts.AccessibleMessage
 import dev.inmo.tgbotapi.types.message.content.TextMessage
 import org.springframework.core.io.ClassPathResource
 import org.springframework.stereotype.Component
@@ -29,8 +30,8 @@ class PayRespectHandler(
     ) {
         val sticker = FileId(stickers.random())
 
-        val replyTo = message.replyTo
-        if (replyTo !== null) {
+        val replyTo = message.replyTo as? AccessibleMessage
+        if (replyTo != null) {
             requestsExecutor.replyWithSticker(replyTo, sticker)
         } else {
             requestsExecutor.sendSticker(message.chat.id, sticker)

@@ -3,11 +3,11 @@ package com.github.djaler.evilbot.handlers.commands.sed.transformers
 import com.github.djaler.evilbot.clients.SentryClient
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.send.reply
-import dev.inmo.tgbotapi.types.message.abstracts.Message
+import dev.inmo.tgbotapi.types.message.abstracts.AccessibleMessage
 import dev.inmo.tgbotapi.types.message.content.PollContent
+import dev.inmo.tgbotapi.types.polls.InputPollOption
 import dev.inmo.tgbotapi.types.polls.QuizPoll
 import dev.inmo.tgbotapi.types.polls.RegularPoll
-import dev.inmo.tgbotapi.types.polls.SimplePollOption
 import dev.inmo.tgbotapi.types.polls.UnknownPollType
 import io.sentry.SentryEvent
 import io.sentry.SentryLevel
@@ -25,29 +25,30 @@ class SedPollTransformer(
 
     override val contentClass = PollContent::class
 
-    override suspend fun transformAndReply(content: PollContent, args: String, replyTo: Message) {
+    override suspend fun transformAndReply(content: PollContent, args: String, replyTo: AccessibleMessage) {
         val poll = content.poll
         val newQuestion = applySed(poll.question, args)
         val newOptions = poll.options.map {
-            SimplePollOption(
-                text = applySed(it.text, args)
-            )
+            InputPollOption(applySed(it.text ?: "", args))
         }
         when (poll) {
             is RegularPoll -> {
-                val newPoll = poll.copy(
-                    question = newQuestion,
-                    options = newOptions
-                )
-                requestsExecutor.reply(replyTo, newPoll)
-            }
-            is QuizPoll -> {
-                val newPoll = poll.copy(
+                requestsExecutor.reply(
+                    replyTo,
                     question = newQuestion,
                     options = newOptions,
-                    text = poll.text?.let { applySed(it, args) }
+                    isAnonymous = poll.isAnonymous,
+                    allowsMultipleAnswers = poll.allowsMultipleAnswers
                 )
-                requestsExecutor.reply(replyTo, quizPoll = newPoll)
+            }
+            is QuizPoll -> {
+                requestsExecutor.reply(
+                    replyTo,
+                    quizPoll = poll,
+                    question = newQuestion,
+                    explanation = poll.explanation?.let { applySed(it, args) },
+                    options = newOptions
+                )
             }
             is UnknownPollType -> {
                 log.error("Unknown poll type: $poll")

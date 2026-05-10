@@ -1,6 +1,6 @@
 package com.github.djaler.evilbot.model
 
-import javax.validation.constraints.NotEmpty
+import jakarta.validation.constraints.NotEmpty
 
 data class Reaction(
     @field:NotEmpty

@@ -12,6 +12,7 @@ import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.utils.asFromUserMessage
 import dev.inmo.tgbotapi.extensions.utils.types.buttons.InlineKeyboardMarkup
 import dev.inmo.tgbotapi.types.UserId
+import dev.inmo.tgbotapi.types.toChatId
 import dev.inmo.tgbotapi.types.buttons.InlineKeyboardButtons.CallbackDataInlineKeyboardButton
 import dev.inmo.tgbotapi.types.chat.ExtendedBot
 import dev.inmo.tgbotapi.types.message.content.TextMessage
@@ -93,13 +94,13 @@ data class SwitchGenderCallbackData(val gender: UserGender, val userId: UserId) 
 
             return SwitchGenderCallbackData(
                 UserGender.valueOf(gender),
-                UserId(userId.toLong())
+                userId.toLong().toChatId()
             )
         }
     }
 
     fun encode(): String {
-        return gender.name + '|' + userId.chatId.toString()
+        return gender.name + '|' + userId.chatId.long.toString()
     }
 }
 

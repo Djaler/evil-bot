@@ -7,12 +7,12 @@ import dev.inmo.tgbotapi.types.toChatId
 
 val User.usernameOrName: String
     get() {
-        username?.run { return usernameWithoutAt }
+        username?.run { return withoutAt }
 
         return "$firstName $lastName".trim()
     }
 
 val UserId.userId: Long
-    get() = chatId
+    get() = chatId.long
 
 fun Long.toUserId(): UserId = toChatId()

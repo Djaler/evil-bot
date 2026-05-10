@@ -1,13 +1,11 @@
 package com.github.djaler.evilbot.config
 
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.boot.context.properties.ConstructorBinding
 import org.springframework.validation.annotation.Validated
-import javax.validation.constraints.Max
-import javax.validation.constraints.Min
+import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.Min
 
 @ConfigurationProperties(prefix = "telegram.bot")
-@ConstructorBinding
 @Validated
 data class TelegramProperties(
     val token: String,

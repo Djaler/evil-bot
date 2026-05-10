@@ -1,13 +1,13 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    val kotlinVersion = "1.8.21"
+    val kotlinVersion = "2.3.20"
 
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
-    id("org.springframework.boot") version "2.7.0"
-    id("io.spring.dependency-management") version "1.0.11.RELEASE"
+    id("org.springframework.boot") version "3.4.5"
+    id("io.spring.dependency-management") version "1.1.7"
 }
 
 group = "com.github.djaler"
@@ -24,7 +24,6 @@ configurations {
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("reflect"))
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -36,27 +35,30 @@ dependencies {
 
     implementation("org.postgresql:postgresql")
     implementation("org.flywaydb:flyway-core")
+    implementation("org.flywaydb:flyway-database-postgresql")
 
-    implementation("dev.inmo:tgbotapi:9.0.0")
+    implementation("dev.inmo:tgbotapi:33.1.0")
 
-    implementation("io.ktor:ktor-server-netty:2.3.2")
-    implementation("io.ktor:ktor-client-apache:2.3.2")
-    implementation("io.ktor:ktor-client-content-negotiation:2.3.2")
-    implementation("io.ktor:ktor-client-logging:2.3.2")
-    implementation("io.ktor:ktor-serialization-jackson:2.3.2")
+    implementation("io.ktor:ktor-server-netty:3.4.2")
+    implementation("io.ktor:ktor-client-apache5:3.4.2")
+    implementation("io.ktor:ktor-client-content-negotiation:3.4.2")
+    implementation("io.ktor:ktor-client-logging:3.4.2")
+    implementation("io.ktor:ktor-serialization-jackson:3.4.2")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
 
-    implementation("io.sentry:sentry-spring-boot-starter:4.3.0")
+    implementation("io.sentry:sentry-spring-boot-starter-jakarta:7.22.0")
 
     implementation("org.unix4j:unix4j-command:0.6")
 
-    implementation("io.github.resilience4j:resilience4j-kotlin:1.7.1")
-    implementation("io.github.resilience4j:resilience4j-ratelimiter:1.7.1")
+    implementation("io.github.resilience4j:resilience4j-kotlin:2.2.0")
+    implementation("io.github.resilience4j:resilience4j-ratelimiter:2.2.0")
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+    }
 }
 
 tasks.getByName<Jar>("jar") {

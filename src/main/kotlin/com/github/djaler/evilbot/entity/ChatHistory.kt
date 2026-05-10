@@ -1,7 +1,7 @@
 package com.github.djaler.evilbot.entity
 
 import java.time.LocalDateTime
-import javax.persistence.*
+import jakarta.persistence.*
 
 @Entity
 @Table(name = "chats_history")

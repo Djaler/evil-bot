@@ -1,6 +1,6 @@
 package com.github.djaler.evilbot.entity
 
-import javax.persistence.*
+import jakarta.persistence.*
 
 @Entity
 @Table(name = "image_hashes")

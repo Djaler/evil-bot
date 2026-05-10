@@ -5,7 +5,6 @@ import com.github.djaler.evilbot.entity.DicePollCaptchaRestriction
 import com.github.djaler.evilbot.repository.DicePollCaptchaRestrictionRepository
 import com.github.djaler.evilbot.utils.userId
 import dev.inmo.tgbotapi.types.IdChatIdentifier
-import dev.inmo.tgbotapi.types.PollIdentifier
 import dev.inmo.tgbotapi.types.UserId
 import dev.inmo.tgbotapi.types.chat.ChatPermissions
 import dev.inmo.tgbotapi.types.chat.PublicChat
@@ -41,11 +40,11 @@ class DicePollCaptchaService(
                     chatEntity,
                     member.id.userId,
                     LocalDateTime.now(),
-                    joinMessage.messageId,
-                    diceMessage.messageId,
-                    pollMessage.messageId,
+                    joinMessage.messageId.long,
+                    diceMessage.messageId.long,
+                    pollMessage.messageId.long,
                     null,
-                    pollMessage.content.poll.id,
+                    pollMessage.content.poll.id.string,
                     false,
                     correctAnswerIndex,
                     canSendMessages = permissions.canSendMessages,
@@ -83,18 +82,18 @@ class DicePollCaptchaService(
     }
 
     fun getRestriction(chatId: IdChatIdentifier, memberId: UserId): DicePollCaptchaRestriction? {
-        return captchaRestrictionRepository.findByChatTelegramIdAndMemberTelegramId(chatId.chatId, memberId.userId)
+        return captchaRestrictionRepository.findByChatTelegramIdAndMemberTelegramId(chatId.chatId.long, memberId.userId)
     }
 
-    fun getRestrictionForPollOrNull(pollId: PollIdentifier): DicePollCaptchaRestriction? {
+    fun getRestrictionForPollOrNull(pollId: String): DicePollCaptchaRestriction? {
         return captchaRestrictionRepository.findByPollId(pollId)
     }
 
     fun updateRestriction(restriction: DicePollCaptchaRestriction, diceMessage: Message, pollMessage: Message) {
         captchaRestrictionRepository.save(
             restriction.copy(
-                diceMessageId = diceMessage.messageId,
-                pollMessageId = pollMessage.messageId,
+                diceMessageId = diceMessage.messageId.long,
+                pollMessageId = pollMessage.messageId.long,
                 dateTime = LocalDateTime.now()
             )
         )

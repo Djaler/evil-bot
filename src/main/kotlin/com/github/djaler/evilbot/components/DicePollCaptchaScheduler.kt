@@ -7,6 +7,8 @@ import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.chat.members.unbanChatMember
 import dev.inmo.tgbotapi.extensions.api.deleteMessage
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
+import dev.inmo.tgbotapi.types.MessageId
+import dev.inmo.tgbotapi.types.ReplyParameters
 import dev.inmo.tgbotapi.types.toChatId
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -38,10 +40,10 @@ class DicePollCaptchaScheduler(
                 try {
                     val kickMessage = requestsExecutor.sendMessage(
                         chatId,
-                        replyToMessageId = it.joinMessageId,
-                        text = "Ты выбирал слишком долго, прощай"
+                        text = "Ты выбирал слишком долго, прощай",
+                        replyParameters = ReplyParameters(chatId, MessageId(it.joinMessageId))
                     )
-                    kickMessageId = kickMessage.messageId
+                    kickMessageId = kickMessage.messageId.long
                 } catch (e: Exception) {
                     log.error("Restriction: $it", e)
 
@@ -60,8 +62,8 @@ class DicePollCaptchaScheduler(
                      */
                     requestsExecutor.unbanChatMember(chatId, userId)
 
-                    requestsExecutor.deleteMessage(chatId, it.diceMessageId)
-                    requestsExecutor.deleteMessage(chatId, it.pollMessageId)
+                    requestsExecutor.deleteMessage(chatId, MessageId(it.diceMessageId))
+                    requestsExecutor.deleteMessage(chatId, MessageId(it.pollMessageId))
                 } catch (e: Exception) {
                     log.error("Restriction: $it", e)
 
@@ -85,10 +87,11 @@ class DicePollCaptchaScheduler(
                 val chatId = it.chat.telegramId.toChatId()
 
                 try {
-                    if (it.kickMessageId != null) {
-                        requestsExecutor.deleteMessage(chatId, it.kickMessageId)
+                    val kickMsgId = it.kickMessageId
+                    if (kickMsgId != null) {
+                        requestsExecutor.deleteMessage(chatId, MessageId(kickMsgId))
                     }
-                    requestsExecutor.deleteMessage(chatId, it.joinMessageId)
+                    requestsExecutor.deleteMessage(chatId, MessageId(it.joinMessageId))
                 } catch (e: Exception) {
                     log.error("Restriction: $it", e)
 

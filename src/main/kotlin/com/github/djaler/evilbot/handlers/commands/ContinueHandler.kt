@@ -9,8 +9,8 @@ import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.api.send.withTypingAction
 import dev.inmo.tgbotapi.extensions.utils.asContentMessage
 import dev.inmo.tgbotapi.types.chat.ExtendedBot
+import dev.inmo.tgbotapi.types.message.abstracts.AccessibleMessage
 import dev.inmo.tgbotapi.types.message.abstracts.ContentMessage
-import dev.inmo.tgbotapi.types.message.abstracts.Message
 import dev.inmo.tgbotapi.types.message.content.TextMessage
 import dev.inmo.tgbotapi.types.textLength
 import org.apache.logging.log4j.LogManager
@@ -35,12 +35,12 @@ class ContinueHandler(
         message: TextMessage,
         args: String?
     ) {
-        var messageToReply: Message = message
+        var messageToReply: AccessibleMessage = message
         var sourceText = args
 
-        val replyTo = message.replyTo
+        val replyTo = message.replyTo as? AccessibleMessage
         val replyMessageText = replyTo?.asContentMessage()?.let { extractMessageText(it) }
-        if (replyMessageText !== null) {
+        if (replyTo != null && replyMessageText != null) {
             messageToReply = replyTo
             sourceText = replyMessageText
         }

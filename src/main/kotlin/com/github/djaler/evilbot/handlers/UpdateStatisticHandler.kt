@@ -6,8 +6,8 @@ import com.github.djaler.evilbot.service.UserService
 import dev.inmo.tgbotapi.extensions.utils.asChatEventMessage
 import dev.inmo.tgbotapi.extensions.utils.asPublicChat
 import dev.inmo.tgbotapi.types.message.ChatEvents.MigratedToSupergroup
+import dev.inmo.tgbotapi.types.message.abstracts.AccessibleMessage
 import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
-import dev.inmo.tgbotapi.types.message.abstracts.Message
 import org.springframework.stereotype.Component
 
 @Component
@@ -18,7 +18,7 @@ class UpdateStatisticHandler(
 
     override val order = 0
 
-    override suspend fun handleMessage(message: Message): Boolean {
+    override suspend fun handleMessage(message: AccessibleMessage): Boolean {
         val chat = message.chat.asPublicChat() ?: return false
 
         val migratedToSupergroup = message.asChatEventMessage()?.chatEvent as? MigratedToSupergroup

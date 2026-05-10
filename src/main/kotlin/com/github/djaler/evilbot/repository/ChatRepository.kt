@@ -1,7 +1,6 @@
 package com.github.djaler.evilbot.repository
 
 import com.github.djaler.evilbot.entity.Chat
-import dev.inmo.tgbotapi.types.Identifier
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
@@ -25,5 +24,5 @@ interface ChatRepository : JpaRepository<Chat, Short> {
     @Query("update Chat c set c.telegramId=:newChatId where c.telegramId=:oldChatId")
     @Modifying
     @Transactional
-    fun updateChatId(oldChatId: Identifier, newChatId: Identifier)
+    fun updateChatId(oldChatId: Long, newChatId: Long)
 }

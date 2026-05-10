@@ -10,7 +10,8 @@ import dev.inmo.tgbotapi.extensions.api.send.media.sendPhoto
 import dev.inmo.tgbotapi.requests.abstracts.InputFile
 import dev.inmo.tgbotapi.requests.abstracts.toInputFile
 import dev.inmo.tgbotapi.types.ChatIdentifier
-import dev.inmo.tgbotapi.types.MessageIdentifier
+import dev.inmo.tgbotapi.types.MessageId
+import dev.inmo.tgbotapi.types.ReplyParameters
 import dev.inmo.tgbotapi.types.message.abstracts.ContentMessage
 import dev.inmo.tgbotapi.types.message.content.MediaContent
 import org.springframework.core.io.ClassPathResource
@@ -25,20 +26,22 @@ class TelegramMediaSender(
     suspend fun sendPhoto(
         chatId: ChatIdentifier,
         resource: ClassPathResource,
-        replyTo: MessageIdentifier?
+        replyTo: MessageId?
     ) {
+        val replyParams = replyTo?.let { ReplyParameters(chatId, it) }
         sendMedia(resource) { file ->
-            requestsExecutor.sendPhoto(chatId, file, replyToMessageId = replyTo)
+            requestsExecutor.sendPhoto(chatId, file, replyParameters = replyParams)
         }
     }
 
     suspend fun sendAnimation(
         chatId: ChatIdentifier,
         resource: ClassPathResource,
-        replyTo: MessageIdentifier?
+        replyTo: MessageId?
     ) {
+        val replyParams = replyTo?.let { ReplyParameters(chatId, it) }
         sendMedia(resource) { file ->
-            requestsExecutor.sendAnimation(chatId, file, replyToMessageId = replyTo)
+            requestsExecutor.sendAnimation(chatId, file, replyParameters = replyParams)
         }
     }
 

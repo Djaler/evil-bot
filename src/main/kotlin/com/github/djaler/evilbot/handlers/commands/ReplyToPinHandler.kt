@@ -8,7 +8,7 @@ import dev.inmo.tgbotapi.extensions.api.send.sendMessage
 import dev.inmo.tgbotapi.extensions.utils.asPublicChat
 import dev.inmo.tgbotapi.types.chat.ExtendedBot
 import dev.inmo.tgbotapi.types.commands.BotCommandScope
-import dev.inmo.tgbotapi.types.message.abstracts.Message
+import dev.inmo.tgbotapi.types.message.abstracts.AccessibleMessage
 import dev.inmo.tgbotapi.types.message.content.TextMessage
 import org.springframework.stereotype.Component
 
@@ -29,7 +29,7 @@ class ReplyToPinHandler(
         val chat = message.chat.asPublicChat() ?: return
 
         val extendedChat = requestsExecutor.getChat(chat)
-        val pinnedMessage: Message? = extendedChat.pinnedMessage
+        val pinnedMessage = extendedChat.pinnedMessage as? AccessibleMessage
 
         if (pinnedMessage != null) {
             requestsExecutor.reply(pinnedMessage, "☝️️", disableNotification = true)

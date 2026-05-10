@@ -8,7 +8,7 @@ import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.chat.members.banChatMember
 import dev.inmo.tgbotapi.extensions.api.send.sendMessage
 import dev.inmo.tgbotapi.types.chat.User
-import dev.inmo.tgbotapi.types.message.abstracts.Message
+import dev.inmo.tgbotapi.types.message.abstracts.AccessibleMessage
 import dev.inmo.tgbotapi.utils.buildEntities
 import dev.inmo.tgbotapi.utils.link
 import org.springframework.stereotype.Component
@@ -20,7 +20,7 @@ class CasCheckHandler(
 ) : NewMemberHandler(allowBots = false) {
     override val order = 0
 
-    override suspend fun handleNewMember(newMember: User, message: Message): Boolean {
+    override suspend fun handleNewMember(newMember: User, message: AccessibleMessage): Boolean {
         val casInfo = casClient.getCasInfo(newMember.id.userId)
         if (casInfo.result === null) {
             return false

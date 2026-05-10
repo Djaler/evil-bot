@@ -19,10 +19,12 @@ import dev.inmo.tgbotapi.extensions.api.send.reply
 import dev.inmo.tgbotapi.extensions.api.send.sendDice
 import dev.inmo.tgbotapi.extensions.utils.asGroupChat
 import dev.inmo.tgbotapi.extensions.utils.asRestrictedChatMember
+import dev.inmo.tgbotapi.types.MessageId
 import dev.inmo.tgbotapi.types.chat.*
 import dev.inmo.tgbotapi.types.dartsCubeAndBowlingDiceResultLimit
 import dev.inmo.tgbotapi.types.dice.CubeDiceAnimationType
-import dev.inmo.tgbotapi.types.message.abstracts.Message
+import dev.inmo.tgbotapi.types.message.abstracts.AccessibleMessage
+import dev.inmo.tgbotapi.types.polls.InputPollOption
 import dev.inmo.tgbotapi.types.polls.PollAnswer
 import dev.inmo.tgbotapi.types.toChatId
 import org.springframework.core.io.ClassPathResource
@@ -35,7 +37,7 @@ class DicePollCaptchaSendHandler(
     private val botProperties: BotProperties,
     canRestrictMemberFilter: CanRestrictMemberMessageFilter
 ) : NewMemberHandler(allowBots = false, filter = canRestrictMemberFilter) {
-    override suspend fun handleNewMember(newMember: User, message: Message): Boolean {
+    override suspend fun handleNewMember(newMember: User, message: AccessibleMessage): Boolean {
         val chat = message.chat.asGroupChat() ?: return false
 
         val previousRestriction = captchaService.getRestriction(chat.id, newMember.id)
@@ -49,14 +51,14 @@ class DicePollCaptchaSendHandler(
     }
 
     private suspend fun forwardPreviousCaptcha(chat: GroupChat, previousRestriction: DicePollCaptchaRestriction) {
-        val newDiceMessage = requestsExecutor.forwardMessage(chat, chat, previousRestriction.diceMessageId)
-        requestsExecutor.deleteMessage(chat, previousRestriction.diceMessageId)
-        val newPollMessage = requestsExecutor.forwardMessage(chat, chat, previousRestriction.pollMessageId)
-        requestsExecutor.deleteMessage(chat, previousRestriction.pollMessageId)
+        val newDiceMessage = requestsExecutor.forwardMessage(chat, chat, MessageId(previousRestriction.diceMessageId))
+        requestsExecutor.deleteMessage(chat, MessageId(previousRestriction.diceMessageId))
+        val newPollMessage = requestsExecutor.forwardMessage(chat, chat, MessageId(previousRestriction.pollMessageId))
+        requestsExecutor.deleteMessage(chat, MessageId(previousRestriction.pollMessageId))
         captchaService.updateRestriction(previousRestriction, newDiceMessage, newPollMessage)
     }
 
-    private suspend fun createCaptcha(chat: GroupChat, member: User, message: Message) {
+    private suspend fun createCaptcha(chat: GroupChat, member: User, message: AccessibleMessage) {
         val chatMember = requestsExecutor.getChatMember(chat.id, member.id)
 
         val originalPermissions =
@@ -78,9 +80,9 @@ class DicePollCaptchaSendHandler(
                 Эй, ${member.usernameOrName}! Мы отобрали твою свободу слова, пока ты не тыкнешь число, выпавшее сверху на кубике 👇
                 У тебя есть $kickTimeoutMinutes ${kickTimeoutMinutes.getForm("минута", "минуты", "минут")}
                 """.trimIndent(),
-            options = options.map { it.toString() },
+            options = options.map { InputPollOption(it.toString()) },
             isAnonymous = false,
-            allowMultipleAnswers = true,
+            allowsMultipleAnswers = true,
         )
 
         captchaService.fixRestriction(
@@ -106,7 +108,7 @@ class DicePollCaptchaAnswerHandler(
     }
 
     override suspend fun handleAnswer(answer: PollAnswer) {
-        val restriction = captchaService.getRestrictionForPollOrNull(answer.pollId) ?: return
+        val restriction = captchaService.getRestrictionForPollOrNull(answer.pollId.string) ?: return
 
         val chatId = restriction.chat.telegramId.toChatId()
         val userId = restriction.memberTelegramId.toUserId()
@@ -128,10 +130,10 @@ class DicePollCaptchaAnswerHandler(
         )
         captchaService.removeRestriction(restriction)
 
-        requestsExecutor.deleteMessage(chatId, restriction.diceMessageId)
-        requestsExecutor.deleteMessage(chatId, restriction.pollMessageId)
+        requestsExecutor.deleteMessage(chatId, MessageId(restriction.diceMessageId))
+        requestsExecutor.deleteMessage(chatId, MessageId(restriction.pollMessageId))
 
-        telegramMediaSender.sendAnimation(chatId, welcomeGif, replyTo = restriction.joinMessageId)
+        telegramMediaSender.sendAnimation(chatId, welcomeGif, replyTo = MessageId(restriction.joinMessageId))
     }
 }
 

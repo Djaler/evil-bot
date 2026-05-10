@@ -11,7 +11,7 @@ import dev.inmo.tgbotapi.extensions.api.send.withUploadVideoAction
 import dev.inmo.tgbotapi.extensions.utils.asContentMessage
 import dev.inmo.tgbotapi.extensions.utils.asDocumentContent
 import dev.inmo.tgbotapi.requests.abstracts.asMultipartFile
-import dev.inmo.tgbotapi.types.message.abstracts.Message
+import dev.inmo.tgbotapi.types.message.abstracts.AccessibleMessage
 import org.springframework.stereotype.Component
 import java.io.File
 import java.util.*
@@ -22,7 +22,7 @@ class VideoConverterHandler(
     private val requestExecutor: RequestsExecutor,
     private val videoConvertService: VideoConvertService,
 ) : MessageHandler() {
-    override suspend fun handleMessage(message: Message): Boolean {
+    override suspend fun handleMessage(message: AccessibleMessage): Boolean {
         val document = message.asContentMessage()?.content?.asDocumentContent() ?: return false
         val mimeType = document.media.mimeType ?: return false
         if (mimeType.primaryType != "video") {

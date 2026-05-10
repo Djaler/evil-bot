@@ -4,7 +4,7 @@ import com.github.djaler.evilbot.clients.SentryClient
 import org.apache.logging.log4j.LogManager
 import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer
 import org.springframework.cache.Cache
-import org.springframework.cache.annotation.CachingConfigurerSupport
+import org.springframework.cache.annotation.CachingConfigurer
 import org.springframework.cache.interceptor.CacheErrorHandler
 import org.springframework.cache.interceptor.SimpleCacheErrorHandler
 import org.springframework.context.annotation.Bean
@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.data.redis.cache.RedisCacheConfiguration
 
 @Configuration
-class CacheConfig(private val sentryClient: SentryClient) : CachingConfigurerSupport() {
+class CacheConfig(private val sentryClient: SentryClient) : CachingConfigurer {
     companion object {
         private val log = LogManager.getLogger()
     }

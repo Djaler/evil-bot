@@ -6,8 +6,8 @@ import com.github.djaler.evilbot.service.ChatService
 import com.github.djaler.evilbot.service.UserService
 import com.github.djaler.evilbot.utils.usernameOrName
 import dev.inmo.tgbotapi.types.chat.PublicChat
+import dev.inmo.tgbotapi.types.message.abstracts.AccessibleMessage
 import dev.inmo.tgbotapi.types.message.abstracts.FromUserMessage
-import dev.inmo.tgbotapi.types.message.abstracts.Message
 import io.sentry.protocol.User
 import org.springframework.stereotype.Component
 
@@ -19,7 +19,7 @@ class UpdateInfoHandler(
 ) : MessageHandler() {
     override val order = 0
 
-    override suspend fun handleMessage(message: Message): Boolean {
+    override suspend fun handleMessage(message: AccessibleMessage): Boolean {
         val sentryUser = User()
 
         if (message is FromUserMessage) {

@@ -1,5 +1,5 @@
 # syntax = docker/dockerfile:1.3
-FROM eclipse-temurin:11-jdk as build
+FROM eclipse-temurin:17-jdk as build
 
 WORKDIR /app
 
@@ -20,7 +20,7 @@ RUN --mount=type=cache,target=/root/.gradle/caches \
     ./gradlew build
 RUN java -Djarmode=layertools -jar build/libs/evil-bot-1.0.jar extract
 
-FROM eclipse-temurin:11-jre
+FROM eclipse-temurin:17-jre
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
@@ -36,4 +36,4 @@ COPY --from=build /app/spring-boot-loader/ ./
 COPY --from=build /app/snapshot-dependencies/ ./
 COPY --from=build /app/application/ ./
 
-ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
+ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]

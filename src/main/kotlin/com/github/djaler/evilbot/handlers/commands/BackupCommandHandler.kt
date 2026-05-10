@@ -21,7 +21,7 @@ class BackupCommandHandler(
     commandScope = BotCommandScopeChat(backupProperties.adminTelegramId.toChatId())
 ) {
     override suspend fun handleCommand(message: TextMessage, args: String?) {
-        if (message.chat.id.chatId != backupProperties.adminTelegramId) {
+        if (message.chat.id.chatId.long != backupProperties.adminTelegramId) {
             return
         }
 

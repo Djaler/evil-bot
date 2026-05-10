@@ -27,7 +27,7 @@ class CommandMessageFilter(
             return false
         }
         if (command.size > 1 && botUsername != null
-            && command[1].lowercase() != botUsername.usernameWithoutAt.lowercase()) {
+            && command[1].lowercase() != botUsername.withoutAt.lowercase()) {
             return false
         }
 

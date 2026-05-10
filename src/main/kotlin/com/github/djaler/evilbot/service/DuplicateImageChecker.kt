@@ -4,8 +4,8 @@ import com.github.djaler.evilbot.entity.Chat
 import com.github.djaler.evilbot.entity.ImageHash
 import com.github.djaler.evilbot.repository.ImageHashRepository
 import dev.inmo.tgbotapi.requests.abstracts.FileId
-import dev.inmo.tgbotapi.types.MessageIdentifier
-import korlibs.crypto.encoding.hex
+import dev.inmo.tgbotapi.types.MessageId
+import korlibs.encoding.hex
 import org.springframework.stereotype.Component
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
@@ -17,7 +17,7 @@ import javax.imageio.ImageIO
 class DuplicateImageChecker(
     private val imageHashRepository: ImageHashRepository,
 ) {
-    fun findDuplicate(image: BufferedImage, chat: Chat): MessageIdentifier? {
+    fun findDuplicate(image: BufferedImage, chat: Chat): Long? {
         val hash = resizeAndGetHash(image)
 
         val duplicate = imageHashRepository.findByChatIdAndHash(chat.id, hash)
@@ -25,13 +25,13 @@ class DuplicateImageChecker(
         return duplicate?.messageId
     }
 
-    fun saveHash(image: BufferedImage, chat: Chat, messageId: MessageIdentifier, fileId: FileId) {
+    fun saveHash(image: BufferedImage, chat: Chat, messageId: MessageId, fileId: FileId) {
         val hash = resizeAndGetHash(image)
 
         imageHashRepository.save(ImageHash(
             hash,
             chat.id,
-            messageId,
+            messageId.long,
             fileId.fileId
         ))
     }

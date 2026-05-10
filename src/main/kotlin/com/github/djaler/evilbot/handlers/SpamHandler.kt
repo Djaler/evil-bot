@@ -17,7 +17,9 @@ import dev.inmo.tgbotapi.extensions.utils.asFromUserMessage
 import dev.inmo.tgbotapi.extensions.utils.asPossiblyReplyMessage
 import dev.inmo.tgbotapi.extensions.utils.asPublicChat
 import dev.inmo.tgbotapi.extensions.utils.asTextContent
+import dev.inmo.tgbotapi.types.message.abstracts.AccessibleMessage
 import dev.inmo.tgbotapi.types.UserId
+import dev.inmo.tgbotapi.types.toChatId
 import dev.inmo.tgbotapi.types.buttons.InlineKeyboardButtons.CallbackDataInlineKeyboardButton
 import dev.inmo.tgbotapi.types.buttons.InlineKeyboardMarkup
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
@@ -26,7 +28,7 @@ import dev.inmo.tgbotapi.utils.PreviewFeature
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.apache.logging.log4j.LogManager
 import org.springframework.stereotype.Component
-import javax.annotation.PostConstruct
+import jakarta.annotation.PostConstruct
 
 
 @Component
@@ -122,19 +124,19 @@ class SpamCallbackHandler(
             requestsExecutor.answerCallbackQuery(query, "Никакой пощады для скамеров")
             try {
                 requestsExecutor.banChatMember(chat.id, callbackData.userId)
-                query.message.asPossiblyReplyMessage()?.replyTo?.let {
+                (query.message.asPossiblyReplyMessage()?.replyTo as? AccessibleMessage)?.let {
                     requestsExecutor.deleteMessage(chat.id, it.messageId)
                 }
             } catch (e: Exception) {
                 log.error("Exception in scam ban: ", e)
                 sentryClient.captureException(e)
-                query.message.asPossiblyReplyMessage()?.replyTo?.let {
+                (query.message.asPossiblyReplyMessage()?.replyTo as? AccessibleMessage)?.let {
                     requestsExecutor.reply(it, "Этот скамер слишком хорош, чтобы быть забаненным")
                 }
             }
         } else {
             requestsExecutor.answerCallbackQuery(query, "Ну ладно")
-            query.message.asPossiblyReplyMessage()?.replyTo?.let {
+            (query.message.asPossiblyReplyMessage()?.replyTo as? AccessibleMessage)?.let {
                 requestsExecutor.reply(it, "Сомнительно, но окей")
             }
         }
@@ -150,13 +152,13 @@ data class SpamCallbackData(
         fun decode(data: String): SpamCallbackData {
             val value = data.split(":")
             return SpamCallbackData(
-                UserId(value[0].toLong()),
+                value[0].toLong().toChatId(),
                 value[1].toBoolean()
             )
         }
     }
 
     fun encode(): String {
-        return "${userId.chatId}:${banChatMember}"
+        return "${userId.chatId.long}:${banChatMember}"
     }
 }

@@ -2,7 +2,7 @@ package com.github.djaler.evilbot.handlers.commands.sed.transformers
 
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.send.reply
-import dev.inmo.tgbotapi.types.message.abstracts.Message
+import dev.inmo.tgbotapi.types.message.abstracts.AccessibleMessage
 import dev.inmo.tgbotapi.types.message.content.AudioContent
 import org.springframework.stereotype.Component
 
@@ -12,10 +12,10 @@ class SedAudioTransformer(
 ) : SedTransformer<AudioContent> {
     override val contentClass = AudioContent::class
 
-    override suspend fun transformAndReply(content: AudioContent, args: String, replyTo: Message) {
+    override suspend fun transformAndReply(content: AudioContent, args: String, replyTo: AccessibleMessage) {
         content.text?.let {
             val result = applySed(it, args)
-            requestsExecutor.reply(replyTo, content.media, result)
+            requestsExecutor.reply(replyTo, content, result)
         }
     }
 }

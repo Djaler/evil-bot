@@ -7,7 +7,6 @@ import io.ktor.client.plugins.api.createClientPlugin
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
-import io.ktor.client.plugins.observer.ResponseObserver
 import io.ktor.client.statement.bodyAsText
 import io.ktor.client.statement.request
 import io.ktor.http.ContentType
@@ -49,7 +48,7 @@ val SentryPlugin = createClientPlugin("SentryPlugin") {
         )
     }
 
-    val responseObserver = ResponseObserver({ response ->
+    onResponse { response ->
         val request = response.request
         Sentry.addBreadcrumb(
             Breadcrumb.http(
@@ -59,6 +58,5 @@ val SentryPlugin = createClientPlugin("SentryPlugin") {
                 setData("content", response.bodyAsText())
             }
         )
-    })
-    ResponseObserver.install(responseObserver, client)
+    }
 }

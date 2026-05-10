@@ -2,7 +2,7 @@ package com.github.djaler.evilbot.handlers.commands.sed.transformers
 
 import dev.inmo.tgbotapi.bot.RequestsExecutor
 import dev.inmo.tgbotapi.extensions.api.send.reply
-import dev.inmo.tgbotapi.types.message.abstracts.Message
+import dev.inmo.tgbotapi.types.message.abstracts.AccessibleMessage
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import org.springframework.stereotype.Component
 
@@ -12,7 +12,7 @@ class SedTextTransformer(
 ) : SedTransformer<TextContent> {
     override val contentClass = TextContent::class
 
-    override suspend fun transformAndReply(content: TextContent, args: String, replyTo: Message) {
+    override suspend fun transformAndReply(content: TextContent, args: String, replyTo: AccessibleMessage) {
         val result = applySed(content.text, args)
         requestsExecutor.reply(replyTo, result)
     }

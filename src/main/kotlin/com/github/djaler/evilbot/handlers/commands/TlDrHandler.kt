@@ -10,8 +10,8 @@ import dev.inmo.tgbotapi.extensions.api.send.withTypingAction
 import dev.inmo.tgbotapi.extensions.utils.asContentMessage
 import dev.inmo.tgbotapi.extensions.utils.asURLTextSource
 import dev.inmo.tgbotapi.types.chat.ExtendedBot
+import dev.inmo.tgbotapi.types.message.abstracts.AccessibleMessage
 import dev.inmo.tgbotapi.types.message.abstracts.ContentMessage
-import dev.inmo.tgbotapi.types.message.abstracts.Message
 import dev.inmo.tgbotapi.types.message.content.TextContent
 import dev.inmo.tgbotapi.types.message.content.TextMessage
 import dev.inmo.tgbotapi.types.message.textsources.splitForText
@@ -45,12 +45,12 @@ class TlDrHandler(
             message: TextMessage,
             args: String?
     ) {
-        val messageToReply: Message
+        val messageToReply: AccessibleMessage
         val link: String?
 
-        val replyTo = message.replyTo
+        val replyTo = message.replyTo as? AccessibleMessage
         val replyMessageLink = replyTo?.asContentMessage()?.let { extractLink(it) }
-        if (replyMessageLink !== null) {
+        if (replyTo != null && replyMessageLink != null) {
             messageToReply = replyTo
             link = replyMessageLink
         } else {
@@ -74,7 +74,7 @@ class TlDrHandler(
         }
     }
 
-    private suspend fun replyWithTlDr(link: String, messageToReply: Message) {
+    private suspend fun replyWithTlDr(link: String, messageToReply: AccessibleMessage) {
         if (isYoutubeLink(link)) {
             replyWithVideoKeypoints(link, messageToReply)
         } else {
@@ -82,7 +82,7 @@ class TlDrHandler(
         }
     }
 
-    private suspend fun replyWithVideoKeypoints(link: String, messageToReply: Message) {
+    private suspend fun replyWithVideoKeypoints(link: String, messageToReply: AccessibleMessage) {
         val videoKeypoints = yandexGptService.generateVideoKeypoints(link)
         if (videoKeypoints.isEmpty()) {
             log.warn("Empty keypoints generation result")
@@ -119,7 +119,7 @@ class TlDrHandler(
         }
     }
 
-    private suspend fun replyWithArticleThesis(link: String, messageToReply: Message) {
+    private suspend fun replyWithArticleThesis(link: String, messageToReply: AccessibleMessage) {
         val thesis = yandexGptService.generateLinkThesis(link)
         if (thesis != null) {
             requestsExecutor.reply(messageToReply, thesis)

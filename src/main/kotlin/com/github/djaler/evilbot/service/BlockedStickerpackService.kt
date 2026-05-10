@@ -15,12 +15,12 @@ class BlockedStickerpackService(
 ) {
     @Transactional
     fun getOrCreate(stickerpackName: StickerSetName, chatId: Short): GetOrCreateResult<BlockedStickerpack> {
-        val stickerpack = blockedStickerpackRepository.findByNameAndChatId(stickerpackName, chatId)
+        val stickerpack = blockedStickerpackRepository.findByNameAndChatId(stickerpackName.string, chatId)
 
         return if (stickerpack != null) {
             GetOrCreateResult(stickerpack, false)
         } else {
-            GetOrCreateResult(blockedStickerpackRepository.save(BlockedStickerpack(chatId, stickerpackName)), true)
+            GetOrCreateResult(blockedStickerpackRepository.save(BlockedStickerpack(chatId, stickerpackName.string)), true)
         }
     }
 
@@ -37,6 +37,6 @@ class BlockedStickerpackService(
     }
 
     fun isBlocked(stickerpackName: StickerSetName, chat: Chat): Boolean {
-        return blockedStickerpackRepository.existsByNameAndChatId(stickerpackName, chat.id)
+        return blockedStickerpackRepository.existsByNameAndChatId(stickerpackName.string, chat.id)
     }
 }

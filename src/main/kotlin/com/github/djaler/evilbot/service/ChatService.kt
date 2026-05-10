@@ -19,17 +19,17 @@ class ChatService(
 ) {
     @Transactional
     fun getOrCreateChatFrom(telegramChat: PublicChat): GetOrCreateResult<Chat> {
-        val chat = chatRepository.findByTelegramId(telegramChat.id.chatId)
+        val chat = chatRepository.findByTelegramId(telegramChat.id.chatId.long)
 
         return if (chat != null) {
             GetOrCreateResult(chat, false)
         } else {
-            GetOrCreateResult(chatRepository.save(Chat(telegramChat.id.chatId, telegramChat.title)), true)
+            GetOrCreateResult(chatRepository.save(Chat(telegramChat.id.chatId.long, telegramChat.title)), true)
         }
     }
 
     fun getChat(chatId: IdChatIdentifier): Chat? {
-        return chatRepository.findByTelegramId(chatId.chatId)
+        return chatRepository.findByTelegramId(chatId.chatId.long)
     }
 
     fun updateTitle(chat: Chat, actualTitle: String) {
@@ -54,6 +54,6 @@ class ChatService(
     }
 
     fun updateChatId(oldChatId: IdChatIdentifier, newChatId: IdChatIdentifier) {
-        chatRepository.updateChatId(oldChatId.chatId, newChatId.chatId)
+        chatRepository.updateChatId(oldChatId.chatId.long, newChatId.chatId.long)
     }
 }

@@ -1,7 +1,7 @@
 package com.github.djaler.evilbot.entity
 
 import com.github.djaler.evilbot.enums.UserGender
-import javax.persistence.*
+import jakarta.persistence.*
 
 @Entity
 @Table(name = "users")

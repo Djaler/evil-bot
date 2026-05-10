@@ -4,8 +4,8 @@ import com.github.djaler.evilbot.filters.message.MessageFilter
 import dev.inmo.tgbotapi.extensions.utils.asCommonMessage
 import dev.inmo.tgbotapi.extensions.utils.asMessageUpdate
 import dev.inmo.tgbotapi.types.UPDATE_MESSAGE
+import dev.inmo.tgbotapi.types.message.abstracts.AccessibleMessage
 import dev.inmo.tgbotapi.types.message.abstracts.CommonMessage
-import dev.inmo.tgbotapi.types.message.abstracts.Message
 import dev.inmo.tgbotapi.types.update.abstracts.Update
 
 abstract class MessageHandler(private val filter: MessageFilter? = null) : UpdateHandler {
@@ -21,11 +21,11 @@ abstract class MessageHandler(private val filter: MessageFilter? = null) : Updat
         return handleMessage(message)
     }
 
-    protected abstract suspend fun handleMessage(message: Message): Boolean
+    protected abstract suspend fun handleMessage(message: AccessibleMessage): Boolean
 }
 
 abstract class CommonMessageHandler(filter: MessageFilter? = null) : MessageHandler(filter) {
-    override suspend fun handleMessage(message: Message): Boolean {
+    override suspend fun handleMessage(message: AccessibleMessage): Boolean {
         val commonMessage = message.asCommonMessage() ?: return false
 
         return handleMessage(commonMessage)
