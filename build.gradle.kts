@@ -6,6 +6,7 @@ plugins {
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
+    kotlin("plugin.serialization") version kotlinVersion
     id("org.springframework.boot") version "3.4.5"
     id("io.spring.dependency-management") version "1.1.7"
 }
@@ -20,6 +21,15 @@ repositories {
 configurations {
     all {
         exclude("org.springframework.boot", "spring-boot-starter-logging")
+    }
+}
+
+dependencyManagement {
+    dependencies {
+        dependency("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.11.0")
+        dependency("org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.11.0")
+        dependency("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
+        dependency("org.jetbrains.kotlinx:kotlinx-serialization-core:1.11.0")
     }
 }
 
