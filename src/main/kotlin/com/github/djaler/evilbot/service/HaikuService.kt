@@ -74,10 +74,12 @@ class HaikuService(
             if (lastInLine.partsOfSpeech.any { it in CANNOT_END_LINE }) return false
 
             // Прилагательное в конце строки + существительное в начале следующей —
-            // разрыв словосочетания: "красивый | дом" звучит как обрезанная фраза
-            val endsWithAdjective = PartOfSpeech.ADJECTIVE in lastInLine.partsOfSpeech
+            // разрыв словосочетания: "красивый | дом" звучит как обрезанная фраза.
+            // Проверяем только однозначные прилагательные — MyStem может давать несколько
+            // вариантов разбора (напр. "остыл" = глагол или краткое прилагательное)
+            val onlyAdjective = lastInLine.partsOfSpeech == setOf(PartOfSpeech.ADJECTIVE)
             val nextStartsWithNoun = PartOfSpeech.NOUN in firstInNextLine.partsOfSpeech
-            if (endsWithAdjective && nextStartsWithNoun) return false
+            if (onlyAdjective && nextStartsWithNoun) return false
 
             wordOffset += lines[lineIndex].size
         }
