@@ -25,9 +25,11 @@ FROM eclipse-temurin:17-jre
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
     ca-certificates \
+    curl \
     python3 \
     python3-pip \
  && python3 -m pip install --no-cache-dir --break-system-packages yt-dlp \
+ && curl -sL https://download.cdn.yandex.net/mystem/mystem-3.1-linux-64bit.tar.gz | tar xz -C /usr/local/bin/ \
  && rm -rf /root/.cache/pip \
  && rm -rf /var/lib/apt/lists/*
 
