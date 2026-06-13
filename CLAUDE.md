@@ -16,7 +16,7 @@ Java 17 is required (see Dockerfile and CI). Determine JAVA_HOME before first Gr
 ./gradlew bootJar      # Create executable JAR
 ```
 
-No tests exist currently (`src/test` is empty).
+Tests live in `src/test/kotlin` (JUnit 5 + MockK + Kotest assertions, no Spring context). Run with `./gradlew test`.
 
 ## Architecture
 

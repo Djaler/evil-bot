@@ -63,12 +63,20 @@ dependencies {
 
     implementation("io.github.resilience4j:resilience4j-kotlin:2.2.0")
     implementation("io.github.resilience4j:resilience4j-ratelimiter:2.2.0")
+
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("io.mockk:mockk:1.13.13")
+    testImplementation("io.kotest:kotest-assertions-core:5.9.1")
 }
 
 tasks.withType<KotlinCompile> {
     compilerOptions {
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
 
 tasks.getByName<Jar>("jar") {
