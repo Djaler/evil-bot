@@ -56,7 +56,7 @@ PostgreSQL with Flyway migrations in `src/main/resources/db/migration/`. Redis f
 
 ### Configuration
 
-All config via `application.properties` + environment variables. Custom properties use `@ConfigurationProperties` data classes (registered in `@EnableConfigurationProperties` in `Application.kt`). Key properties: `telegram.bot.token`, `backup.admin-telegram-id`, `backup.cron`, `fixer.api.key`, `locationiq.api.key`, `vk.api.key`, `yandex.api.token`, `video.download.enabled`.
+All config via `application.properties` + environment variables. Custom properties use `@ConfigurationProperties` data classes (registered in `@EnableConfigurationProperties` in `Application.kt`). Key properties: `telegram.bot.token`, `backup.admin-telegram-id`, `backup.cron`, `fixer.api.key`, `locationiq.api.key`, `vk.api.key`, `yandex.api.token`, `video.download.enabled`, `evil.bot.media-hash-ttl` (duplicate-media hash retention, default 180d), `evil.bot.media-hash-cleanup-cron`.
 
 ### Scheduled Tasks
 

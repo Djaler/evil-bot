@@ -6,8 +6,10 @@ import com.github.djaler.evilbot.repository.MediaHashRepository
 import dev.inmo.tgbotapi.requests.abstracts.FileId
 import dev.inmo.tgbotapi.types.MessageId
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import java.awt.Image
 import java.awt.image.BufferedImage
+import java.time.Instant
 
 @Component
 class DuplicateMediaChecker(
@@ -17,21 +19,29 @@ class DuplicateMediaChecker(
         private const val MAX_HAMMING_DISTANCE = 5
     }
 
-    fun findDuplicate(image: BufferedImage, chat: Chat): Long? {
-        val duplicate = mediaHashRepository.findByChatIdAndHashCloseTo(chat.id, dHash(image), MAX_HAMMING_DISTANCE)
+    /**
+     * Если похожее медиа уже встречалось — возвращает messageId предыдущего появления и
+     * сдвигает запись на текущее (обновляет messageId и last_seen_at, продлевая TTL).
+     * Если нет — сохраняет новую запись и возвращает null.
+     */
+    @Transactional
+    fun checkAndRecord(image: BufferedImage, chat: Chat, messageId: MessageId, fileId: FileId): Long? {
+        val hash = dHash(image)
+        val existing = mediaHashRepository.findByChatIdAndHashCloseTo(chat.id, hash, MAX_HAMMING_DISTANCE)
 
-        return duplicate?.messageId
+        if (existing == null) {
+            mediaHashRepository.save(MediaHash(hash, chat.id, messageId.long, fileId.fileId, Instant.now()))
+            return null
+        }
+
+        val previousMessageId = existing.messageId
+        mediaHashRepository.save(existing.copy(messageId = messageId.long, lastSeenAt = Instant.now()))
+        return previousMessageId
     }
 
-    fun saveHash(image: BufferedImage, chat: Chat, messageId: MessageId, fileId: FileId) {
-        mediaHashRepository.save(
-            MediaHash(
-                dHash(image),
-                chat.id,
-                messageId.long,
-                fileId.fileId
-            )
-        )
+    @Transactional
+    fun deleteOlderThan(threshold: Instant): Int {
+        return mediaHashRepository.deleteByLastSeenAtBefore(threshold)
     }
 }
 

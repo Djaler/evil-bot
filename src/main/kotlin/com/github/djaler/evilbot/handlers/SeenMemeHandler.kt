@@ -56,22 +56,18 @@ class SeenMemeHandler(
         } ?: return false
 
         val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
-        val originalMessageId = duplicateMediaChecker.findDuplicate(image, chatEntity)
+        // для видео это fileId превью, а не самого медиа
+        val previousMessageId = duplicateMediaChecker.checkAndRecord(image, chatEntity, message.messageId, preview.fileId)
+            ?: return false
 
-        if (originalMessageId == null) {
-            // для видео это fileId превью, а не самого медиа
-            duplicateMediaChecker.saveHash(image, chatEntity, message.messageId, preview.fileId)
-            return false
-        } else {
-            val messageLink = makeLinkToMessage(message.chat, MessageId(originalMessageId)) ?: return false
+        val messageLink = makeLinkToMessage(message.chat, MessageId(previousMessageId)) ?: return false
 
-            requestExecutor.reply(
-                message,
-                buildEntities {
-                    +"Уже было - " + link(messageLink)
-                }
-            )
-            return true
-        }
+        requestExecutor.reply(
+            message,
+            buildEntities {
+                +"Уже было - " + link(messageLink)
+            }
+        )
+        return true
     }
 }

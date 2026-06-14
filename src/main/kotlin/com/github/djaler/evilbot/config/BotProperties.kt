@@ -8,5 +8,6 @@ import java.time.Duration
 @Validated
 data class BotProperties(
     val captchaKickTimeout: Duration = Duration.ofMinutes(1),
-    val cleanupLeftChatsTimeout: Duration = Duration.ofDays(30)
+    val cleanupLeftChatsTimeout: Duration = Duration.ofDays(30),
+    val mediaHashTtl: Duration = Duration.ofDays(180)
 )
