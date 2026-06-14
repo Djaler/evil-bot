@@ -11,7 +11,7 @@ interface MediaHashRepository : JpaRepository<MediaHash, Long> {
      * Линейный скан внутри чата.
      */
     @Query(
-        value = "SELECT * FROM media_hashes WHERE chat_id = :chatId AND bit_count(hash # :hash) <= :maxDistance ORDER BY id LIMIT 1",
+        value = "SELECT * FROM media_hashes WHERE chat_id = :chatId AND bit_count((hash # :hash)::bit(64)) <= :maxDistance ORDER BY id LIMIT 1",
         nativeQuery = true
     )
     fun findByChatIdAndHashCloseTo(
