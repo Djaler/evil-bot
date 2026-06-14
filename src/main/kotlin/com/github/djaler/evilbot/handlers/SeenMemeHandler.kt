@@ -12,7 +12,6 @@ import dev.inmo.tgbotapi.extensions.utils.asPublicChat
 import dev.inmo.tgbotapi.extensions.utils.formatting.makeLinkToMessage
 import dev.inmo.tgbotapi.types.MessageId
 import dev.inmo.tgbotapi.types.message.abstracts.AccessibleMessage
-import dev.inmo.tgbotapi.types.message.content.AnimationContent
 import dev.inmo.tgbotapi.types.message.content.PhotoContent
 import dev.inmo.tgbotapi.types.message.content.VideoContent
 import dev.inmo.tgbotapi.utils.buildEntities
@@ -38,11 +37,10 @@ class SeenMemeHandler(
         val chat = message.chat.asPublicChat() ?: return false
         val content = message.asContentMessage()?.content ?: return false
 
-        // для хеша 9x8 хватает мини-превью: самое маленькое фото или thumbnail видео/гифки
+        // для хеша 9x8 хватает мини-превью: самое маленькое фото или thumbnail видео
         val preview = when (content) {
             is PhotoContent -> content.mediaCollection.minByOrNull { it.resolution }
             is VideoContent -> content.media.thumbnail
-            is AnimationContent -> content.media.thumbnail
             else -> null
         } ?: return false
 
@@ -61,7 +59,7 @@ class SeenMemeHandler(
         val originalMessageId = duplicateMediaChecker.findDuplicate(image, chatEntity)
 
         if (originalMessageId == null) {
-            // для видео/гифок это fileId превью, а не самого медиа
+            // для видео это fileId превью, а не самого медиа
             duplicateMediaChecker.saveHash(image, chatEntity, message.messageId, preview.fileId)
             return false
         } else {
