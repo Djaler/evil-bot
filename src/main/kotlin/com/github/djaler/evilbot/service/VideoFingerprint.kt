@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager
 import org.springframework.stereotype.Service
 import java.io.File
 import java.nio.file.Files
+import java.util.concurrent.TimeUnit
 import javax.imageio.ImageIO
 
 internal const val FRAME_MAX_HAMMING_DISTANCE = 5
@@ -55,6 +56,7 @@ class VideoFingerprintService(
         private val FRAME_FRACTIONS = listOf(0.2, 0.4, 0.6, 0.8)
         private val FALLBACK_SECONDS = listOf(1.0, 2.0, 3.0, 4.0)
         private const val MIN_FRAMES = 2
+        private const val FFMPEG_TIMEOUT_MS = 30_000L
     }
 
     /**
@@ -105,7 +107,11 @@ class VideoFingerprintService(
                 .redirectOutput(ProcessBuilder.Redirect.DISCARD)
                 .redirectError(ProcessBuilder.Redirect.DISCARD)
                 .start()
-            if (process.waitFor() != 0 || output.length() == 0L) {
+            if (!process.waitFor(FFMPEG_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
+                process.destroyForcibly()
+                return null
+            }
+            if (process.exitValue() != 0 || output.length() == 0L) {
                 return null
             }
             val image = ImageIO.read(output) ?: return null

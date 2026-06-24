@@ -60,6 +60,8 @@ class DuplicateMediaChecker(
                 duration + DURATION_TOLERANCE_SECONDS
             )
         }
+        // Hash-only fallback (LIMIT 1): returns at most one candidate, acceptable per spec —
+        // the caller cannot compute a duration gate, so hash proximity alone is sufficient.
         return mediaHashRepository.findByChatIdAndHashCloseTo(chat.id, thumbHash, MAX_HAMMING_DISTANCE)
             ?.let(::listOf)
             ?: emptyList()
