@@ -33,6 +33,22 @@ class VideoFingerprintTest {
     }
 
     @Test
+    fun `shorter overlap that does not reach majority does not match`() {
+        // 1 of 2 frames match — not a strict majority (requires > 1)
+        framesMatch(listOf(1L, 0xFFL), listOf(1L, 0x00L), maxDistance = 5) shouldBe false
+    }
+
+    @Test
+    fun `hammingDistance between identical values is zero`() {
+        hammingDistance(0L, 0L) shouldBe 0
+    }
+
+    @Test
+    fun `hammingDistance counts set bits correctly`() {
+        hammingDistance(0L, 0xFFL) shouldBe 8
+    }
+
+    @Test
     fun `positions are fractions of known duration`() {
         framePositionsSeconds(
             durationSeconds = 10L,

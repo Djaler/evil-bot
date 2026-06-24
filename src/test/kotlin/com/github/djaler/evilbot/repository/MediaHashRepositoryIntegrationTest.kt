@@ -101,6 +101,42 @@ class MediaHashRepositoryIntegrationTest {
         repository.count() shouldBe 1L
     }
 
+    @Test
+    fun `findVideoCandidates respects hash distance and duration window`() {
+        val chatId = newChat().id
+        repository.saveAndFlush(
+            MediaHash(hash = 0L, chatId = chatId, messageId = 100, fileId = "f", lastSeenAt = Instant.now(), duration = 10L)
+        )
+
+        // same hash, window includes duration 10
+        repository.findVideoCandidates(chatId, 0L, 5, 9L, 11L).size shouldBe 1
+
+        // same hash, window excludes duration 10
+        repository.findVideoCandidates(chatId, 0L, 5, 11L, 13L).size shouldBe 0
+
+        // hash distance 6 (0b111111), maxDistance 5 — fails distance gate
+        repository.findVideoCandidates(chatId, 0b111111L, 5, 9L, 11L).size shouldBe 0
+    }
+
+    @Test
+    fun `frame_hashes BIGINT array round-trips through the database`() {
+        val chatId = newChat().id
+
+        // non-null frame hashes
+        val saved = repository.saveAndFlush(
+            MediaHash(hash = 0L, chatId = chatId, messageId = 300, fileId = "f", lastSeenAt = Instant.now(), frameHashes = listOf(1L, 2L, 3L, 4L))
+        )
+        entityManager.clear()
+        repository.findById(saved.id).get().frameHashes shouldBe listOf(1L, 2L, 3L, 4L)
+
+        // null frame hashes
+        val savedNull = repository.saveAndFlush(
+            MediaHash(hash = 1L, chatId = chatId, messageId = 301, fileId = "f", lastSeenAt = Instant.now(), frameHashes = null)
+        )
+        entityManager.clear()
+        repository.findById(savedNull.id).get().frameHashes shouldBe null
+    }
+
     private fun halfWhiteImage(): BufferedImage =
         BufferedImage(20, 20, BufferedImage.TYPE_INT_RGB).apply {
             createGraphics().apply {
