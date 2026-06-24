@@ -17,6 +17,7 @@ class DuplicateMediaChecker(
 ) {
     companion object {
         private const val MAX_HAMMING_DISTANCE = 5
+        private const val DURATION_TOLERANCE_SECONDS = 1L
     }
 
     /**
@@ -42,6 +43,54 @@ class DuplicateMediaChecker(
     @Transactional
     fun deleteOlderThan(threshold: Instant): Int {
         return mediaHashRepository.deleteByLastSeenAtBefore(threshold)
+    }
+
+    /**
+     * Tier 0 для видео. С известной длительностью — гейт по hash + duration; без неё — только по hash
+     * (эскалацию решает Tier 1).
+     */
+    @Transactional(readOnly = true)
+    fun findVideoCandidates(chat: Chat, thumbHash: Long, duration: Long?): List<MediaHash> {
+        if (duration != null) {
+            return mediaHashRepository.findVideoCandidates(
+                chat.id,
+                thumbHash,
+                MAX_HAMMING_DISTANCE,
+                duration - DURATION_TOLERANCE_SECONDS,
+                duration + DURATION_TOLERANCE_SECONDS
+            )
+        }
+        return mediaHashRepository.findByChatIdAndHashCloseTo(chat.id, thumbHash, MAX_HAMMING_DISTANCE)
+            ?.let(::listOf)
+            ?: emptyList()
+    }
+
+    @Transactional
+    fun recordVideo(
+        thumbHash: Long,
+        chat: Chat,
+        messageId: MessageId,
+        fileId: FileId,
+        duration: Long?,
+        frameHashes: List<Long>?
+    ) {
+        mediaHashRepository.save(
+            MediaHash(thumbHash, chat.id, messageId.long, fileId.fileId, Instant.now(), duration, frameHashes)
+        )
+    }
+
+    /** Сдвигает запись на текущее сообщение (продлевает TTL), возвращает предыдущий messageId. */
+    @Transactional
+    fun shiftToCurrent(existing: MediaHash, messageId: MessageId): Long {
+        val previousMessageId = existing.messageId
+        mediaHashRepository.save(existing.copy(messageId = messageId.long, lastSeenAt = Instant.now()))
+        return previousMessageId
+    }
+
+    /** Ленивый кэш: до-сохраняет вектор кадров кандидату. */
+    @Transactional
+    fun cacheFrameHashes(existing: MediaHash, frameHashes: List<Long>) {
+        mediaHashRepository.save(existing.copy(frameHashes = frameHashes))
     }
 }
 
