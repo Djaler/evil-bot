@@ -52,7 +52,7 @@ Commands are registered in `BotInitializer.updateCommands()` via `setMyCommands(
 
 ### Database
 
-PostgreSQL with Flyway migrations in `src/main/resources/db/migration/`. Redis for caching (1h default TTL). Video duplicate detection is a two-tier cascade: thumbnail perceptual hash + `duration` gate (`DuplicateMediaChecker`), then ffmpeg keyframe comparison (`VideoFingerprintService`) only on collisions; `media_hashes` carries `duration` and `frame_hashes` columns.
+PostgreSQL with Flyway migrations in `src/main/resources/db/migration/`. Redis for caching (1h default TTL).
 
 ### Configuration
 

@@ -75,8 +75,7 @@ class VideoFingerprintService(
                 val input = Files.createTempFile("dedup-", ".mp4").toFile()
                 try {
                     input.writeBytes(bytes)
-                    positions.mapNotNull { second -> extractFrameHash(input, second) }
-                        .takeIf { it.size >= MIN_FRAMES }
+                    extractFrames(input, positions).takeIf { it.size >= MIN_FRAMES }
                 } finally {
                     input.delete()
                 }
@@ -90,34 +89,34 @@ class VideoFingerprintService(
         }
     }
 
-    private fun extractFrameHash(input: File, second: Double): Long? {
-        val output = Files.createTempFile("dedup-frame-", ".png").toFile()
+    /**
+     * Один вызов ffmpeg на все позиции: отдельный input-seek (`-ss` перед `-i`) на каждую,
+     * затем dHash тех PNG, что реально создались, в порядке позиций. Частичный успех допустим —
+     * полагаемся на наличие выходных файлов, а не на общий exit code.
+     */
+    private fun extractFrames(input: File, positions: List<Double>): List<Long> {
+        val outputs = positions.map { Files.createTempFile("dedup-frame-", ".png").toFile() }
         return try {
-            val command = listOf(
-                "ffmpeg",
-                "-hide_banner",
-                "-loglevel", "error",
-                "-y",
-                "-ss", second.toString(),
-                "-i", input.absolutePath,
-                "-frames:v", "1",
-                output.absolutePath
-            )
+            val command = buildList {
+                addAll(listOf("ffmpeg", "-hide_banner", "-loglevel", "error", "-y"))
+                positions.forEach { second -> addAll(listOf("-ss", second.toString(), "-i", input.absolutePath)) }
+                outputs.forEachIndexed { index, output ->
+                    addAll(listOf("-map", "$index:v", "-frames:v", "1", output.absolutePath))
+                }
+            }
             val process = ProcessBuilder(command)
                 .redirectOutput(ProcessBuilder.Redirect.DISCARD)
                 .redirectError(ProcessBuilder.Redirect.DISCARD)
                 .start()
             if (!process.waitFor(FFMPEG_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
                 process.destroyForcibly()
-                return null
+                return emptyList()
             }
-            if (process.exitValue() != 0 || output.length() == 0L) {
-                return null
+            outputs.mapNotNull { output ->
+                if (output.length() == 0L) null else ImageIO.read(output)?.let(::dHash)
             }
-            val image = ImageIO.read(output) ?: return null
-            dHash(image)
         } finally {
-            output.delete()
+            outputs.forEach { it.delete() }
         }
     }
 }

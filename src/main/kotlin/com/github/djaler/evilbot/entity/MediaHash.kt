@@ -23,8 +23,8 @@ data class MediaHash(
     @Column
     val lastSeenAt: Instant,
 
-    @Column
-    val duration: Long? = null,
+    @Column(name = "duration")
+    val durationSeconds: Long? = null,
 
     @JdbcTypeCode(SqlTypes.ARRAY)
     @Column(name = "frame_hashes", columnDefinition = "bigint[]")

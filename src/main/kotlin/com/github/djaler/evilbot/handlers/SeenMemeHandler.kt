@@ -15,6 +15,7 @@ import dev.inmo.tgbotapi.extensions.utils.asPublicChat
 import dev.inmo.tgbotapi.extensions.utils.formatting.makeLinkToMessage
 import dev.inmo.tgbotapi.requests.abstracts.FileId
 import dev.inmo.tgbotapi.types.MessageId
+import dev.inmo.tgbotapi.types.chat.PublicChat
 import dev.inmo.tgbotapi.types.message.abstracts.AccessibleMessage
 import dev.inmo.tgbotapi.types.message.content.PhotoContent
 import dev.inmo.tgbotapi.types.message.content.VideoContent
@@ -44,36 +45,36 @@ class SeenMemeHandler(
         val content = message.asContentMessage()?.content ?: return false
 
         return when (content) {
-            is PhotoContent -> {
-                // для хеша 9x8 хватает самого маленького превью
-                val preview = content.mediaCollection.minByOrNull { it.resolution } ?: return false
-                val image = downloadImage(preview.fileId) ?: return false
-                val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
-                val previousMessageId =
-                    duplicateMediaChecker.checkAndRecord(image, chatEntity, message.messageId, preview.fileId)
-                        ?: return false
-                replyAlreadySeen(message, previousMessageId)
-            }
-            is VideoContent -> {
-                val thumbnail = content.media.thumbnail ?: return false
-                val image = downloadImage(thumbnail.fileId) ?: return false
-                val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
-                handleVideo(message, content, chatEntity, dHash(image))
-            }
+            is PhotoContent -> handleImage(message, content, chat)
+            is VideoContent -> handleVideo(message, content, chat)
             else -> false
         }
     }
 
-    private suspend fun handleVideo(
-        message: AccessibleMessage,
-        content: VideoContent,
-        chatEntity: com.github.djaler.evilbot.entity.Chat,
-        thumbHash: Long
-    ): Boolean {
+    private suspend fun handleImage(message: AccessibleMessage, content: PhotoContent, chat: PublicChat): Boolean {
+        // для хеша 9x8 хватает самого маленького превью
+        val preview = content.mediaCollection.minByOrNull { it.resolution } ?: return false
+        val image = downloadImage(preview.fileId) ?: return false
+        val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
+        val hash = dHash(image)
+        val existing = duplicateMediaChecker.findImageCandidate(chatEntity, hash)
+        if (existing == null) {
+            duplicateMediaChecker.record(hash, chatEntity, message.messageId, preview.fileId)
+            return false
+        }
+        val previousMessageId = duplicateMediaChecker.shiftToCurrent(existing, message.messageId)
+        return replyAlreadySeen(message, previousMessageId)
+    }
+
+    private suspend fun handleVideo(message: AccessibleMessage, content: VideoContent, chat: PublicChat): Boolean {
         val media = content.media
+        val thumbnail = media.thumbnail ?: return false
+        val image = downloadImage(thumbnail.fileId) ?: return false
+        val (chatEntity, _) = chatService.getOrCreateChatFrom(chat)
+        val thumbHash = dHash(image)
         val candidates = duplicateMediaChecker.findVideoCandidates(chatEntity, thumbHash, media.duration)
         if (candidates.isEmpty()) {
-            duplicateMediaChecker.recordVideo(thumbHash, chatEntity, message.messageId, media.fileId, media.duration, null)
+            duplicateMediaChecker.record(thumbHash, chatEntity, message.messageId, media.fileId, media.duration, null)
             return false
         }
 
@@ -81,13 +82,13 @@ class SeenMemeHandler(
         val newFrames = videoFingerprintService.extractFrameHashes(media.fileId, media.fileSize?.bytes?.toLong(), media.duration)
         if (newFrames == null) {
             // проверка невозможна (>20МБ / ошибка) → молчим
-            duplicateMediaChecker.recordVideo(thumbHash, chatEntity, message.messageId, media.fileId, media.duration, null)
+            duplicateMediaChecker.record(thumbHash, chatEntity, message.messageId, media.fileId, media.duration, null)
             return false
         }
 
         for (candidate in candidates) {
             val candidateFrames = candidate.frameHashes
-                ?: videoFingerprintService.extractFrameHashes(FileId(candidate.fileId), null, candidate.duration)
+                ?: videoFingerprintService.extractFrameHashes(FileId(candidate.fileId), null, candidate.durationSeconds)
                     ?.also { duplicateMediaChecker.cacheFrameHashes(candidate, it) }
                 ?: continue
             if (framesMatch(newFrames, candidateFrames)) {
@@ -97,7 +98,7 @@ class SeenMemeHandler(
         }
 
         // та же обложка+длительность, но другой контент → молчим, кэшируем кадры нового
-        duplicateMediaChecker.recordVideo(thumbHash, chatEntity, message.messageId, media.fileId, media.duration, newFrames)
+        duplicateMediaChecker.record(thumbHash, chatEntity, message.messageId, media.fileId, media.duration, newFrames)
         return false
     }
 

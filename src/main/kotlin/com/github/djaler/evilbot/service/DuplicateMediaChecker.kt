@@ -20,24 +20,10 @@ class DuplicateMediaChecker(
         private const val DURATION_TOLERANCE_SECONDS = 1L
     }
 
-    /**
-     * Если похожее медиа уже встречалось — возвращает messageId предыдущего появления и
-     * сдвигает запись на текущее (обновляет messageId и last_seen_at, продлевая TTL).
-     * Если нет — сохраняет новую запись и возвращает null.
-     */
-    @Transactional
-    fun checkAndRecord(image: BufferedImage, chat: Chat, messageId: MessageId, fileId: FileId): Long? {
-        val hash = dHash(image)
-        val existing = mediaHashRepository.findByChatIdAndHashCloseTo(chat.id, hash, MAX_HAMMING_DISTANCE)
-
-        if (existing == null) {
-            mediaHashRepository.save(MediaHash(hash, chat.id, messageId.long, fileId.fileId, Instant.now()))
-            return null
-        }
-
-        val previousMessageId = existing.messageId
-        mediaHashRepository.save(existing.copy(messageId = messageId.long, lastSeenAt = Instant.now()))
-        return previousMessageId
+    /** Ближайший по хешу кандидат в пределах допуска, либо null. */
+    @Transactional(readOnly = true)
+    fun findImageCandidate(chat: Chat, hash: Long): MediaHash? {
+        return mediaHashRepository.findByChatIdAndHashCloseTo(chat.id, hash, MAX_HAMMING_DISTANCE)
     }
 
     @Transactional
@@ -50,14 +36,14 @@ class DuplicateMediaChecker(
      * (эскалацию решает Tier 1).
      */
     @Transactional(readOnly = true)
-    fun findVideoCandidates(chat: Chat, thumbHash: Long, duration: Long?): List<MediaHash> {
-        if (duration != null) {
+    fun findVideoCandidates(chat: Chat, thumbHash: Long, durationSeconds: Long?): List<MediaHash> {
+        if (durationSeconds != null) {
             return mediaHashRepository.findVideoCandidates(
                 chat.id,
                 thumbHash,
                 MAX_HAMMING_DISTANCE,
-                duration - DURATION_TOLERANCE_SECONDS,
-                duration + DURATION_TOLERANCE_SECONDS
+                durationSeconds - DURATION_TOLERANCE_SECONDS,
+                durationSeconds + DURATION_TOLERANCE_SECONDS
             )
         }
         // Hash-only fallback (LIMIT 1): returns at most one candidate, acceptable per spec —
@@ -68,16 +54,16 @@ class DuplicateMediaChecker(
     }
 
     @Transactional
-    fun recordVideo(
-        thumbHash: Long,
+    fun record(
+        hash: Long,
         chat: Chat,
         messageId: MessageId,
         fileId: FileId,
-        duration: Long?,
-        frameHashes: List<Long>?
+        durationSeconds: Long? = null,
+        frameHashes: List<Long>? = null
     ) {
         mediaHashRepository.save(
-            MediaHash(thumbHash, chat.id, messageId.long, fileId.fileId, Instant.now(), duration, frameHashes)
+            MediaHash(hash, chat.id, messageId.long, fileId.fileId, Instant.now(), durationSeconds, frameHashes)
         )
     }
 

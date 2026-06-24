@@ -24,8 +24,7 @@ interface MediaHashRepository : JpaRepository<MediaHash, Long> {
     fun deleteByLastSeenAtBefore(threshold: Instant): Int
 
     /**
-     * Tier 0 для видео: близкий хеш превью И длительность в пределах допуска.
-     * Возвращает всех кандидатов (Tier 1 сверит контент по каждому). '#' — XOR, bit_count — число единичных битов.
+     * Близкий хеш И длительность в пределах окна. '#' — XOR, bit_count — число единичных битов.
      */
     @Query(
         value = "SELECT * FROM media_hashes WHERE chat_id = :chatId AND bit_count((hash # :hash)::bit(64)) <= :maxDistance AND duration BETWEEN :minDuration AND :maxDuration ORDER BY id",
