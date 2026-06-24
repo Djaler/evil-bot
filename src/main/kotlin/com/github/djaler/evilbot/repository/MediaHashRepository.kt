@@ -22,4 +22,19 @@ interface MediaHashRepository : JpaRepository<MediaHash, Long> {
     ): MediaHash?
 
     fun deleteByLastSeenAtBefore(threshold: Instant): Int
+
+    /**
+     * Близкий хеш И длительность в пределах окна. '#' — XOR, bit_count — число единичных битов.
+     */
+    @Query(
+        value = "SELECT * FROM media_hashes WHERE chat_id = :chatId AND bit_count((hash # :hash)::bit(64)) <= :maxDistance AND duration BETWEEN :minDuration AND :maxDuration ORDER BY id",
+        nativeQuery = true
+    )
+    fun findVideoCandidates(
+        @Param("chatId") chatId: Short,
+        @Param("hash") hash: Long,
+        @Param("maxDistance") maxDistance: Int,
+        @Param("minDuration") minDuration: Long,
+        @Param("maxDuration") maxDuration: Long
+    ): List<MediaHash>
 }

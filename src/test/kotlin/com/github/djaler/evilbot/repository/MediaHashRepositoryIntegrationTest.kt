@@ -3,6 +3,7 @@ package com.github.djaler.evilbot.repository
 import com.github.djaler.evilbot.entity.Chat
 import com.github.djaler.evilbot.entity.MediaHash
 import com.github.djaler.evilbot.service.DuplicateMediaChecker
+import com.github.djaler.evilbot.service.dHash
 import dev.inmo.tgbotapi.requests.abstracts.FileId
 import dev.inmo.tgbotapi.types.MessageId
 import io.kotest.matchers.nulls.shouldBeNull
@@ -75,14 +76,17 @@ class MediaHashRepositoryIntegrationTest {
     }
 
     @Test
-    fun `checkAndRecord shifts the row forward on repost`() {
+    fun `record then shiftToCurrent links a repost to the original`() {
         val chat = newChat()
-        val image = halfWhiteImage()
+        val hash = dHash(halfWhiteImage())
 
-        // first sighting — new row, no previous
-        checker.checkAndRecord(image, chat, MessageId(100L), FileId("f")).shouldBeNull()
-        // repost — links to the previous message and moves the row forward
-        checker.checkAndRecord(image, chat, MessageId(200L), FileId("f")) shouldBe 100L
+        // first sighting — no candidate, record a new row
+        checker.findImageCandidate(chat, hash).shouldBeNull()
+        checker.record(hash, chat, MessageId(100L), FileId("f"))
+
+        // repost — candidate found, shift it forward and link to the previous message
+        val existing = checker.findImageCandidate(chat, hash).shouldNotBeNull()
+        checker.shiftToCurrent(existing, MessageId(200L)) shouldBe 100L
 
         repository.count() shouldBe 1L
         repository.findByChatIdAndHashCloseTo(chat.id, 0L, 64).shouldNotBeNull().messageId shouldBe 200L
@@ -99,6 +103,42 @@ class MediaHashRepositoryIntegrationTest {
 
         deleted shouldBe 1
         repository.count() shouldBe 1L
+    }
+
+    @Test
+    fun `findVideoCandidates respects hash distance and duration window`() {
+        val chatId = newChat().id
+        repository.saveAndFlush(
+            MediaHash(hash = 0L, chatId = chatId, messageId = 100, fileId = "f", lastSeenAt = Instant.now(), durationSeconds = 10L)
+        )
+
+        // same hash, window includes duration 10
+        repository.findVideoCandidates(chatId, 0L, 5, 9L, 11L).size shouldBe 1
+
+        // same hash, window excludes duration 10
+        repository.findVideoCandidates(chatId, 0L, 5, 11L, 13L).size shouldBe 0
+
+        // hash distance 6 (0b111111), maxDistance 5 — fails distance gate
+        repository.findVideoCandidates(chatId, 0b111111L, 5, 9L, 11L).size shouldBe 0
+    }
+
+    @Test
+    fun `frame_hashes BIGINT array round-trips through the database`() {
+        val chatId = newChat().id
+
+        // non-null frame hashes
+        val saved = repository.saveAndFlush(
+            MediaHash(hash = 0L, chatId = chatId, messageId = 300, fileId = "f", lastSeenAt = Instant.now(), frameHashes = listOf(1L, 2L, 3L, 4L))
+        )
+        entityManager.clear()
+        repository.findById(saved.id).get().frameHashes shouldBe listOf(1L, 2L, 3L, 4L)
+
+        // null frame hashes
+        val savedNull = repository.saveAndFlush(
+            MediaHash(hash = 1L, chatId = chatId, messageId = 301, fileId = "f", lastSeenAt = Instant.now(), frameHashes = null)
+        )
+        entityManager.clear()
+        repository.findById(savedNull.id).get().frameHashes shouldBe null
     }
 
     private fun halfWhiteImage(): BufferedImage =

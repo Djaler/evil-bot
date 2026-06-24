@@ -17,31 +17,68 @@ class DuplicateMediaChecker(
 ) {
     companion object {
         private const val MAX_HAMMING_DISTANCE = 5
+        private const val DURATION_TOLERANCE_SECONDS = 1L
     }
 
-    /**
-     * Если похожее медиа уже встречалось — возвращает messageId предыдущего появления и
-     * сдвигает запись на текущее (обновляет messageId и last_seen_at, продлевая TTL).
-     * Если нет — сохраняет новую запись и возвращает null.
-     */
-    @Transactional
-    fun checkAndRecord(image: BufferedImage, chat: Chat, messageId: MessageId, fileId: FileId): Long? {
-        val hash = dHash(image)
-        val existing = mediaHashRepository.findByChatIdAndHashCloseTo(chat.id, hash, MAX_HAMMING_DISTANCE)
-
-        if (existing == null) {
-            mediaHashRepository.save(MediaHash(hash, chat.id, messageId.long, fileId.fileId, Instant.now()))
-            return null
-        }
-
-        val previousMessageId = existing.messageId
-        mediaHashRepository.save(existing.copy(messageId = messageId.long, lastSeenAt = Instant.now()))
-        return previousMessageId
+    /** Ближайший по хешу кандидат в пределах допуска, либо null. */
+    @Transactional(readOnly = true)
+    fun findImageCandidate(chat: Chat, hash: Long): MediaHash? {
+        return mediaHashRepository.findByChatIdAndHashCloseTo(chat.id, hash, MAX_HAMMING_DISTANCE)
     }
 
     @Transactional
     fun deleteOlderThan(threshold: Instant): Int {
         return mediaHashRepository.deleteByLastSeenAtBefore(threshold)
+    }
+
+    /**
+     * Tier 0 для видео. С известной длительностью — гейт по hash + duration; без неё — только по hash
+     * (эскалацию решает Tier 1).
+     */
+    @Transactional(readOnly = true)
+    fun findVideoCandidates(chat: Chat, thumbHash: Long, durationSeconds: Long?): List<MediaHash> {
+        if (durationSeconds != null) {
+            return mediaHashRepository.findVideoCandidates(
+                chat.id,
+                thumbHash,
+                MAX_HAMMING_DISTANCE,
+                durationSeconds - DURATION_TOLERANCE_SECONDS,
+                durationSeconds + DURATION_TOLERANCE_SECONDS
+            )
+        }
+        // Hash-only fallback (LIMIT 1): returns at most one candidate, acceptable per spec —
+        // the caller cannot compute a duration gate, so hash proximity alone is sufficient.
+        return mediaHashRepository.findByChatIdAndHashCloseTo(chat.id, thumbHash, MAX_HAMMING_DISTANCE)
+            ?.let(::listOf)
+            ?: emptyList()
+    }
+
+    @Transactional
+    fun record(
+        hash: Long,
+        chat: Chat,
+        messageId: MessageId,
+        fileId: FileId,
+        durationSeconds: Long? = null,
+        frameHashes: List<Long>? = null
+    ) {
+        mediaHashRepository.save(
+            MediaHash(hash, chat.id, messageId.long, fileId.fileId, Instant.now(), durationSeconds, frameHashes)
+        )
+    }
+
+    /** Сдвигает запись на текущее сообщение (продлевает TTL), возвращает предыдущий messageId. */
+    @Transactional
+    fun shiftToCurrent(existing: MediaHash, messageId: MessageId): Long {
+        val previousMessageId = existing.messageId
+        mediaHashRepository.save(existing.copy(messageId = messageId.long, lastSeenAt = Instant.now()))
+        return previousMessageId
+    }
+
+    /** Ленивый кэш: до-сохраняет вектор кадров кандидату. */
+    @Transactional
+    fun cacheFrameHashes(existing: MediaHash, frameHashes: List<Long>) {
+        mediaHashRepository.save(existing.copy(frameHashes = frameHashes))
     }
 }
 
