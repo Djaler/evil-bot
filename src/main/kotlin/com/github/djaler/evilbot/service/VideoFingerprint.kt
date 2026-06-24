@@ -101,7 +101,10 @@ class VideoFingerprintService(
                 "-frames:v", "1",
                 output.absolutePath
             )
-            val process = ProcessBuilder(command).redirectErrorStream(true).start()
+            val process = ProcessBuilder(command)
+                .redirectOutput(ProcessBuilder.Redirect.DISCARD)
+                .redirectError(ProcessBuilder.Redirect.DISCARD)
+                .start()
             if (process.waitFor() != 0 || output.length() == 0L) {
                 return null
             }
