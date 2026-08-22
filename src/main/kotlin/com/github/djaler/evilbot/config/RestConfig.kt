@@ -2,6 +2,7 @@ package com.github.djaler.evilbot.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.api.createClientPlugin
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -20,7 +21,7 @@ import org.springframework.context.annotation.Configuration
 class RestConfig {
     @Bean
     fun httpClient(objectMapper: ObjectMapper): HttpClient {
-        return HttpClient {
+        return HttpClient(CIO) {
             install(ContentNegotiation) {
                 register(ContentType.Any, JacksonConverter(objectMapper))
             }

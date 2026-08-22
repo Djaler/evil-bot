@@ -70,7 +70,7 @@ class UpdatesManager(
                     }
                     break
                 }
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 log.error("Handler: ${handler::class.simpleName}, update: $update", e)
 
                 exceptionsManager.process(e)

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 class ClientRequestExceptionHandler(
     private val sentryClient: SentryClient
 ) : ExceptionHandler {
-    override suspend fun handleException(e: Exception) {
+    override suspend fun handleException(e: Throwable) {
         if (e !is ClientRequestException) {
             return
         }

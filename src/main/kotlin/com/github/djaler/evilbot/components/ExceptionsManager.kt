@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 class ExceptionsManager(
     private val exceptionHandlers: List<ExceptionHandler>
 ) {
-    suspend fun process(e: Exception) {
+    suspend fun process(e: Throwable) {
         for (exceptionHandler in exceptionHandlers) {
             exceptionHandler.handleException(e)
         }
