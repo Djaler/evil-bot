@@ -50,7 +50,7 @@ dependencies {
     implementation("dev.inmo:tgbotapi:33.1.0")
 
     implementation("io.ktor:ktor-server-netty:3.4.2")
-    implementation("io.ktor:ktor-client-apache5:3.4.2")
+    implementation("io.ktor:ktor-client-cio:3.4.2")
     implementation("io.ktor:ktor-client-content-negotiation:3.4.2")
     implementation("io.ktor:ktor-client-logging:3.4.2")
     implementation("io.ktor:ktor-serialization-jackson:3.4.2")
